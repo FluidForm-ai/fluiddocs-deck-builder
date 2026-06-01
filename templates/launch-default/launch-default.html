@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acme Atlas · Launch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* === BRAND TOKENS · edit these CSS custom properties to rebrand the deck === */
+:root {
+  --brand-primary: #0B3D91;
+  --brand-accent:  #F2B705;
+  --brand-text:    #0B0B0B;
+  --brand-muted:   #4A4A4A;
+  --brand-bg:      #FBF7EE;
+  --brand-surface: #FFFFFF;
+  --brand-border:  #D9CDB4;
+  --font-display:  'Playfair Display', 'Didot', 'Georgia', serif;
+  --font-body:     'Inter', system-ui, sans-serif;
+  --font-mono:     'JetBrains Mono', ui-monospace, monospace;
+  --letterbox:     #0A0A0A;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--letterbox);
+  color: var(--brand-text);
+  font-family: var(--font-body);
+}
+
+.deck-outer {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--letterbox);
+  overflow: hidden;
+}
+
+.deck {
+  position: relative;
+  width: 1440px;
+  height: 810px;
+  background: var(--brand-bg);
+  transform-origin: center center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  padding: 104px 96px 96px;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  background: var(--brand-bg);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.slide.active { display: flex; opacity: 1; }
+.s-cover { justify-content: center; padding: 96px 120px; }
+
+/* Typography scale, locked */
+h1, h2, h3, h4 { font-family: var(--font-display); color: var(--brand-text); font-weight: 700; }
+h1 { font-size: 96px; line-height: 1.02; letter-spacing: -0.02em; }
+h2 { font-size: 64px; line-height: 1.06; letter-spacing: -0.015em; font-weight: 700; }
+h3 { font-size: 32px; line-height: 1.2; font-weight: 600; letter-spacing: -0.01em; }
+h4 { font-size: 22px; line-height: 1.25; font-weight: 600; }
+p  { font-size: 20px; line-height: 1.5; color: var(--brand-muted); }
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.lead { font-size: 26px; line-height: 1.45; color: var(--brand-muted); font-family: var(--font-body); }
+.caption { font-size: 14px; color: var(--brand-muted); font-family: var(--font-body); }
+.footnote-mini { font-size: 12px; color: var(--brand-muted); font-family: var(--font-body); font-style: italic; }
+.mono { font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.04em; color: var(--brand-muted); }
+
+/* Brand mark */
+.brand-mark {
+  position: absolute; top: 32px; left: 48px;
+  display: flex; align-items: center; gap: 10px;
+  z-index: 5;
+  color: var(--brand-text);
+  font-family: var(--font-display);
+  font-weight: 800; font-size: 18px;
+  letter-spacing: -0.02em;
+}
+.brand-mark .logo-glyph {
+  width: 28px; height: 28px;
+  background: var(--brand-primary);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--brand-bg);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+  border-radius: 2px;
+}
+.slide-meta {
+  position: absolute; top: 32px; right: 48px;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 12px; color: var(--brand-muted);
+  letter-spacing: 0.16em; font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* Nav */
+.progress-line {
+  position: absolute; top: 0; left: 0;
+  height: 3px;
+  background: var(--brand-primary);
+  width: 8.33%;
+  transition: width 300ms ease;
+  z-index: 100;
+}
+.nav-counter {
+  position: absolute; bottom: 24px; left: 48px;
+  font-family: var(--font-mono);
+  font-size: 12px; letter-spacing: 0.16em;
+  color: var(--brand-muted);
+  z-index: 100;
+}
+.nav-arrows {
+  position: absolute; bottom: 20px; right: 48px;
+  display: flex; gap: 10px;
+  z-index: 100;
+}
+.nav-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1.5px solid var(--brand-border);
+  background: transparent;
+  color: var(--brand-text);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 180ms ease;
+}
+.nav-btn:hover { border-color: var(--brand-primary); background: var(--brand-primary); color: var(--brand-bg); }
+.nav-btn svg { width: 16px; height: 16px; }
+
+/* Inline edit */
+.edit-hotzone {
+  position: fixed; top: 0; left: 0;
+  width: 40px; height: 40px;
+  z-index: 10000; cursor: pointer; background: transparent;
+}
+.edit-toggle {
+  position: fixed; top: 12px; left: 12px;
+  z-index: 10001;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+  color: var(--brand-text);
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease, background 0.15s ease, color 0.15s ease;
+}
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle.active {
+  background: var(--brand-primary);
+  color: var(--brand-bg);
+  border-color: var(--brand-primary);
+}
+body.edit-mode [contenteditable="true"] {
+  outline: 1px dashed var(--brand-primary);
+  outline-offset: 2px;
+  cursor: text;
+}
+body.edit-mode [contenteditable="true"]:focus {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* ============ Slide 1 · Cover ============ */
+.s-cover .cover-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.7fr;
+  gap: 80px;
+  align-items: center;
+  width: 100%;
+}
+.s-cover .eyebrow { margin-bottom: 24px; }
+.s-cover h1 { font-size: 128px; line-height: 0.95; letter-spacing: -0.03em; font-weight: 800; }
+.s-cover .cover-sub { font-size: 28px; line-height: 1.4; color: var(--brand-muted); margin-top: 28px; max-width: 540px; font-family: var(--font-body); }
+.s-cover .cover-meta {
+  display: flex; gap: 28px; margin-top: 56px;
+  font-family: var(--font-mono); font-size: 12px;
+  color: var(--brand-muted); letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.s-cover .cover-meta .dot { color: var(--brand-accent); }
+.cover-mark {
+  width: 320px; height: 320px;
+  background: var(--brand-primary);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--brand-bg);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 180px;
+  border-radius: 4px;
+  position: relative;
+}
+.cover-mark::after {
+  content: '';
+  position: absolute;
+  bottom: -12px; right: -12px;
+  width: 96px; height: 96px;
+  background: var(--brand-accent);
+  border-radius: 2px;
+  z-index: -1;
+}
+
+/* ============ Slide 2 · Problem ============ */
+.s-problem .head { max-width: 880px; margin-bottom: 56px; }
+.s-problem .head h2 { margin-top: 12px; }
+.s-problem .head p  { margin-top: 18px; max-width: 720px; }
+.problem-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;
+}
+.pain-card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  padding: 32px 28px;
+  border-radius: 4px;
+  display: flex; flex-direction: column; gap: 18px;
+  min-height: 248px;
+}
+.pain-card .pain-stat {
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: 800;
+  color: var(--brand-primary);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.pain-card .pain-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+}
+.pain-card .pain-body {
+  font-size: 18px;
+  line-height: 1.45;
+  color: var(--brand-text);
+  font-family: var(--font-body);
+}
+
+/* ============ Slide 3 · Introducing ============ */
+.s-intro .intro-grid {
+  display: grid; grid-template-columns: 1.1fr 0.9fr;
+  gap: 64px; align-items: center;
+  margin-top: 32px;
+}
+.s-intro .intro-copy h2 { margin-top: 12px; }
+.s-intro .intro-copy .lead { margin-top: 22px; max-width: 540px; }
+.s-intro .diffs {
+  margin-top: 36px;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.diff-row {
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.diff-row .diff-num {
+  width: 28px; height: 28px; flex-shrink: 0;
+  border: 1.5px solid var(--brand-primary);
+  color: var(--brand-primary);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+  border-radius: 50%;
+}
+.diff-row .diff-body { font-size: 18px; line-height: 1.45; color: var(--brand-text); }
+.diff-row .diff-body b { font-weight: 600; color: var(--brand-text); }
+.product-hero {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  padding: 28px;
+  aspect-ratio: 4/3;
+  max-height: 460px;
+  display: flex; flex-direction: column; gap: 16px;
+  position: relative;
+}
+.product-hero .ph-bar {
+  display: flex; gap: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--brand-border);
+}
+.product-hero .ph-bar span {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--brand-border);
+}
+.product-hero .ph-title {
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 700;
+  color: var(--brand-primary);
+  letter-spacing: -0.01em;
+}
+.product-hero .ph-sub {
+  font-size: 14px; color: var(--brand-muted);
+}
+.product-hero .ph-cards {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin-top: 8px;
+}
+.product-hero .ph-card {
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  padding: 14px;
+  border-radius: 3px;
+}
+.product-hero .ph-card .ph-card-title {
+  font-size: 13px; font-weight: 600; color: var(--brand-text);
+  margin-bottom: 4px;
+}
+.product-hero .ph-card .ph-card-meta {
+  font-family: var(--font-mono); font-size: 11px; color: var(--brand-muted);
+}
+.product-hero .ph-foot {
+  margin-top: auto;
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid var(--brand-border);
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--brand-muted);
+}
+
+/* ============ Slide 4 · How it works ============ */
+.s-how .steps {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 24px; margin-top: 56px;
+}
+.step {
+  display: flex; flex-direction: column; gap: 16px;
+  padding: 28px 24px;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  min-height: 280px;
+  position: relative;
+}
+.step .step-num {
+  font-family: var(--font-display);
+  font-size: 54px; font-weight: 800;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+.step h4 { color: var(--brand-text); }
+.step p { font-size: 15px; line-height: 1.5; }
+.step .step-icon {
+  position: absolute; top: 28px; right: 24px;
+  width: 32px; height: 32px;
+  color: var(--brand-accent);
+}
+.step-icon svg { width: 100%; height: 100%; }
+.s-how .head { max-width: 880px; }
+.s-how .head h2 { margin-top: 12px; }
+.s-how .head p  { margin-top: 16px; max-width: 720px; }
+
+/* ============ Slide 5 · Demo (static screenshot placeholder) ============ */
+.s-demo { padding: 88px 80px 76px; }
+.s-demo .demo-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.s-demo .demo-head .eyebrow { margin-bottom: 8px; }
+.s-demo .demo-head h3 { max-width: 720px; }
+.s-demo .demo-head .demo-meta {
+  font-family: var(--font-mono);
+  font-size: 12px; color: var(--brand-muted);
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.demo-frame {
+  flex: 1;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.demo-frame .df-chrome {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--brand-border);
+  background: var(--brand-bg);
+}
+.demo-frame .df-dots {
+  display: flex; gap: 6px;
+}
+.demo-frame .df-dots span {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--brand-border);
+}
+.demo-frame .df-url {
+  flex: 1; text-align: center;
+  font-family: var(--font-mono); font-size: 12px;
+  color: var(--brand-muted);
+  background: var(--brand-surface);
+  padding: 5px 12px; border-radius: 3px;
+  border: 1px solid var(--brand-border);
+  max-width: 380px; margin: 0 auto;
+}
+.demo-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 220px 1fr 260px;
+  min-height: 0;
+}
+.demo-side {
+  background: var(--brand-bg);
+  border-right: 1px solid var(--brand-border);
+  padding: 18px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.demo-side .ds-label {
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--brand-muted);
+  margin-bottom: 4px;
+}
+.demo-side .ds-item {
+  font-size: 13px; color: var(--brand-text);
+  padding: 8px 10px; border-radius: 3px;
+  font-weight: 500;
+}
+.demo-side .ds-item.active {
+  background: var(--brand-primary);
+  color: var(--brand-bg);
+}
+.demo-side .ds-meta {
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--brand-muted); margin-top: auto;
+  padding-top: 12px; border-top: 1px solid var(--brand-border);
+}
+.demo-main {
+  padding: 22px 28px;
+  display: flex; flex-direction: column; gap: 14px;
+  background: var(--brand-surface);
+  min-height: 0;
+}
+.demo-main .dm-title {
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 700;
+  color: var(--brand-text);
+  letter-spacing: -0.01em;
+}
+.demo-main .dm-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+}
+.demo-main .dm-stat {
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  padding: 12px;
+  border-radius: 3px;
+}
+.demo-main .dm-stat .v {
+  font-family: var(--font-display);
+  font-size: 26px; font-weight: 700;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+.demo-main .dm-stat .l {
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-top: 6px;
+}
+.demo-main .dm-chart {
+  flex: 1;
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 3px;
+  padding: 14px;
+  display: flex; flex-direction: column;
+  min-height: 0;
+}
+.demo-main .dm-chart-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px;
+}
+.demo-main .dm-chart-head .t {
+  font-size: 12px; font-weight: 600; color: var(--brand-text);
+}
+.demo-main .dm-chart-head .m {
+  font-family: var(--font-mono); font-size: 10px; color: var(--brand-muted);
+}
+.demo-main .dm-bars {
+  flex: 1;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 6px; padding: 4px 0;
+}
+.demo-main .dm-bar {
+  flex: 1;
+  background: var(--brand-primary);
+  border-radius: 2px 2px 0 0;
+  opacity: 0.85;
+}
+.demo-aside {
+  background: var(--brand-bg);
+  border-left: 1px solid var(--brand-border);
+  padding: 18px 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.demo-aside .da-label {
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--brand-muted);
+}
+.demo-aside .da-card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  padding: 12px;
+  border-radius: 3px;
+}
+.demo-aside .da-card .t {
+  font-size: 13px; font-weight: 600; color: var(--brand-text);
+  margin-bottom: 4px;
+}
+.demo-aside .da-card .m {
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--brand-muted);
+}
+.demo-aside .da-card.accent {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+.demo-aside .da-card.accent .t { color: var(--brand-bg); }
+.demo-aside .da-card.accent .m { color: var(--brand-bg); opacity: 0.8; }
+.demo-footnote {
+  text-align: right;
+  font-size: 12px;
+  color: var(--brand-muted);
+  margin-top: 8px;
+}
+
+/* ============ Slide 6 · Who it's for ============ */
+.s-who .who-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 56px;
+  margin-top: 40px;
+  align-items: start;
+}
+.persona-card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  padding: 36px 32px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.persona-card.primary {
+  border-color: var(--brand-primary);
+  border-width: 2px;
+}
+.persona-card .p-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+.persona-card .p-title {
+  font-family: var(--font-display);
+  font-size: 36px; font-weight: 700;
+  color: var(--brand-text);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.persona-card .p-context {
+  font-size: 16px; color: var(--brand-muted); line-height: 1.5;
+}
+.persona-card .p-list {
+  display: flex; flex-direction: column; gap: 10px;
+  margin-top: 4px;
+}
+.persona-card .p-list li {
+  font-size: 14px; color: var(--brand-text);
+  padding-left: 18px; position: relative;
+  list-style: none;
+  line-height: 1.4;
+}
+.persona-card .p-list li::before {
+  content: '';
+  position: absolute; left: 0; top: 9px;
+  width: 8px; height: 2px;
+  background: var(--brand-primary);
+}
+.s-who .head h2 { margin-top: 12px; }
+
+/* ============ Slide 7 · Availability & Pricing ============ */
+.s-pricing .pricing-head { margin-bottom: 36px; max-width: 880px; }
+.s-pricing .pricing-head h2 { margin-top: 12px; }
+.s-pricing .pricing-head p  { margin-top: 16px; max-width: 700px; }
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+}
+.tier {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  padding: 32px 28px;
+  display: flex; flex-direction: column; gap: 18px;
+  min-height: 360px;
+}
+.tier.featured {
+  background: var(--brand-primary);
+  color: var(--brand-bg);
+  border-color: var(--brand-primary);
+  position: relative;
+}
+.tier.featured h4,
+.tier.featured .price .num,
+.tier.featured .price .unit,
+.tier.featured .tier-name,
+.tier.featured .tier-desc,
+.tier.featured .tier-list li,
+.tier.featured .tier-cta {
+  color: var(--brand-bg);
+}
+.tier .tier-name {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+.tier .price {
+  display: flex; align-items: baseline; gap: 6px;
+  font-family: var(--font-display);
+}
+.tier .price .num {
+  font-size: 56px; font-weight: 800;
+  color: var(--brand-text);
+  letter-spacing: -0.02em; line-height: 1;
+}
+.tier .price .unit {
+  font-size: 16px; color: var(--brand-muted);
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+.tier .tier-desc {
+  font-size: 14px; color: var(--brand-muted); line-height: 1.5;
+}
+.tier .tier-list {
+  display: flex; flex-direction: column; gap: 10px;
+  margin-top: auto;
+  list-style: none;
+}
+.tier .tier-list li {
+  font-size: 13px;
+  padding-left: 22px;
+  position: relative;
+  color: var(--brand-text);
+  line-height: 1.4;
+}
+.tier .tier-list li::before {
+  content: '';
+  position: absolute; left: 0; top: 5px;
+  width: 12px; height: 7px;
+  border-left: 2px solid var(--brand-accent);
+  border-bottom: 2px solid var(--brand-accent);
+  transform: rotate(-45deg);
+}
+.tier.featured .tier-list li::before {
+  border-color: var(--brand-accent);
+}
+.tier .featured-badge {
+  position: absolute; top: -12px; right: 24px;
+  background: var(--brand-accent);
+  color: var(--brand-text);
+  font-family: var(--font-mono);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em;
+  padding: 5px 10px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+.availability-strip {
+  margin-top: 22px;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  padding: 18px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 24px;
+}
+.availability-strip .as-left {
+  display: flex; align-items: center; gap: 16px;
+}
+.availability-strip .as-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--brand-accent);
+  box-shadow: 0 0 0 4px rgba(242, 183, 5, 0.18);
+}
+.availability-strip .as-text {
+  font-size: 16px; color: var(--brand-text); font-weight: 600;
+}
+.availability-strip .as-text b {
+  color: var(--brand-primary); font-weight: 700;
+}
+.availability-strip .as-meta {
+  font-family: var(--font-mono);
+  font-size: 12px; color: var(--brand-muted);
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+
+/* ============ Slide 8 · Early customers ============ */
+.s-customers .head { max-width: 880px; margin-bottom: 40px; }
+.s-customers .head h2 { margin-top: 12px; }
+.logo-row {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 20px; margin-bottom: 36px;
+}
+.logo-cell {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  padding: 18px;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 78px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--brand-text);
+  letter-spacing: -0.01em;
+}
+.logo-cell.mono {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+.quotes-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+}
+.quote-card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  padding: 32px 28px;
+  display: flex; flex-direction: column; gap: 22px;
+}
+.quote-card .quote {
+  font-family: var(--font-display);
+  font-size: 24px; line-height: 1.32;
+  color: var(--brand-text);
+  font-weight: 500;
+  font-style: italic;
+}
+.quote-card .quote::before { content: '"'; color: var(--brand-primary); }
+.quote-card .quote::after  { content: '"'; color: var(--brand-primary); }
+.quote-card .attribution {
+  display: flex; flex-direction: column; gap: 2px;
+  padding-top: 16px;
+  border-top: 1px solid var(--brand-border);
+}
+.quote-card .attribution .name {
+  font-size: 14px; font-weight: 600; color: var(--brand-text);
+}
+.quote-card .attribution .role {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--brand-muted); letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ============ Slide 9 · Roadmap ============ */
+.s-roadmap .head { max-width: 880px; margin-bottom: 48px; }
+.s-roadmap .head h2 { margin-top: 12px; }
+.timeline {
+  position: relative;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  padding-top: 36px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 56px; left: 0; right: 0;
+  height: 2px;
+  background: var(--brand-border);
+}
+.tl-phase {
+  position: relative;
+  padding: 0 18px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.tl-phase .tl-q {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+.tl-phase .tl-dot {
+  position: absolute;
+  top: 48px; left: 24px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--brand-bg);
+  border: 3px solid var(--brand-primary);
+  z-index: 2;
+}
+.tl-phase.shipped .tl-dot {
+  background: var(--brand-primary);
+}
+.tl-phase .tl-card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  padding: 24px 22px;
+  margin-top: 36px;
+  display: flex; flex-direction: column; gap: 12px;
+  min-height: 200px;
+}
+.tl-phase .tl-title {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 700;
+  color: var(--brand-text);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.tl-phase .tl-body {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--brand-muted);
+}
+.tl-phase .tl-status {
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--brand-border);
+}
+.tl-phase.shipped .tl-status { color: var(--brand-primary); }
+
+/* ============ Slide 10 · Why now ============ */
+.s-whynow .whynow-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  margin-top: 36px;
+  align-items: start;
+}
+.s-whynow .head h2 { margin-top: 12px; }
+.s-whynow .wn-copy h3 { margin-top: 20px; max-width: 460px; }
+.s-whynow .wn-copy p  { margin-top: 16px; max-width: 480px; font-size: 17px; }
+.wn-signals {
+  display: flex; flex-direction: column; gap: 14px;
+  margin-top: 28px;
+}
+.wn-signal {
+  display: flex; gap: 18px; align-items: center;
+  padding: 16px 20px;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+}
+.wn-signal .wn-stat {
+  font-family: var(--font-display);
+  font-size: 36px; font-weight: 800;
+  color: var(--brand-primary);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  min-width: 110px;
+}
+.wn-signal .wn-label {
+  font-size: 14px; color: var(--brand-text);
+  line-height: 1.4;
+}
+.wn-chart {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  padding: 32px;
+  display: flex; flex-direction: column; gap: 16px;
+  min-height: 460px;
+}
+.wn-chart .wn-chart-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.wn-chart .wn-chart-title {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 700;
+  color: var(--brand-text);
+}
+.wn-chart .wn-chart-meta {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+.wn-chart-svg {
+  flex: 1;
+  width: 100%;
+  min-height: 280px;
+}
+.wn-chart-foot {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--brand-muted);
+  letter-spacing: 0.08em;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border);
+}
+
+/* ============ Slide 11 · Team ============ */
+.s-team .head { max-width: 880px; margin-bottom: 48px; }
+.s-team .head h2 { margin-top: 12px; }
+.team-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+}
+.team-card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  padding: 28px 22px;
+  display: flex; flex-direction: column; gap: 14px;
+  min-height: 320px;
+}
+.team-card .avatar {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--brand-bg);
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 32px;
+  letter-spacing: -0.02em;
+}
+.team-card .t-name {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 700;
+  color: var(--brand-text);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.team-card .t-role {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+.team-card .t-bio {
+  font-size: 13px; line-height: 1.5;
+  color: var(--brand-muted);
+}
+.team-card .t-prior {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border);
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+
+/* ============ Slide 12 · CTA ============ */
+.s-cta { padding: 96px 96px 88px; }
+.cta-grid {
+  display: grid; grid-template-columns: 1.3fr 0.8fr;
+  gap: 72px;
+  align-items: center;
+  flex: 1;
+}
+.cta-copy .eyebrow { margin-bottom: 20px; }
+.cta-copy h2 {
+  font-size: 88px;
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  font-weight: 800;
+}
+.cta-copy .cta-sub {
+  font-size: 22px;
+  margin-top: 26px;
+  color: var(--brand-muted);
+  max-width: 520px;
+  line-height: 1.45;
+  font-family: var(--font-body);
+}
+.cta-button {
+  display: inline-flex; align-items: center; gap: 14px;
+  padding: 22px 32px;
+  background: var(--brand-primary);
+  color: var(--brand-bg);
+  border-radius: 4px;
+  margin-top: 40px;
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  border: 2px solid var(--brand-primary);
+  transition: all 180ms ease;
+}
+.cta-button:hover {
+  background: var(--brand-bg);
+  color: var(--brand-primary);
+}
+.cta-button .arrow svg {
+  width: 24px; height: 24px;
+}
+.cta-url {
+  margin-top: 22px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--brand-muted);
+  letter-spacing: 0.06em;
+}
+.cta-url b {
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+.qr-side {
+  display: flex; flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.qr-frame {
+  background: var(--brand-surface);
+  border: 2px solid var(--brand-primary);
+  border-radius: 4px;
+  padding: 28px;
+}
+.qr-frame svg { display: block; }
+.qr-side .qr-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+.qr-side .qr-social {
+  display: flex; gap: 14px;
+  padding-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--brand-muted);
+  letter-spacing: 0.06em;
+}
+.qr-side .qr-social b {
+  color: var(--brand-text); font-weight: 600;
+}
+</style>
+</head>
+<body>
+<div class="edit-hotzone" aria-hidden="true"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)" aria-label="Toggle edit mode">Edit</button>
+
+<div class="deck-outer">
+  <div class="deck">
+
+    <!-- ================== SLIDE 1 · COVER ================== -->
+    <section class="slide s-cover active">
+      <div class="cover-grid">
+        <div>
+          <div class="eyebrow">Introducing Acme Atlas</div>
+          <h1>The launch <br>kit, reframed.</h1>
+          <p class="cover-sub">A single dashboard that turns rollout chaos into a calm, shippable plan. Built for operating teams that move fast and document slow.</p>
+          <div class="cover-meta">
+            <span>Acme Corp</span>
+            <span class="dot">·</span>
+            <span>Available March 4, 2026</span>
+            <span class="dot">·</span>
+            <span>v 1.0</span>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end;">
+          <div class="cover-mark">A</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SLIDE 2 · PROBLEM ================== -->
+    <section class="slide s-problem">
+      <div class="brand-mark"><span class="logo-glyph">A</span> Acme Atlas</div>
+      <div class="slide-meta">02 · The problem</div>
+      <div class="head">
+        <div class="eyebrow">Why teams are stuck</div>
+        <h2>Launches don't fail at <br>release. They fail at the <br>handoff.</h2>
+        <p>Operating teams stitch together six tools to ship one product moment. The seams cost weeks, the rework costs trust, and the post-mortem is the only artifact anyone remembers.</p>
+      </div>
+      <div class="problem-grid">
+        <div class="pain-card">
+          <div class="pain-label">Time lost per launch</div>
+          <div class="pain-stat">63h</div>
+          <div class="pain-body">Cross-team coordination, status updates, and document hunts consume nine working days per release for a typical mid-market team.</div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-label">Source-of-truth shift</div>
+          <div class="pain-stat">7</div>
+          <div class="pain-body">A single product launch lives across slides, docs, sheets, threads, tickets, calendars, and dashboards. Each one drifts a little further on every update.</div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-label">Repeat rate</div>
+          <div class="pain-stat">71%</div>
+          <div class="pain-body">Teams report repeating most of the same coordination work on the very next launch. The institutional memory does not compound.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SLIDE 3 · INTRODUCING ================== -->
+    <section class="slide s-intro">
+      <div class="brand-mark"><span class="logo-glyph">A</span> Acme Atlas</div>
+      <div class="slide-meta">03 · The product</div>
+      <div class="head" style="max-width: 900px;">
+        <div class="eyebrow">Introducing</div>
+      </div>
+      <div class="intro-grid">
+        <div class="intro-copy">
+          <h2>Acme Atlas</h2>
+          <p class="lead">One canvas for the people, the plan, and the proof. Atlas turns a launch into a living artifact that anyone on the team can read in a minute and act on in a day.</p>
+          <div class="diffs">
+            <div class="diff-row">
+              <div class="diff-num">1</div>
+              <div class="diff-body"><b>One canvas, every team.</b> Marketing, product, support, and exec see the same source of truth without duplicating it.</div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-num">2</div>
+              <div class="diff-body"><b>Live status, no standups.</b> Each milestone reports itself. Status pulls from the work, not a slide written the night before.</div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-num">3</div>
+              <div class="diff-body"><b>Reusable plays.</b> Every launch becomes a template. The third launch ships in a third of the time.</div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-num">4</div>
+              <div class="diff-body"><b>Audit-ready by default.</b> Every change is recorded. Post-mortems write themselves.</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-hero">
+          <div class="ph-bar"><span></span><span></span><span></span></div>
+          <div>
+            <div class="ph-title">Atlas Workspace</div>
+            <div class="ph-sub">Q1 2026 · Launch program · 14 active milestones</div>
+          </div>
+          <div class="ph-cards">
+            <div class="ph-card">
+              <div class="ph-card-title">Beta cohort onboarded</div>
+              <div class="ph-card-meta">Owner · Lin · Mar 1</div>
+            </div>
+            <div class="ph-card">
+              <div class="ph-card-title">Pricing page live</div>
+              <div class="ph-card-meta">Owner · Diego · Mar 2</div>
+            </div>
+            <div class="ph-card">
+              <div class="ph-card-title">Sales enablement</div>
+              <div class="ph-card-meta">Owner · Priya · Mar 3</div>
+            </div>
+            <div class="ph-card">
+              <div class="ph-card-title">Press embargo lift</div>
+              <div class="ph-card-meta">Owner · Sam · Mar 4</div>
+            </div>
+          </div>
+          <div class="ph-foot">
+            <span>On track · 12 of 14</span>
+            <span>Last updated 09:14</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SLIDE 4 · HOW IT WORKS ================== -->
+    <section class="slide s-how">
+      <div class="brand-mark"><span class="logo-glyph">A</span> Acme Atlas</div>
+      <div class="slide-meta">04 · How it works</div>
+      <div class="head">
+        <div class="eyebrow">Four steps, one canvas</div>
+        <h2>From kickoff to retro <br>without leaving Atlas.</h2>
+        <p>Atlas captures the work as it happens. No status decks, no parallel trackers, no end-of-week sync to reconcile a hundred edits.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 2"/></svg>
+          </div>
+          <h4>Frame the launch</h4>
+          <p>Pick a template or start blank. Atlas pre-fills the spine, the milestones, and the owners from your last comparable launch.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M12 3v18"/></svg>
+          </div>
+          <h4>Wire the teams</h4>
+          <p>Connect Slack, Linear, Notion, Salesforce, and Gmail in a click. Atlas tracks work in the tools your team already uses.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+          </div>
+          <h4>Ship in public</h4>
+          <p>Status auto-rolls from the work itself. A single shareable URL replaces the recurring 30-minute status meeting.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
+          </div>
+          <h4>Compound the playbook</h4>
+          <p>Every launch becomes a template. The team gets faster, the documents stay current, the institutional knowledge stops walking out the door.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SLIDE 5 · DEMO (STATIC SCREENSHOT) ================== -->
+    <section class="slide s-demo">
+      <div class="brand-mark"><span class="logo-glyph">A</span> Acme Atlas</div>
+      <div class="slide-meta">05 · See it in action</div>
+      <div class="demo-head">
+        <div>
+          <div class="eyebrow">A look inside</div>
+          <h3>The Atlas workspace, mid-launch.</h3>
+        </div>
+        <div class="demo-meta">Static screenshot · v 1.0</div>
+      </div>
+      <div class="demo-frame">
+        <div class="df-chrome">
+          <div class="df-dots"><span></span><span></span><span></span></div>
+          <div class="df-url">atlas.acme.example/programs/spring-2026</div>
+        </div>
+        <div class="demo-body">
+          <div class="demo-side">
+            <div class="ds-label">Programs</div>
+            <div class="ds-item">Winter 2025 wrap</div>
+            <div class="ds-item active">Spring 2026 launch</div>
+            <div class="ds-item">Summer field tour</div>
+            <div class="ds-item">EMEA expansion</div>
+            <div class="ds-label" style="margin-top: 14px;">Views</div>
+            <div class="ds-item">Calendar</div>
+            <div class="ds-item">Owners</div>
+            <div class="ds-item">Risks</div>
+            <div class="ds-meta">12 teammates · live</div>
+          </div>
+          <div class="demo-main">
+            <div class="dm-title">Spring 2026 launch · on track</div>
+            <div class="dm-row">
+              <div class="dm-stat">
+                <div class="v">12 / 14</div>
+                <div class="l">Milestones on track</div>
+              </div>
+              <div class="dm-stat">
+                <div class="v">3</div>
+                <div class="l">Open risks</div>
+              </div>
+              <div class="dm-stat">
+                <div class="v">4d</div>
+                <div class="l">To public launch</div>
+              </div>
+            </div>
+            <div class="dm-chart">
+              <div class="dm-chart-head">
+                <div class="t">Velocity by week</div>
+                <div class="m">Feb 5 to Mar 4</div>
+              </div>
+              <div class="dm-bars">
+                <div class="dm-bar" style="height: 32%;"></div>
+                <div class="dm-bar" style="height: 48%;"></div>
+                <div class="dm-bar" style="height: 41%;"></div>
+                <div class="dm-bar" style="height: 64%;"></div>
+                <div class="dm-bar" style="height: 72%;"></div>
+                <div class="dm-bar" style="height: 88%;"></div>
+                <div class="dm-bar" style="height: 80%;"></div>
+                <div class="dm-bar" style="height: 95%;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="demo-aside">
+            <div class="da-label">Today</div>
+            <div class="da-card accent">
+              <div class="t">Press embargo lift</div>
+              <div class="m">Owner · Sam · 09:00 ET</div>
+            </div>
+            <div class="da-card">
+              <div class="t">Pricing page review</div>
+              <div class="m">Owner · Diego · 11:30</div>
+            </div>
+            <div class="da-card">
+              <div class="t">Sales enablement</div>
+              <div class="m">Owner · Priya · 14:00</div>
+            </div>
+            <div class="da-card">
+              <div class="t">Beta NPS check</div>
+              <div class="m">Owner · Lin · 16:00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-footnote"><a href="https://fluiddocs.ai" target="_blank" rel="noopener" style="display:inline-block;opacity:.7;text-decoration:none"><svg viewBox="0 0 260 38" height="20" role="img" aria-label="Powered by FluidDocs" style="display:inline-block;vertical-align:middle"><path d="M0 2 Q0 0 2 0 L16 0 Q17.5 0 17.5 1.5 Q17.5 3 16 3 L5 3 L5 12 L14 12 Q15.5 12 15.5 13.5 Q15.5 15 14 15 L5 15 L5 26 Q5 28 2.5 28 Q0 28 0 26 Z" fill="#9CA3AF"/><path d="M22 2 Q22 0 24.5 0 Q27 0 27 2 L27 24.5 L38 24.5 Q39.5 24.5 39.5 26 Q39.5 28 38 28 L24.5 28 Q22 28 22 25.5 Z" fill="#9CA3AF"/><path d="M44 2 Q44 0 46.5 0 Q49 0 49 2 L49 22 Q49 33 56.5 33 Q64 33 64 22 L64 2 Q64 0 66.5 0 Q69 0 69 2 L69 22.5 Q69 38 56.5 38 Q44 38 44 22.5 Z" fill="#9CA3AF"/><path d="M75 2 Q75 0 77.5 0 Q80 0 80 2 L80 26 Q80 28 77.5 28 Q75 28 75 26 Z" fill="#9CA3AF"/><path d="M86 2 Q86 0 88 0 L97 0 Q108 0 108 14 Q108 28 97 28 L88 28 Q86 28 86 26 Z M91 3.5 L91 24.5 L96.5 24.5 Q103 24.5 103 14 Q103 3.5 96.5 3.5 Z" fill="#9CA3AF"/><rect x="118" y="0" width="3" height="28" rx="1.5" fill="#F97316"/><text x="132" y="22" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-weight="500" font-size="22" letter-spacing="2" fill="#9CA3AF">docs</text></svg></a></div>
+    </section>
+
+    <!-- ================== SLIDE 6 · WHO IT'S FOR ================== -->
+    <section class="slide s-who">
+      <div class="brand-mark"><span class="logo-glyph">A</span> Acme Atlas</div>
+      <div class="slide-meta">06 · Who it serves</div>
+      <div class="head">
+        <div class="eyebrow">Built for operators</div>
+        <h2>Two kinds of teams, <br>one canvas.</h2>
+      </div>
+      <div class="who-grid">
+        <div class="persona-card primary">
+          <div class="p-eyebrow">Primary · Heads of launch</div>
+          <div class="p-title">The operating <br>lead at a Series B.</div>
+          <div class="p-context">Owns 6 to 10 launches a year. Reports up to a CEO, sideways to product, marketing, and sales. Lives in three planning tools and answers status questions all day.</div>
+          <ul class="p-list">
+            <li>Runs cross-functional rollouts without a project manager</li>
+            <li>Needs a single artifact every stakeholder will actually open</li>
+            <li>Wants the post-mortem written from real data, not memory</li>
+          </ul>
+        </div>
+        <div class="persona-card">
+          <div class="p-eyebrow">Secondary · Founding teams</div>
+          <div class="p-title">The founder <br>who is the PMM.</div>
+          <div class="p-context">Two to twenty people. Every launch is the most important one. No budget for a launch tool, no patience for one that takes a week to set up.</div>
+          <ul class="p-list">
+            <li>Wants a starter playbook in the box</li>
+            <li>Templates that don't need a workshop to fill in</li>
+            <li>A free tier that survives the first three launches</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SLIDE 7 · AVAILABILITY & PRICING ================== -->
+    <section class="slide s-pricing">
+      <div class="brand-mark"><span class="logo-glyph">A</span> Acme Atlas</div>
+      <div class="slide-meta">07 · Availability · pricing</div>
+      <div class="pricing-head">
+        <div class="eyebrow">Simple, public, predictable</div>
+        <h2>Pick a tier. Ship today.</h2>
+        <p>Atlas is generally available on March 4, 2026. Annual billing is shown. Monthly billing adds 20 percent. All tiers include unlimited launches and the full template library.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="tier">
+          <div class="tier-name">Starter</div>
+          <div class="price">
+            <span class="num">$0</span>
+            <span class="unit">/ forever</span>
+          </div>
+          <p class="tier-desc">For founding teams running their first few launches. No card required.</p>
+          <ul class="tier-list">
+            <li>Up to 3 active launches</li>
+            <li>Slack and Linear integrations</li>
+            <li>5 launch templates</li>
+            <li>Public share links</li>
+          </ul>
+        </div>
+        <div class="tier featured">
+          <div class="featured-badge">Most picked</div>
+          <div class="tier-name">Team</div>
+          <div class="price">
+            <span class="num">$24</span>
+            <span class="unit">/ user / month</span>
+          </div>
+          <p class="tier-desc">For operating teams shipping a launch a month. The fastest path off the spreadsheet tax.</p>
+          <ul class="tier-list">
+            <li>Unlimited launches and owners</li>
+            <li>Full integration suite</li>
+            <li>Launch retro auto-generation</li>
+            <li>Templates and reusable plays</li>
+            <li>Priority email support</li>
+          </ul>
+        </div>
+        <div class="tier">
+          <div class="tier-name">Enterprise</div>
+          <div class="price">
+            <span class="num">Custom</span>
+            <span class="unit"></span>
+          </div>
+          <p class="tier-desc">For teams of 200 plus. SSO, audit logs, named CSM, security review on day one.</p>
+          <ul class="tier-list">
+            <li>SAML SSO and SCIM</li>
+            <li>Custom data residency</li>
+            <li>Dedicated CSM and SLA</li>
+            <li>Security and SOC 2 program</li>
+          </ul>
+        </div>
+      </div>
+      <div class="availability-strip">
+        <div class="as-left">
+          <div class="as-dot"></div>
+          <div class="as-text">Generally available <b>March 4, 2026</b>. Founding-team discount of 50 percent on Team for any signup before launch day.</div>
+        </div>
+        <div class="as-meta">acme.example / atlas</div>
+      </div>
+    </section>
+
+    <!-- ================== SLIDE 8 · EARLY CUSTOMERS ================== -->
+    <section class="slide s-customers">
+      <div class="brand-mark"><span class="logo-glyph">A</span> Acme Atlas</div>
+      <div class="slide-meta">08 · Early customers</div>
+      <div class="head">
+        <div class="eyebrow">Used in the wild</div>
+        <h2>Forty operating teams. <br>Three months of beta.</h2>
+      </div>
+      <div class="logo-row">
+        <div class="logo-cell">Northwind</div>
+        <div class="logo-cell mono">FERMIONIC</div>
+        <div class="logo-cell">Halcyon</div>
+        <div class="logo-cell mono">PARALLAX/CO</div>
+        <div class="logo-cell">Lumen Labs</div>
+      </div>
+      <div class="quotes-row">
+        <div class="quote-card">
+          <div class="quote">We replaced four launch spreadsheets and a recurring 9am sync with one Atlas link. Our PMs got a week of focus time back per quarter.</div>
+          <div class="attribution">
+            <div class="name">Jordan Mehta</div>
+            <div class="role">Head of growth · Northwind</div>
+          </div>
+        </div>
+        <div class="quote-card">
+          <div class="quote">The retro wrote itself. That alone paid for the seat. The fact that the next launch was already templated paid for the year.</div>
+          <div class="attribution">
+            <div class="name">Sasha Okafor</div>
+            <div class="role">Director of operations · Halcyon</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SLIDE 9 · ROADMAP ================== -->
+    <section class="slide s-roadmap">
+      <div class="brand-mark"><span class="logo-glyph">A</span> Acme Atlas</div>
+      <div class="slide-meta">09 · Roadmap</div>
+      <div class="head">
+        <div class="eyebrow">What ships next</div>
+        <h2>Four quarters, four bets.</h2>
+      </div>
+      <div class="timeline">
+        <div class="tl-phase shipped">
+          <div class="tl-dot"></div>
+          <div class="tl-q">Q1 2026</div>
+          <div class="tl-card">
+            <div class="tl-title">General availability</div>
+            <div class="tl-body">Atlas v 1.0 with Slack, Linear, Notion, Gmail, and Salesforce integrations. Launch templates and the retro engine.</div>
+            <div class="tl-status">Shipping March 4</div>
+          </div>
+        </div>
+        <div class="tl-phase">
+          <div class="tl-dot"></div>
+          <div class="tl-q">Q2 2026</div>
+          <div class="tl-card">
+            <div class="tl-title">Customer-led plays</div>
+            <div class="tl-body">A community library of templates contributed by operating teams. One-click adoption with attribution.</div>
+            <div class="tl-status">In design</div>
+          </div>
+        </div>
+        <div class="tl-phase">
+          <div class="tl-dot"></div>
+          <div class="tl-q">Q3 2026</div>
+          <div class="tl-card">
+            <div class="tl-title">Atlas for sales</div>
+            <div class="tl-body">A second-surface workspace for revenue teams running quarterly campaigns. Pipeline-aware milestones.</div>
+            <div class="tl-status">Planning</div>
+          </div>
+        </div>
+        <div class="tl-phase">
+          <div class="tl-dot"></div>
+          <div class="tl-q">Q4 2026</div>
+          <div class="tl-card">
+            <div class="tl-title">Atlas AI assist</div>
+            <div class="tl-body">A launch copilot that drafts the spine, the risks, and the announcement copy from the program brief.</div>
+            <div class="tl-status">Research</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SLIDE 10 · WHY NOW ================== -->
+    <section class="slide s-whynow">
+      <div class="brand-mark"><span class="logo-glyph">A</span> Acme Atlas</div>
+      <div class="slide-meta">10 · Why now</div>
+      <div class="head">
+        <div class="eyebrow">The moment, not the tool</div>
+        <h2>Operating teams just <br>got expensive.</h2>
+      </div>
+      <div class="whynow-grid">
+        <div class="wn-copy">
+          <h3>The cost of coordination is now the bottleneck.</h3>
+          <p>Headcount budgets are flat. Launch cadences are up. The gap is closed today with meetings and weekend rework. Atlas closes it with software.</p>
+          <div class="wn-signals">
+            <div class="wn-signal">
+              <div class="wn-stat">+38%</div>
+              <div class="wn-label">growth in product launches per company year over year, IDC, 2025</div>
+            </div>
+            <div class="wn-signal">
+              <div class="wn-stat">2.1x</div>
+              <div class="wn-label">increase in coordination meetings per launch since 2022, internal beta data, 40 teams</div>
+            </div>
+            <div class="wn-signal">
+              <div class="wn-stat">$96K</div>
+              <div class="wn-label">average loaded cost of the missing launch operations layer per mid-market team</div>
+            </div>
+          </div>
+        </div>
+        <div class="wn-chart">
+          <div class="wn-chart-head">
+            <div class="wn-chart-title">Launches per company, 2020 to 2025</div>
+            <div class="wn-chart-meta">IDC Operating Teams Survey</div>
+          </div>
+          <svg class="wn-chart-svg" viewBox="0 0 460 280" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <linearGradient id="curveFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0B3D91" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#0B3D91" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <line x1="40" y1="40" x2="40" y2="240" stroke="#D9CDB4" stroke-width="1"/>
+            <line x1="40" y1="240" x2="440" y2="240" stroke="#D9CDB4" stroke-width="1"/>
+            <line x1="40" y1="100" x2="440" y2="100" stroke="#D9CDB4" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
+            <line x1="40" y1="170" x2="440" y2="170" stroke="#D9CDB4" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
+            <text x="32" y="105" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#4A4A4A">12</text>
+            <text x="32" y="175" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#4A4A4A">6</text>
+            <text x="32" y="244" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#4A4A4A">0</text>
+            <text x="70" y="262" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#4A4A4A">2020</text>
+            <text x="144" y="262" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#4A4A4A">2021</text>
+            <text x="218" y="262" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#4A4A4A">2022</text>
+            <text x="292" y="262" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#4A4A4A">2023</text>
+            <text x="366" y="262" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#4A4A4A">2024</text>
+            <text x="430" y="262" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#4A4A4A">2025</text>
+            <path d="M 70 200 L 144 188 L 218 168 L 292 138 L 366 100 L 430 64 L 430 240 L 70 240 Z" fill="url(#curveFill)"/>
+            <path d="M 70 200 L 144 188 L 218 168 L 292 138 L 366 100 L 430 64" fill="none" stroke="#0B3D91" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="70"  cy="200" r="4" fill="#0B3D91"/>
+            <circle cx="144" cy="188" r="4" fill="#0B3D91"/>
+            <circle cx="218" cy="168" r="4" fill="#0B3D91"/>
+            <circle cx="292" cy="138" r="4" fill="#0B3D91"/>
+            <circle cx="366" cy="100" r="4" fill="#0B3D91"/>
+            <circle cx="430" cy="64"  r="5" fill="#F2B705"/>
+            <text x="430" y="50" text-anchor="end" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#0B3D91">14.2 / yr</text>
+          </svg>
+          <div class="wn-chart-foot">Source · IDC, 2025 · n equals 412 mid-market companies</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SLIDE 11 · TEAM ================== -->
+    <section class="slide s-team">
+      <div class="brand-mark"><span class="logo-glyph">A</span> Acme Atlas</div>
+      <div class="slide-meta">11 · Team</div>
+      <div class="head">
+        <div class="eyebrow">The people behind Atlas</div>
+        <h2>Operators who got tired <br>of being the glue.</h2>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="avatar">RG</div>
+          <div>
+            <div class="t-name">Rosa Greene</div>
+            <div class="t-role">Co-founder · CEO</div>
+          </div>
+          <div class="t-bio">Led 30-plus launches across Atlassian and Figma. Built the launch ops practice at her last company from scratch.</div>
+          <div class="t-prior">Prev · Atlassian · Figma</div>
+        </div>
+        <div class="team-card">
+          <div class="avatar">MK</div>
+          <div>
+            <div class="t-name">Mikael Kowalski</div>
+            <div class="t-role">Co-founder · CTO</div>
+          </div>
+          <div class="t-bio">Founding engineer at two collaboration products with multi-million seat counts. Spent the pandemic shipping integrations.</div>
+          <div class="t-prior">Prev · Notion · Linear</div>
+        </div>
+        <div class="team-card">
+          <div class="avatar">PT</div>
+          <div>
+            <div class="t-name">Priya Tan</div>
+            <div class="t-role">Head of product</div>
+          </div>
+          <div class="t-bio">Twelve years in PMM and product. Wrote the launch playbook her last company still uses two years after she left.</div>
+          <div class="t-prior">Prev · Stripe · Twilio</div>
+        </div>
+        <div class="team-card">
+          <div class="avatar">DV</div>
+          <div>
+            <div class="t-name">Diego Vargas</div>
+            <div class="t-role">Head of design</div>
+          </div>
+          <div class="t-bio">Designed the canvas surface at two well-known productivity tools. Believes good defaults beat good documentation.</div>
+          <div class="t-prior">Prev · Airtable · Coda</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SLIDE 12 · CTA ================== -->
+    <section class="slide s-cta">
+      <div class="brand-mark"><span class="logo-glyph">A</span> Acme Atlas</div>
+      <div class="slide-meta">12 · Get started</div>
+      <div class="cta-grid">
+        <div class="cta-copy">
+          <div class="eyebrow">Try Atlas today</div>
+          <h2>Ship the next <br>launch in Atlas.</h2>
+          <p class="cta-sub">Start free, no card. Bring one launch in. Decide on the seat after you have shipped it.</p>
+          <a class="cta-button" href="https://example.com/atlas">
+            <span>Start free</span>
+            <span class="arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </span>
+          </a>
+          <div class="cta-url">URL · <b>acme.example / atlas</b></div>
+        </div>
+        <div class="qr-side">
+          <div class="qr-frame">
+            <svg width="200" height="200" viewBox="0 0 29 29" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+              <rect width="29" height="29" fill="#FFFFFF"/>
+              <g fill="#0B3D91">
+                <!-- Position detection patterns (top-left, top-right, bottom-left) -->
+                <rect x="0" y="0" width="7" height="1"/><rect x="0" y="6" width="7" height="1"/>
+                <rect x="0" y="0" width="1" height="7"/><rect x="6" y="0" width="1" height="7"/>
+                <rect x="2" y="2" width="3" height="3"/>
+                <rect x="22" y="0" width="7" height="1"/><rect x="22" y="6" width="7" height="1"/>
+                <rect x="22" y="0" width="1" height="7"/><rect x="28" y="0" width="1" height="7"/>
+                <rect x="24" y="2" width="3" height="3"/>
+                <rect x="0" y="22" width="7" height="1"/><rect x="0" y="28" width="7" height="1"/>
+                <rect x="0" y="22" width="1" height="7"/><rect x="6" y="22" width="1" height="7"/>
+                <rect x="2" y="24" width="3" height="3"/>
+                <!-- Timing patterns -->
+                <rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/>
+                <rect x="12" y="6" width="1" height="1"/><rect x="14" y="6" width="1" height="1"/>
+                <rect x="16" y="6" width="1" height="1"/><rect x="18" y="6" width="1" height="1"/>
+                <rect x="20" y="6" width="1" height="1"/>
+                <rect x="6" y="8" width="1" height="1"/><rect x="6" y="10" width="1" height="1"/>
+                <rect x="6" y="12" width="1" height="1"/><rect x="6" y="14" width="1" height="1"/>
+                <rect x="6" y="16" width="1" height="1"/><rect x="6" y="18" width="1" height="1"/>
+                <rect x="6" y="20" width="1" height="1"/>
+                <!-- Random data modules for visual completeness -->
+                <rect x="9"  y="9"  width="2" height="2"/>
+                <rect x="13" y="8"  width="1" height="2"/>
+                <rect x="16" y="9"  width="2" height="1"/>
+                <rect x="19" y="8"  width="1" height="2"/>
+                <rect x="8"  y="11" width="2" height="1"/>
+                <rect x="12" y="11" width="1" height="2"/>
+                <rect x="15" y="11" width="3" height="1"/>
+                <rect x="19" y="11" width="1" height="3"/>
+                <rect x="22" y="9"  width="1" height="2"/>
+                <rect x="24" y="10" width="2" height="1"/>
+                <rect x="27" y="9"  width="1" height="3"/>
+                <rect x="9"  y="13" width="1" height="2"/>
+                <rect x="11" y="14" width="2" height="1"/>
+                <rect x="14" y="13" width="1" height="2"/>
+                <rect x="16" y="14" width="2" height="2"/>
+                <rect x="20" y="13" width="2" height="1"/>
+                <rect x="22" y="14" width="1" height="3"/>
+                <rect x="24" y="13" width="3" height="2"/>
+                <rect x="8"  y="16" width="2" height="1"/>
+                <rect x="11" y="17" width="2" height="2"/>
+                <rect x="14" y="16" width="2" height="1"/>
+                <rect x="17" y="17" width="2" height="1"/>
+                <rect x="20" y="16" width="1" height="2"/>
+                <rect x="22" y="18" width="2" height="1"/>
+                <rect x="25" y="17" width="2" height="2"/>
+                <rect x="27" y="20" width="1" height="2"/>
+                <rect x="9"  y="19" width="1" height="2"/>
+                <rect x="12" y="20" width="2" height="1"/>
+                <rect x="15" y="19" width="2" height="2"/>
+                <rect x="18" y="20" width="2" height="1"/>
+                <rect x="21" y="21" width="2" height="2"/>
+                <rect x="24" y="20" width="1" height="3"/>
+                <rect x="26" y="22" width="2" height="1"/>
+                <rect x="8"  y="22" width="1" height="2"/>
+                <rect x="9"  y="25" width="2" height="1"/>
+                <rect x="12" y="23" width="1" height="3"/>
+                <rect x="14" y="25" width="2" height="2"/>
+                <rect x="17" y="23" width="2" height="2"/>
+                <rect x="19" y="26" width="1" height="2"/>
+                <rect x="21" y="25" width="3" height="1"/>
+                <rect x="22" y="27" width="2" height="1"/>
+                <rect x="25" y="24" width="1" height="3"/>
+                <rect x="27" y="26" width="1" height="2"/>
+                <rect x="9"  y="27" width="1" height="2"/>
+                <rect x="11" y="28" width="2" height="1"/>
+                <rect x="15" y="27" width="2" height="2"/>
+                <rect x="20" y="28" width="2" height="1"/>
+                <!-- Format info around finder patterns -->
+                <rect x="8"  y="0"  width="1" height="1"/>
+                <rect x="10" y="0"  width="1" height="1"/>
+                <rect x="13" y="0"  width="1" height="1"/>
+                <rect x="15" y="0"  width="1" height="1"/>
+                <rect x="17" y="0"  width="1" height="1"/>
+                <rect x="19" y="0"  width="1" height="1"/>
+                <rect x="8"  y="2"  width="1" height="1"/>
+                <rect x="11" y="2"  width="1" height="1"/>
+                <rect x="14" y="2"  width="1" height="1"/>
+                <rect x="17" y="2"  width="1" height="1"/>
+                <rect x="20" y="2"  width="1" height="1"/>
+                <rect x="8"  y="4"  width="1" height="1"/>
+                <rect x="12" y="4"  width="1" height="1"/>
+                <rect x="16" y="4"  width="1" height="1"/>
+                <rect x="20" y="4"  width="1" height="1"/>
+                <rect x="0"  y="8"  width="1" height="1"/>
+                <rect x="2"  y="8"  width="1" height="1"/>
+                <rect x="4"  y="8"  width="1" height="1"/>
+                <rect x="22" y="8"  width="1" height="1"/>
+                <rect x="24" y="8"  width="1" height="1"/>
+                <rect x="26" y="8"  width="1" height="1"/>
+                <rect x="0"  y="10" width="1" height="1"/>
+                <rect x="3"  y="10" width="1" height="1"/>
+                <rect x="22" y="10" width="2" height="1"/>
+                <rect x="25" y="11" width="1" height="1"/>
+                <rect x="2"  y="12" width="2" height="1"/>
+                <rect x="22" y="12" width="1" height="1"/>
+                <rect x="24" y="12" width="2" height="1"/>
+                <rect x="2"  y="14" width="1" height="1"/>
+                <rect x="4"  y="14" width="1" height="1"/>
+                <rect x="0"  y="16" width="1" height="1"/>
+                <rect x="3"  y="16" width="1" height="1"/>
+                <rect x="2"  y="18" width="1" height="1"/>
+                <rect x="4"  y="18" width="1" height="1"/>
+                <rect x="0"  y="20" width="1" height="1"/>
+                <rect x="3"  y="20" width="1" height="1"/>
+                <!-- Alignment pattern (bottom-right area) -->
+                <rect x="18" y="18" width="5" height="1"/>
+                <rect x="18" y="22" width="5" height="1"/>
+                <rect x="18" y="18" width="1" height="5"/>
+                <rect x="22" y="18" width="1" height="5"/>
+                <rect x="20" y="20" width="1" height="1"/>
+              </g>
+            </svg>
+          </div>
+          <div class="qr-label">Scan to open</div>
+          <div class="qr-social">
+            <span>Follow · <b>@acmeatlas</b></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <div class="progress-line"></div>
+    <div class="nav-counter"><span class="cur">01</span> / <span class="total">12</span></div>
+    <div class="nav-arrows">
+      <button class="nav-btn prev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="nav-btn next" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const deck = document.querySelector('.deck');
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const progress = document.querySelector('.progress-line');
+  const counter = document.querySelector('.nav-counter .cur');
+  const totalEl = document.querySelector('.nav-counter .total');
+  const prevBtn = document.querySelector('.nav-btn.prev');
+  const nextBtn = document.querySelector('.nav-btn.next');
+
+  totalEl.textContent = String(total).padStart(2, '0');
+
+  function setScale() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const scale = Math.min(w / 1440, h / 810);
+    deck.style.transform = 'scale(' + scale + ')';
+  }
+  setScale();
+  window.addEventListener('resize', setScale);
+  window.addEventListener('orientationchange', setScale);
+
+  function go(to) {
+    if (to < 0 || to >= total) return;
+    slides[current].classList.remove('active');
+    current = to;
+    slides[current].classList.add('active');
+    progress.style.width = (((current + 1) / total) * 100) + '%';
+    counter.textContent = String(current + 1).padStart(2, '0');
+  }
+
+  const next = () => go(current + 1);
+  const prev = () => go(current - 1);
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', (e) => {
+    const editingText = e.target && e.target.getAttribute &&
+                        e.target.getAttribute('contenteditable') === 'true';
+    if (editingText) return;
+    if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', (e) => { tx = e.changedTouches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 60) dx < 0 ? next() : prev();
+  }, { passive: true });
+})();
+
+/* === INLINE-EDIT MODULE · press E to toggle edit mode, Ctrl/S downloads, localStorage autosaves === */
+(function() {
+  const STORAGE_KEY = 'deck-edits:' + location.pathname;
+  const SAVE_DEBOUNCE_MS = 500;
+  const HOVER_GRACE_MS = 400;
+
+  const editor = {
+    isActive: false,
+    saveTimer: null,
+    hideTimer: null,
+  };
+
+  const EDITABLE_SELECTORS = [
+    '.slide h1', '.slide h2', '.slide h3', '.slide h4',
+    '.slide p', '.slide li', '.slide blockquote',
+    '.slide .eyebrow', '.slide .lead', '.slide .fact',
+    '.slide .stat-label', '.slide .stat-value',
+    '.slide .quote', '.slide .attribution',
+    '.slide .pain-body', '.slide .pain-stat', '.slide .pain-label',
+    '.slide .diff-body', '.slide .tier-name', '.slide .tier-desc',
+    '.slide .tl-title', '.slide .tl-body', '.slide .tl-status',
+    '.slide .t-name', '.slide .t-role', '.slide .t-bio', '.slide .t-prior',
+    '.slide .cta-sub', '.slide .cover-sub',
+    '.brand-mark', '.slide-meta'
+  ];
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(saved, 'text/html');
+      const restoredDeck = doc.querySelector('.deck');
+      const liveDeck = document.querySelector('.deck');
+      if (restoredDeck && liveDeck) liveDeck.innerHTML = restoredDeck.innerHTML;
+    }
+  } catch (e) {
+    console.warn('Inline-edit restore failed:', e);
+  }
+
+  const hotzone = document.querySelector('.edit-hotzone');
+  const toggle = document.getElementById('editToggle');
+
+  function showToggle() {
+    clearTimeout(editor.hideTimer);
+    toggle.classList.add('show');
+  }
+  function scheduleHideToggle() {
+    clearTimeout(editor.hideTimer);
+    editor.hideTimer = setTimeout(() => {
+      if (!editor.isActive) toggle.classList.remove('show');
+    }, HOVER_GRACE_MS);
+  }
+
+  hotzone.addEventListener('mouseenter', showToggle);
+  hotzone.addEventListener('mouseleave', scheduleHideToggle);
+  toggle.addEventListener('mouseenter', showToggle);
+  toggle.addEventListener('mouseleave', scheduleHideToggle);
+
+  hotzone.addEventListener('click', () => toggleEditMode());
+  toggle.addEventListener('click', () => toggleEditMode());
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'e' && e.key !== 'E') return;
+    const inEditable = e.target && e.target.getAttribute &&
+                       e.target.getAttribute('contenteditable') === 'true';
+    if (inEditable) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    e.preventDefault();
+    toggleEditMode();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      downloadHtml();
+    }
+  });
+
+  function toggleEditMode() {
+    editor.isActive = !editor.isActive;
+    document.body.classList.toggle('edit-mode', editor.isActive);
+    toggle.classList.toggle('active', editor.isActive);
+    toggle.classList.add('show');
+
+    const targets = document.querySelectorAll(EDITABLE_SELECTORS.join(','));
+    targets.forEach(el => {
+      if (editor.isActive) {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'true');
+      } else {
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('spellcheck');
+      }
+    });
+
+    if (!editor.isActive) scheduleHideToggle();
+  }
+
+  document.addEventListener('input', (e) => {
+    if (!e.target || !e.target.getAttribute) return;
+    if (e.target.getAttribute('contenteditable') !== 'true') return;
+    clearTimeout(editor.saveTimer);
+    editor.saveTimer = setTimeout(() => {
+      try {
+        const deck = document.querySelector('.deck');
+        const wrapper = document.createElement('div');
+        const clonedDeck = deck.cloneNode(true);
+        wrapper.appendChild(clonedDeck);
+        const html = '<!doctype html><html><body>' + wrapper.innerHTML + '</body></html>';
+        localStorage.setItem(STORAGE_KEY, html);
+      } catch (err) {
+        console.warn('Inline-edit autosave failed:', err);
+      }
+    }, SAVE_DEBOUNCE_MS);
+  });
+
+  function downloadHtml() {
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+    clone.querySelectorAll('[spellcheck]').forEach(el => el.removeAttribute('spellcheck'));
+    const hotzoneEl = clone.querySelector('.edit-hotzone');
+    const toggleEl = clone.querySelector('.edit-toggle');
+    if (hotzoneEl) hotzoneEl.remove();
+    if (toggleEl) toggleEl.remove();
+    clone.querySelector('body').classList.remove('edit-mode');
+
+    const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const title = (document.title || 'deck').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = title + '.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+})();
+</script>
+</body>
+</html>

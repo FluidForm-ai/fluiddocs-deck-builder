@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FormulaLab, Cargolane Sales Engagement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   FormulaLab · Cargolane Sales Engagement
+   Style preset: Quiet Confident (sage green + warm slate, serif display)
+   Spine: deck-sales (11 slides, B2B post-discovery format)
+   Built with: FluidDocs Deck Builder OSS pack, deck-sales SKILL.md
+   See: https://github.com/FluidForm-ai/fluiddocs-deck-builder
+   ============================================================ */
+
+/* Typography scale (7 sizes): 11px, 13px, 14px, 18px, 22px, 34px, 56px */
+
+:root {
+  --brand-primary: #4A5D4F;
+  --brand-accent:  #8B6F47;
+  --brand-text:    #2D3A2F;
+  --brand-muted:   #6E7B70;
+  --brand-bg:      #FAF8F3;
+  --brand-surface: #F2EFE7;
+  --brand-border:  #D9D4C5;
+  --brand-soft:    #E8EAE0;
+  --brand-deep:    #2A3A2D;
+  --brand-warn:    #B8654C;
+  --letterbox:     #1A1F1B;
+  --font-display:  'Source Serif Pro', 'Georgia', serif;
+  --font-body:     'Inter', system-ui, sans-serif;
+  --font-mono:     'JetBrains Mono', 'SF Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--letterbox);
+  color: var(--brand-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.deck-outer {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--letterbox);
+  overflow: hidden;
+}
+.deck {
+  position: relative;
+  width: 1440px; height: 810px;
+  background: var(--brand-bg);
+  transform-origin: center center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.slide {
+  position: absolute; inset: 0;
+  padding: 104px 96px 96px;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  background: var(--brand-bg);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  color: var(--brand-text);
+}
+.slide.active { display: flex; opacity: 1; }
+.s-cover, .s-closing { justify-content: center; padding: 96px 120px; }
+
+.progress-line {
+  position: absolute; top: 0; left: 0;
+  height: 3px;
+  background: var(--brand-primary);
+  width: 9.09%;
+  transition: width 300ms ease;
+  z-index: 100;
+}
+.nav-counter {
+  position: absolute; bottom: 24px; left: 32px;
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  z-index: 100;
+}
+.nav-arrows {
+  position: absolute; bottom: 20px; right: 32px;
+  display: flex; gap: 10px;
+  z-index: 100;
+}
+.nav-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1.5px solid var(--brand-border);
+  background: transparent;
+  color: var(--brand-text);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 180ms ease;
+}
+.nav-btn:hover { border-color: var(--brand-primary); background: var(--brand-primary); color: white; }
+.nav-btn svg { width: 16px; height: 16px; }
+
+.brand-mark {
+  position: absolute; top: 32px; left: 48px;
+  display: flex; align-items: center; gap: 10px;
+  z-index: 5;
+  color: var(--brand-text);
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 18px;
+  letter-spacing: -0.01em;
+}
+.brand-mark .mark {
+  width: 18px; height: 18px;
+  background: var(--brand-primary);
+  border-radius: 3px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: white; font-family: var(--font-mono);
+  font-size: 11px; font-weight: 700;
+}
+.slide-meta {
+  position: absolute; top: 32px; right: 48px;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--brand-muted);
+  letter-spacing: 0.12em; font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* Inline-edit module */
+.edit-hotzone {
+  position: fixed; top: 0; left: 0;
+  width: 40px; height: 40px;
+  z-index: 10000; cursor: pointer; background: transparent;
+}
+.edit-toggle {
+  position: fixed; top: 12px; left: 12px;
+  z-index: 10001;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--brand-text);
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease, background 0.15s ease, color 0.15s ease;
+  text-transform: uppercase;
+}
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
+body.edit-mode [contenteditable="true"] {
+  outline: 1px dashed var(--brand-primary);
+  outline-offset: 2px; cursor: text;
+}
+body.edit-mode [contenteditable="true"]:focus {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Shared type */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.16em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  margin-bottom: 18px; font-weight: 500;
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--brand-text);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+h1 { font-size: 56px; }
+h2 { font-size: 34px; margin-bottom: 18px; max-width: 1100px; }
+h3 { font-size: 22px; }
+h4 { font-size: 18px; }
+p  { font-size: 14px; color: var(--brand-text); }
+.lead {
+  font-size: 18px;
+  color: var(--brand-muted);
+  line-height: 1.55;
+  max-width: 880px;
+}
+.fineprint {
+  font-size: 11px;
+  color: var(--brand-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+}
+.muted { color: var(--brand-muted); }
+.accent { color: var(--brand-accent); }
+.primary { color: var(--brand-primary); }
+.serif { font-family: var(--font-display); }
+.head { margin-bottom: 18px; }
+
+/* Cover */
+.s-cover { align-items: flex-start; }
+.cover-logos {
+  display: flex; align-items: center; gap: 24px; margin-bottom: 56px;
+}
+.cover-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.cover-logo .mark {
+  width: 24px; height: 24px;
+  background: var(--brand-primary);
+  border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: white; font-family: var(--font-mono);
+  font-size: 11px; font-weight: 700;
+}
+.cover-logo.client { color: var(--brand-muted); font-weight: 600; }
+.cover-logo.client .mark { background: var(--brand-accent); }
+.cover-divider { width: 1px; height: 24px; background: var(--brand-border); }
+.cover-title { font-size: 56px; line-height: 1.05; margin-bottom: 22px; max-width: 1080px; font-family: var(--font-display); font-weight: 700; }
+.cover-title em { font-style: italic; color: var(--brand-primary); }
+.cover-context {
+  font-size: 18px;
+  color: var(--brand-muted);
+  max-width: 800px;
+  margin-bottom: 48px;
+}
+.cover-meta {
+  display: flex; gap: 56px;
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  border-top: 1px solid var(--brand-border);
+  padding-top: 22px; width: 100%; max-width: 920px;
+}
+.cover-meta div span {
+  display: block;
+  color: var(--brand-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 0; text-transform: none;
+  margin-top: 6px; font-weight: 600;
+}
+
+/* Discovery */
+.discovery-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 48px;
+  margin-top: 8px;
+}
+.discovery-bullets { display: flex; flex-direction: column; gap: 14px; }
+.discovery-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--brand-border);
+}
+.discovery-row:last-child { border-bottom: none; }
+.discovery-row .tag {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.12em;
+  color: var(--brand-primary);
+  text-transform: uppercase;
+  padding-top: 4px;
+}
+.discovery-row .detail {
+  font-size: 14px;
+  color: var(--brand-text);
+  line-height: 1.55;
+}
+.discovery-quote {
+  background: var(--brand-surface);
+  border-left: 3px solid var(--brand-accent);
+  border-radius: 4px;
+  padding: 22px 24px;
+  align-self: start;
+}
+.discovery-quote .q {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--brand-text);
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+.discovery-quote .src {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Problem */
+.problem-wrap { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; margin-top: 12px; }
+.problem-quote {
+  background: var(--brand-surface);
+  border-left: 3px solid var(--brand-primary);
+  padding: 26px 28px;
+  border-radius: 4px;
+  margin-bottom: 18px;
+}
+.problem-quote .q {
+  font-size: 22px;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--brand-text);
+  line-height: 1.4;
+  margin-bottom: 14px;
+}
+.problem-quote .src {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.problem-context p {
+  font-size: 14px;
+  color: var(--brand-muted);
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+.problem-stats {
+  background: var(--brand-soft);
+  border-radius: 8px;
+  padding: 24px 26px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.ps-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--brand-border);
+}
+.ps-row:last-child { border-bottom: none; padding-bottom: 0; }
+.ps-num {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+.ps-label { font-size: 13px; color: var(--brand-text); text-align: right; max-width: 220px; }
+
+/* Why Today */
+.urgency-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 12px; }
+.urgency-intro {
+  font-size: 18px;
+  color: var(--brand-text);
+  line-height: 1.55;
+  margin-bottom: 22px;
+}
+.urgency-card {
+  background: var(--brand-surface);
+  border-radius: 8px;
+  padding: 22px 24px;
+  margin-bottom: 14px;
+}
+.uc-num {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 700;
+  color: var(--brand-primary); margin-bottom: 6px;
+}
+.uc-label { font-size: 13px; color: var(--brand-muted); font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+.uc-detail { font-size: 14px; color: var(--brand-text); line-height: 1.55; }
+.timeline {
+  background: var(--brand-soft);
+  border-radius: 8px;
+  padding: 22px 24px;
+}
+.timeline h4 { font-size: 18px; margin-bottom: 16px; }
+.tl-row {
+  display: grid; grid-template-columns: 96px 1fr;
+  gap: 18px; padding: 12px 0;
+  border-bottom: 1px solid var(--brand-border);
+  font-size: 14px;
+}
+.tl-row:last-child { border-bottom: none; }
+.tl-row .date { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--brand-primary); padding-top: 3px; }
+.tl-row .ev { color: var(--brand-text); }
+.tl-row .ev strong { color: var(--brand-text); font-weight: 600; }
+
+/* Solution */
+.solution-wrap { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; margin-top: 12px; }
+.solution-headline {
+  font-size: 22px;
+  color: var(--brand-text);
+  line-height: 1.4;
+  margin-bottom: 22px;
+  font-family: var(--font-display);
+  font-style: italic;
+}
+.sol-bullets { display: flex; flex-direction: column; gap: 14px; }
+.sol-bullet {
+  display: grid; grid-template-columns: 32px 1fr;
+  gap: 14px; align-items: start;
+}
+.sol-bullet .dot {
+  width: 22px; height: 22px;
+  background: var(--brand-primary);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-family: var(--font-mono);
+  font-size: 11px; font-weight: 700;
+  margin-top: 2px;
+}
+.sol-bullet .txt {
+  font-size: 14px;
+  color: var(--brand-text);
+  line-height: 1.55;
+}
+.sol-bullet .txt strong { color: var(--brand-text); font-weight: 700; }
+.sol-visual {
+  background: var(--brand-surface);
+  border-radius: 8px;
+  padding: 28px 28px;
+}
+.sol-visual h4 { font-size: 18px; margin-bottom: 18px; }
+.sv-row {
+  display: grid; grid-template-columns: 1fr 24px 1fr;
+  gap: 16px; align-items: center;
+  padding: 12px 0;
+}
+.sv-row .a, .sv-row .b {
+  background: var(--brand-bg);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+.sv-row .a { color: var(--brand-muted); }
+.sv-row .b { color: var(--brand-text); font-weight: 600; }
+.sv-row .ar { color: var(--brand-primary); text-align: center; font-family: var(--font-mono); font-size: 14px; }
+
+/* How it works */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 22px; }
+.step {
+  background: var(--brand-surface);
+  border-radius: 8px;
+  padding: 22px 22px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.step .step-num {
+  width: 28px; height: 28px;
+  background: var(--brand-primary);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-family: var(--font-mono);
+  font-size: 11px; font-weight: 700;
+}
+.step h4 { font-size: 18px; font-weight: 700; }
+.step .step-desc { font-size: 13px; color: var(--brand-muted); line-height: 1.55; }
+.step .step-outcome {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-primary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Proof */
+.proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 18px; }
+.proof-card {
+  background: var(--brand-surface);
+  border-radius: 8px;
+  padding: 24px 22px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.pc-logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--brand-text);
+}
+.pc-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: -8px;
+}
+.pc-quote {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--brand-text);
+  line-height: 1.55;
+}
+.pc-results {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 14px 0;
+  border-top: 1px solid var(--brand-border);
+  border-bottom: 1px solid var(--brand-border);
+}
+.pc-result {
+  display: flex; justify-content: space-between;
+  font-size: 13px;
+}
+.pc-result .l { color: var(--brand-muted); }
+.pc-result .v { color: var(--brand-primary); font-weight: 700; font-family: var(--font-display); }
+.pc-attr {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: auto;
+}
+
+/* ROI */
+.roi-wrap { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; margin-top: 12px; }
+.roi-inputs {
+  background: var(--brand-surface);
+  border-radius: 8px;
+  padding: 24px 26px;
+}
+.roi-inputs h4 { font-size: 18px; margin-bottom: 14px; }
+.roi-row {
+  display: grid; grid-template-columns: 1fr 100px;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--brand-border);
+  font-size: 14px;
+}
+.roi-row:last-child { border-bottom: none; }
+.roi-row .lbl { color: var(--brand-muted); }
+.roi-row .val { color: var(--brand-text); font-weight: 600; text-align: right; font-family: var(--font-display); }
+.roi-row.calc { background: var(--brand-soft); margin: 0 -14px; padding: 12px 14px; border-radius: 4px; border: none; }
+.roi-row.calc .lbl { color: var(--brand-text); font-weight: 600; }
+.roi-row.calc .val { color: var(--brand-primary); font-size: 18px; }
+.roi-result {
+  background: var(--brand-soft);
+  border-radius: 8px;
+  padding: 26px 28px;
+  display: flex; flex-direction: column; gap: 18px;
+  align-self: start;
+}
+.roi-result h4 { font-size: 18px; margin-bottom: 6px; }
+.roi-card {
+  background: var(--brand-bg);
+  border-radius: 6px;
+  padding: 16px 18px;
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.roi-card .l { font-size: 13px; color: var(--brand-muted); }
+.roi-card .v {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 700;
+  color: var(--brand-primary);
+}
+.roi-card.hero .v { font-size: 34px; }
+.roi-note {
+  font-size: 11px;
+  color: var(--brand-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+
+/* Implementation */
+.gantt {
+  background: var(--brand-surface);
+  border-radius: 8px;
+  padding: 24px 26px;
+  margin-top: 18px;
+}
+.gantt-head {
+  display: grid;
+  grid-template-columns: 220px 80px repeat(8, 1fr);
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--brand-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.gantt-head .wk { text-align: center; color: var(--brand-muted); }
+.gantt-row {
+  display: grid;
+  grid-template-columns: 220px 80px 1fr;
+  gap: 8px; align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--brand-border);
+}
+.gantt-row:last-child { border-bottom: none; }
+.gantt-row .ph-name { font-size: 14px; font-weight: 600; color: var(--brand-text); }
+.gantt-row .ph-owner { font-size: 11px; color: var(--brand-muted); font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.gantt-row .bar-track {
+  background: var(--brand-bg);
+  border-radius: 4px;
+  height: 22px;
+  position: relative;
+}
+.gantt-row .bar {
+  position: absolute;
+  top: 0; bottom: 0;
+  background: var(--brand-primary);
+  border-radius: 4px;
+  display: flex; align-items: center;
+  padding: 0 10px;
+  color: white; font-size: 11px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+.impl-note {
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--brand-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+
+/* Pricing */
+.pricing-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 12px; }
+.price-card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 10px;
+  padding: 28px 32px;
+}
+.price-card.featured {
+  background: var(--brand-soft);
+  border-color: var(--brand-primary);
+  border-width: 1.5px;
+}
+.pc-head { margin-bottom: 14px; }
+.pc-name { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--brand-text); }
+.pc-num {
+  font-family: var(--font-display);
+  font-size: 56px; font-weight: 700;
+  color: var(--brand-primary);
+  line-height: 1;
+  margin: 14px 0 6px;
+}
+.pc-per { font-size: 13px; color: var(--brand-muted); font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.pc-incl { list-style: none; padding: 18px 0 0; }
+.pc-incl li {
+  font-size: 13px;
+  color: var(--brand-text);
+  padding: 6px 0 6px 22px;
+  position: relative;
+}
+.pc-incl li:before {
+  content: "+";
+  position: absolute;
+  left: 0;
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+.pc-excl li:before { content: "-"; color: var(--brand-muted); }
+.pc-compare {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--brand-border);
+}
+.col-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; }
+.col-row .col-label { color: var(--brand-muted); }
+.col-row .col-val { color: var(--brand-primary); font-weight: 700; font-family: var(--font-display); }
+
+/* Next Steps */
+.s-closing { align-items: center; text-align: center; }
+.next-wrap { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+.next-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-primary);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.next-title {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--brand-text);
+  margin-bottom: 4px;
+}
+.next-card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-primary);
+  border-radius: 10px;
+  padding: 32px 36px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  text-align: left;
+}
+.next-card .col h4 { font-family: var(--font-mono); font-size: 11px; color: var(--brand-muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+.next-action { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--brand-text); margin-bottom: 8px; }
+.next-date { font-size: 14px; color: var(--brand-primary); font-weight: 600; }
+.next-owner { font-size: 14px; color: var(--brand-text); font-weight: 600; }
+.next-context { font-size: 14px; color: var(--brand-muted); margin-top: 4px; line-height: 1.55; }
+.next-cta {
+  margin-top: 18px;
+  display: flex; gap: 14px; justify-content: center;
+}
+.next-cta .btn {
+  padding: 14px 22px;
+  border-radius: 6px;
+  background: var(--brand-primary);
+  color: white;
+  font-size: 14px; font-weight: 600;
+  text-decoration: none;
+}
+.next-cta .btn.secondary { background: transparent; color: var(--brand-primary); border: 1px solid var(--brand-primary); }
+.next-prep {
+  margin-top: 12px;
+  padding: 16px 22px;
+  background: var(--brand-soft);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--brand-muted);
+  text-align: left;
+}
+</style>
+</head>
+<body>
+
+<div class="edit-hotzone" aria-hidden="true"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)" aria-label="Toggle edit mode">Edit</button>
+
+<div class="deck-outer">
+  <div class="deck">
+
+    <!-- ===== Slide 1, Cover ===== -->
+    <section class="slide s-cover active">
+      <div class="cover-logos">
+        <div class="cover-logo"><span class="mark">FL</span> FormulaLab</div>
+        <div class="cover-divider"></div>
+        <div class="cover-logo client"><span class="mark">CL</span> Cargolane</div>
+      </div>
+      <div class="cover-title">Cargolane, <em>spreadsheet-native</em> API control for your routing team.</div>
+      <div class="cover-context">A 30-minute working session for Jordan Mitchell, VP of Engineering, and the routing platform team. Built off our March 14 discovery and the routing roadmap your team shared on March 18.</div>
+      <div class="cover-meta">
+        <div>Prepared for<span>Cargolane, Series C logistics</span></div>
+        <div>Meeting date<span>April 4, 2026 · 14:00 PT</span></div>
+        <div>From<span>Sara Lin, FormulaLab</span></div>
+        <div>Confidentiality<span>NDA, signed March 14</span></div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 2, About You ===== -->
+    <section class="slide s-discovery">
+      <div class="brand-mark"><span class="mark">FL</span> FormulaLab</div>
+      <div class="slide-meta">02 of 11 · About Cargolane</div>
+      <div class="head">
+        <div class="eyebrow">What we have learned about your business</div>
+        <h2>A Series C routing platform serving 480 mid-market shippers, growing 38% year over year.</h2>
+      </div>
+      <div class="discovery-grid">
+        <div class="discovery-bullets">
+          <div class="discovery-row">
+            <div class="tag">Stage</div>
+            <div class="detail">Series C, $84M closed November 2025 led by Bessemer. ARR run rate $52M, 92% from mid-market shippers between $20M and $200M in annual freight spend.</div>
+          </div>
+          <div class="discovery-row">
+            <div class="tag">Routing scale</div>
+            <div class="detail">3.2 million shipments routed in 2025. Routing platform team has grown from 14 to 38 engineers in the last 14 months, hiring 6 more this quarter.</div>
+          </div>
+          <div class="discovery-row">
+            <div class="tag">Public commit</div>
+            <div class="detail">Jordan committed publicly at FreightTech 2026 to halve the average integration time for new carrier APIs, from 4 weeks today to 2 weeks by end of year.</div>
+          </div>
+          <div class="discovery-row">
+            <div class="tag">Recent move</div>
+            <div class="detail">Acquired RouteIQ (8 engineers) in January 2026, pulling the team into the carrier-integration org. The team has been doubling on API client tooling since.</div>
+          </div>
+          <div class="discovery-row">
+            <div class="tag">Open roles</div>
+            <div class="detail">3 senior backend engineers hiring this quarter on the carrier-integration team. JD calls out "experience reducing API integration cycle time" as a must-have. The team has 11 open recs total in 2026, and 7 are routing-platform focused.</div>
+          </div>
+          <div class="discovery-row">
+            <div class="tag">Tech stack</div>
+            <div class="detail">Routing service is Go on AWS Fargate, with TypeScript Lambda webhook handlers. CI on GitHub Actions, deploys gated by a 90-minute integration suite. FormulaLab's generated clients land here as a PR.</div>
+          </div>
+          <div class="discovery-row">
+            <div class="tag">Bessemer thesis</div>
+            <div class="detail">The Series C memo (shared by Jordan, March 18) names "doubling carrier coverage in 18 months" as the lead milestone. Bessemer board observer joins each quarterly review.</div>
+          </div>
+        </div>
+        <div class="discovery-quote">
+          <div class="q">"Every new carrier integration eats a month. I do not have a month per carrier and I do not have headcount to keep paying for it."</div>
+          <div class="src">Jordan Mitchell, VP Engineering · Discovery call, March 14</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 3, The Problem ===== -->
+    <section class="slide s-problem">
+      <div class="brand-mark"><span class="mark">FL</span> FormulaLab</div>
+      <div class="slide-meta">03 of 11 · The Problem</div>
+      <div class="head">
+        <div class="eyebrow">Their words, their numbers</div>
+        <h2>Each new carrier API takes one senior engineer a month, and Cargolane has 17 in the queue.</h2>
+      </div>
+      <div class="problem-wrap">
+        <div>
+          <div class="problem-quote">
+            <div class="q">"The integration itself is two weeks of real work. The other two are spent in Postman, in spreadsheets, copying request bodies between teams who never see each other's tests."</div>
+            <div class="src">Marcus Sundberg, Staff Engineer, Carrier Integrations · March 18 working session</div>
+          </div>
+          <div class="problem-context">
+            <p>The routing platform team is shipping fewer carrier integrations than committed because every new carrier requires a senior engineer to coordinate across product, ops, and finance, then translate each team's expected behavior into a working API client by hand. Postman collections drift. Spreadsheets get out of sync. The expected payload one team agreed to on Monday is broken by another team's change on Wednesday.</p>
+            <p>The cost is not the engineering hours alone. It is the deals stuck in pilot because the carrier API is not live yet, plus the routing data Cargolane cannot capture until each integration is done.</p>
+          </div>
+        </div>
+        <div class="problem-stats">
+          <div class="ps-row">
+            <div class="ps-num">17</div>
+            <div class="ps-label">Carrier integrations in queue, 9 with signed pilots waiting</div>
+          </div>
+          <div class="ps-row">
+            <div class="ps-num">4 wks</div>
+            <div class="ps-label">Average integration cycle, against a 2-week public commit</div>
+          </div>
+          <div class="ps-row">
+            <div class="ps-num">$1.4M</div>
+            <div class="ps-label">Pilot ARR stuck behind missing carrier APIs, as of March 31</div>
+          </div>
+          <div class="ps-row">
+            <div class="ps-num">6 of 8</div>
+            <div class="ps-label">Senior engineers spending 35%+ of week on integration coordination</div>
+          </div>
+          <div class="ps-row">
+            <div class="ps-num">11</div>
+            <div class="ps-label">Slack channels where carrier-API context lives, with no source of truth</div>
+          </div>
+          <div class="ps-row">
+            <div class="ps-num">$220K</div>
+            <div class="ps-label">Fully loaded cost of one senior engineer rerouted away from product work</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 4, Why Today ===== -->
+    <section class="slide s-urgency">
+      <div class="brand-mark"><span class="mark">FL</span> FormulaLab</div>
+      <div class="slide-meta">04 of 11 · Why Today</div>
+      <div class="head">
+        <div class="eyebrow">The 90-day window</div>
+        <h2>You committed to 2-week integrations by year end. The math says the decision needs to land in Q2.</h2>
+      </div>
+      <div class="urgency-wrap">
+        <div>
+          <div class="urgency-intro">If FormulaLab is live in your stack by July 1, the team gets 6 months of working time to retool. If the decision slides to Q3, you ship 11 fewer integrations this year and burn the public commit.</div>
+          <div class="urgency-card">
+            <div class="uc-num">$1.4M</div>
+            <div class="uc-label">Pilot ARR at risk if Q4 integrations slip</div>
+            <div class="uc-detail">9 signed pilots are contingent on carrier API delivery dates already on Jordan's roadmap. Each month of slippage moves ~$160K in ARR out of 2026.</div>
+          </div>
+          <div class="urgency-card">
+            <div class="uc-num">11 integrations</div>
+            <div class="uc-label">Gap between current pace and year-end commit</div>
+            <div class="uc-detail">Current pace ships 24 integrations a year. Year-end goal is 35. Without tooling change, that gap holds.</div>
+          </div>
+        </div>
+        <div class="timeline">
+          <h4>Cargolane's calendar, the next 9 months.</h4>
+          <div class="tl-row">
+            <div class="date">Apr 4</div>
+            <div class="ev"><strong>Today.</strong> This working session, decision-maker plus 3 engineers in the room.</div>
+          </div>
+          <div class="tl-row">
+            <div class="date">Apr 25</div>
+            <div class="ev"><strong>Technical proof-of-concept.</strong> One real integration shipped end-to-end on FormulaLab.</div>
+          </div>
+          <div class="tl-row">
+            <div class="date">May 12</div>
+            <div class="ev"><strong>Contract signed.</strong> Procurement window for Q2 budget allocation closes May 19.</div>
+          </div>
+          <div class="tl-row">
+            <div class="date">Jul 1</div>
+            <div class="ev"><strong>Live in production.</strong> 6 weeks of implementation, 38 engineers onboarded.</div>
+          </div>
+          <div class="tl-row">
+            <div class="date">Dec 31</div>
+            <div class="ev"><strong>11 more integrations shipped.</strong> Year-end commit hit, $1.4M pilot ARR converted.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 5, Solution ===== -->
+    <section class="slide s-solution">
+      <div class="brand-mark"><span class="mark">FL</span> FormulaLab</div>
+      <div class="slide-meta">05 of 11 · Our Solution</div>
+      <div class="head">
+        <div class="eyebrow">In plain English</div>
+        <h2>FormulaLab is the API client your routing engineers can share with the product and ops teams.</h2>
+      </div>
+      <div class="solution-wrap">
+        <div>
+          <div class="solution-headline">"We turn each carrier API integration into one spreadsheet that product, ops, and engineering all edit together, so you ship in 9 days instead of 30."</div>
+          <div class="sol-bullets">
+            <div class="sol-bullet"><div class="dot">1</div><div class="txt"><strong>Spreadsheet-native API client.</strong> Each row is a request. Each column is a header, body field, or assertion. Anyone on the team can read it.</div></div>
+            <div class="sol-bullet"><div class="dot">2</div><div class="txt"><strong>Built for routing teams.</strong> Carrier API patterns, rate-limit handling, and webhook replays ship in the box.</div></div>
+            <div class="sol-bullet"><div class="dot">3</div><div class="txt"><strong>What we do not do.</strong> We do not host your production traffic. The API client generates the integration code that runs in your stack.</div></div>
+            <div class="sol-bullet"><div class="dot">4</div><div class="txt"><strong>What is different.</strong> Postman is a developer tool. FormulaLab is a team tool. Product and ops can change a request without filing a ticket.</div></div>
+            <div class="sol-bullet"><div class="dot">5</div><div class="txt"><strong>Time to live.</strong> Median first-integration ships in 11 days from signed contract. 89% of users send their first real request inside 7 days.</div></div>
+          </div>
+        </div>
+        <div class="sol-visual">
+          <h4>The before-and-after on your stack.</h4>
+          <div class="sv-row"><div class="a">Postman collections</div><div class="ar">to</div><div class="b">FormulaLab workspace</div></div>
+          <div class="sv-row"><div class="a">Spreadsheet of expected payloads</div><div class="ar">to</div><div class="b">Spec column in the same row</div></div>
+          <div class="sv-row"><div class="a">Slack pings to clarify a field</div><div class="ar">to</div><div class="b">Comment thread in the row</div></div>
+          <div class="sv-row"><div class="a">Hand-written API client code</div><div class="ar">to</div><div class="b">Code generated from rows, in Go or TS</div></div>
+          <div class="sv-row"><div class="a">Per-carrier auth dance</div><div class="ar">to</div><div class="b">Shared credential vault, audited</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 6, How It Works ===== -->
+    <section class="slide s-howitworks">
+      <div class="brand-mark"><span class="mark">FL</span> FormulaLab</div>
+      <div class="slide-meta">06 of 11 · How It Works</div>
+      <div class="head">
+        <div class="eyebrow">Four steps, all in your existing tools</div>
+        <h2>From a fresh carrier API spec to a shipped integration in 9 working days.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h4>Import the spec.</h4>
+          <p class="step-desc">Drop a carrier's OpenAPI file, Postman collection, or PDF. FormulaLab parses it into rows, one row per endpoint, with auth and rate limits already wired.</p>
+          <div class="step-outcome">Outcome · spec loaded in 4 minutes</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h4>Edit as a team.</h4>
+          <p class="step-desc">Product fills in the business rules. Ops adds the test cases. Engineering writes the assertions. Everyone works in the same view, with row-level comments.</p>
+          <div class="step-outcome">Outcome · spec signed off, 2 days</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h4>Generate the client.</h4>
+          <p class="step-desc">One click emits a typed Go or TypeScript client that drops into your routing service. Tests come with it, generated from the same rows.</p>
+          <div class="step-outcome">Outcome · PR opened, 1 day</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h4>Ship and monitor.</h4>
+          <p class="step-desc">Webhook replay catches drift. Schema changes from the carrier fire alerts. Your team edits the row, regenerates, and ships again.</p>
+          <div class="step-outcome">Outcome · live in 6 days</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 7, Proof ===== -->
+    <section class="slide s-proof">
+      <div class="brand-mark"><span class="mark">FL</span> FormulaLab</div>
+      <div class="slide-meta">07 of 11 · Proof</div>
+      <div class="head">
+        <div class="eyebrow">Three named references, one in your exact vertical</div>
+        <h2>Logistics, fintech, and travel teams have already cut integration cycles by more than half.</h2>
+      </div>
+      <div class="proof-grid">
+        <div class="proof-card">
+          <div class="pc-logo">Freightnest</div>
+          <div class="pc-meta">Series B logistics · $32M ARR · 22 engineers</div>
+          <div class="pc-quote">"We were shipping carrier integrations in 5 weeks. FormulaLab put us at 10 days, with the same team."</div>
+          <div class="pc-results">
+            <div class="pc-result"><span class="l">Integration cycle</span><span class="v">5 wks to 10 days</span></div>
+            <div class="pc-result"><span class="l">Engineering hours per integration</span><span class="v">160 to 64</span></div>
+            <div class="pc-result"><span class="l">Carriers live, year 1</span><span class="v">9 to 28</span></div>
+          </div>
+          <div class="pc-attr">Adrian Voss · VP Engineering · Reference call available</div>
+        </div>
+        <div class="proof-card">
+          <div class="pc-logo">Paywall</div>
+          <div class="pc-meta">Series C fintech · $74M ARR · 45 engineers</div>
+          <div class="pc-quote">"The product team owns half the integration work now. That is a real shift in how we ship."</div>
+          <div class="pc-results">
+            <div class="pc-result"><span class="l">Integration cycle</span><span class="v">3 wks to 8 days</span></div>
+            <div class="pc-result"><span class="l">Payment processors live</span><span class="v">6 to 14</span></div>
+            <div class="pc-result"><span class="l">PM-led integration shipped</span><span class="v">0 to 4</span></div>
+          </div>
+          <div class="pc-attr">Hana Park · CTO · Reference call available</div>
+        </div>
+        <div class="proof-card">
+          <div class="pc-logo">Roadrunner Travel</div>
+          <div class="pc-meta">Series D travel · $112M ARR · 60 engineers</div>
+          <div class="pc-quote">"We measured a 62% reduction in time-to-first-request across 4 integration teams in the first quarter."</div>
+          <div class="pc-results">
+            <div class="pc-result"><span class="l">Time to first request</span><span class="v">down 62%</span></div>
+            <div class="pc-result"><span class="l">Hotel-API integrations</span><span class="v">11 to 41</span></div>
+            <div class="pc-result"><span class="l">Onboarding for new engineer</span><span class="v">14 days to 3</span></div>
+          </div>
+          <div class="pc-attr">Diego Marin · Director, Platform Eng · Reference call available</div>
+        </div>
+      </div>
+      <div style="margin-top: 22px; background: var(--brand-soft); border-radius: 8px; padding: 18px 22px; display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 24px; align-items: center;">
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--brand-muted); text-transform: uppercase; margin-bottom: 4px;">Why these three for Cargolane</div>
+          <div style="font-size: 14px; color: var(--brand-text); line-height: 1.5;">Freightnest is the closest match on shape, mid-market freight, similar engineering footprint, same Go service stack. Paywall validates the cross-team adoption story. Roadrunner shows what year-two scale looks like.</div>
+        </div>
+        <div style="font-size: 14px; color: var(--brand-muted); line-height: 1.55;"><strong style="color: var(--brand-primary); font-family: var(--font-display);">$218M</strong><br>Combined ARR across the three references, all live on FormulaLab.</div>
+        <div style="font-size: 14px; color: var(--brand-muted); line-height: 1.55;"><strong style="color: var(--brand-primary); font-family: var(--font-display);">11 months</strong><br>Average tenure on FormulaLab. Zero churn across the cohort.</div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 8, ROI ===== -->
+    <section class="slide s-roi">
+      <div class="brand-mark"><span class="mark">FL</span> FormulaLab</div>
+      <div class="slide-meta">08 of 11 · ROI</div>
+      <div class="head">
+        <div class="eyebrow">The math, with conservative inputs</div>
+        <h2>$1.04M of engineering recovered in year one, against a $128K license. Payback in 6 weeks.</h2>
+      </div>
+      <div class="roi-wrap">
+        <div class="roi-inputs">
+          <h4>Inputs from your March 18 working session.</h4>
+          <div class="roi-row"><div class="lbl">Senior engineer fully loaded cost</div><div class="val">$220K / yr</div></div>
+          <div class="roi-row"><div class="lbl">Engineers touching carrier integrations</div><div class="val">8</div></div>
+          <div class="roi-row"><div class="lbl">Hours per integration today</div><div class="val">160</div></div>
+          <div class="roi-row"><div class="lbl">Hours per integration on FormulaLab</div><div class="val">64</div></div>
+          <div class="roi-row"><div class="lbl">Hours saved per integration</div><div class="val">96</div></div>
+          <div class="roi-row"><div class="lbl">Integrations planned, year 1</div><div class="val">35</div></div>
+          <div class="roi-row calc"><div class="lbl">Engineering hours recovered</div><div class="val">3,360</div></div>
+          <div class="roi-row calc"><div class="lbl">Engineering value recovered (at $310 / hr)</div><div class="val">$1.04M</div></div>
+        </div>
+        <div class="roi-result">
+          <h4>Year 1 outcome, conservative.</h4>
+          <div class="roi-card hero"><div class="l">Net value, year 1</div><div class="v">$912K</div></div>
+          <div class="roi-card"><div class="l">FormulaLab license</div><div class="v">$128K</div></div>
+          <div class="roi-card"><div class="l">Payback period</div><div class="v">6 weeks</div></div>
+          <div class="roi-card"><div class="l">Pilot ARR unlocked</div><div class="v">$1.4M</div></div>
+          <div class="roi-note">Calculation assumes 35 integrations against your Q1 plan. Excludes the pilot ARR unlocked, which is upside above and beyond engineering recovery. The Freightnest reference saw 4.2x our modeled engineering savings in year one.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 9, Implementation ===== -->
+    <section class="slide s-impl">
+      <div class="brand-mark"><span class="mark">FL</span> FormulaLab</div>
+      <div class="slide-meta">09 of 11 · Implementation</div>
+      <div class="head">
+        <div class="eyebrow">8-week path from contract to live</div>
+        <h2>One implementation manager from FormulaLab, 3 hours a week from your team lead.</h2>
+      </div>
+      <div class="gantt">
+        <div class="gantt-head">
+          <div></div>
+          <div></div>
+          <div class="wk">W1</div><div class="wk">W2</div><div class="wk">W3</div><div class="wk">W4</div>
+          <div class="wk">W5</div><div class="wk">W6</div><div class="wk">W7</div><div class="wk">W8</div>
+        </div>
+        <div class="gantt-row">
+          <div><div class="ph-name">Kickoff and access</div><div class="ph-owner">Sara Lin · FormulaLab</div></div>
+          <div></div>
+          <div class="bar-track"><div class="bar" style="left: 0%; width: 12.5%;">W1</div></div>
+        </div>
+        <div class="gantt-row">
+          <div><div class="ph-name">Carrier 1 onboard, supervised</div><div class="ph-owner">Marcus Sundberg · Cargolane</div></div>
+          <div></div>
+          <div class="bar-track"><div class="bar" style="left: 12.5%; width: 25%;">W2 to W3</div></div>
+        </div>
+        <div class="gantt-row">
+          <div><div class="ph-name">Team rollout, 38 engineers</div><div class="ph-owner">Joint, FormulaLab IM + Cargolane lead</div></div>
+          <div></div>
+          <div class="bar-track"><div class="bar" style="left: 25%; width: 25%;">W3 to W4</div></div>
+        </div>
+        <div class="gantt-row">
+          <div><div class="ph-name">3 more carriers, self-served</div><div class="ph-owner">Cargolane integrations team</div></div>
+          <div></div>
+          <div class="bar-track"><div class="bar" style="left: 37.5%; width: 37.5%;">W4 to W7</div></div>
+        </div>
+        <div class="gantt-row">
+          <div><div class="ph-name">Production go-live, monitoring</div><div class="ph-owner">FormulaLab CSE + Cargolane SRE</div></div>
+          <div></div>
+          <div class="bar-track"><div class="bar" style="left: 75%; width: 25%;">W7 to W8</div></div>
+        </div>
+      </div>
+      <div class="impl-note">Cargolane commit · 3 hours a week from Marcus during weeks 1 to 3, then 1 hour a week through week 8. FormulaLab covers all data migration, all training, all carrier API onboarding for the first 4 integrations. Your team does not modify production until week 7.</div>
+      <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
+        <div style="background: var(--brand-soft); border-radius: 6px; padding: 14px 18px;">
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">Risk mitigated</div>
+          <div style="font-size: 13px; color: var(--brand-text); line-height: 1.5;">Carrier API drift during week 3 to 5. FormulaLab schema-diff alerts catch breakage before it reaches your production pipeline.</div>
+        </div>
+        <div style="background: var(--brand-soft); border-radius: 6px; padding: 14px 18px;">
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">Risk mitigated</div>
+          <div style="font-size: 13px; color: var(--brand-text); line-height: 1.5;">Engineer fatigue during rollout. We deliver async training (2 hrs total) plus office-hours on Tuesdays for 6 weeks. No mandatory all-team workshops.</div>
+        </div>
+        <div style="background: var(--brand-soft); border-radius: 6px; padding: 14px 18px;">
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">Risk mitigated</div>
+          <div style="font-size: 13px; color: var(--brand-text); line-height: 1.5;">Security and audit holdup. SOC 2 Type II report, pen test results, and SIG questionnaire ready for your InfoSec team day one.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 10, Pricing ===== -->
+    <section class="slide s-pricing">
+      <div class="brand-mark"><span class="mark">FL</span> FormulaLab</div>
+      <div class="slide-meta">10 of 11 · Pricing</div>
+      <div class="head">
+        <div class="eyebrow">Two options, both transparent</div>
+        <h2>$128K annual for the Cargolane footprint. Implementation included. No per-seat penalty.</h2>
+      </div>
+      <div class="pricing-wrap">
+        <div class="price-card featured">
+          <div class="pc-head">
+            <div class="pc-name">Team, recommended for Cargolane</div>
+            <div class="pc-num">$128K</div>
+            <div class="pc-per">Annual, 1-year term · billed up front</div>
+          </div>
+          <ul class="pc-incl">
+            <li>Unlimited seats for the 38-person platform org</li>
+            <li>Up to 50 carrier integrations live, year one</li>
+            <li>Dedicated implementation manager, 8 weeks</li>
+            <li>Quarterly business review with FormulaLab CEO</li>
+            <li>4-hour support response SLA, US business hours</li>
+            <li>SOC 2 Type II, audit log export to your SIEM</li>
+          </ul>
+          <ul class="pc-incl pc-excl">
+            <li>Custom carrier connectors beyond the catalog, scoped separately</li>
+            <li>24-hour support, available on the Enterprise tier</li>
+          </ul>
+          <div class="pc-compare">
+            <div class="col-row"><div class="col-label">FormulaLab annual cost</div><div class="col-val">$128K</div></div>
+            <div class="col-row"><div class="col-label">Engineering value recovered, year 1</div><div class="col-val">$1.04M</div></div>
+            <div class="col-row"><div class="col-label">Payback period</div><div class="col-val">6 weeks</div></div>
+          </div>
+        </div>
+        <div class="price-card">
+          <div class="pc-head">
+            <div class="pc-name">Enterprise, optional</div>
+            <div class="pc-num">$210K</div>
+            <div class="pc-per">Annual, 2-year term</div>
+          </div>
+          <ul class="pc-incl">
+            <li>Unlimited carrier integrations</li>
+            <li>24-hour support, follow-the-sun</li>
+            <li>Named CSM, monthly office hours</li>
+            <li>Custom connector SLA, 2-week turnaround</li>
+            <li>Dedicated single-tenant environment, EU or US</li>
+            <li>Annual on-site workshop with FormulaLab engineering</li>
+          </ul>
+          <div class="pc-compare">
+            <div class="col-row"><div class="col-label">When this fits</div><div class="col-val">100+ carriers</div></div>
+            <div class="col-row"><div class="col-label">When to skip</div><div class="col-val">Year 1 today</div></div>
+            <div class="col-row"><div class="col-label">Discount on 3-year</div><div class="col-val">12%</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 11, Next Steps ===== -->
+    <section class="slide s-closing">
+      <div class="brand-mark"><span class="mark">FL</span> FormulaLab</div>
+      <div class="slide-meta">11 of 11 · Next Steps</div>
+      <div class="next-wrap">
+        <div class="next-eyebrow">A specific commitment for the room</div>
+        <h2 class="next-title">Sara will send a calendar invite for Thursday, April 25 at 2:00pm PT.</h2>
+        <div class="next-card">
+          <div class="col">
+            <h4>Action</h4>
+            <div class="next-action">Technical proof-of-concept</div>
+            <div class="next-context">90 minutes. One real Cargolane carrier integration shipped end-to-end on FormulaLab. We will pick the carrier together by April 11.</div>
+          </div>
+          <div class="col">
+            <h4>Who and when</h4>
+            <div class="next-date">Thursday, April 25 · 14:00 PT</div>
+            <div class="next-owner">Sara Lin · CRO, FormulaLab</div>
+            <div class="next-context">Marcus Sundberg from Cargolane plus 2 routing engineers. Sara owns the invite, scheduled by April 5.</div>
+          </div>
+        </div>
+        <div class="next-cta">
+          <a class="btn" href="mailto:sara@formulalab.dev">Confirm by EOD Wednesday April 9</a>
+          <a class="btn secondary" href="https://cal.com/formulalab/sara">Open calendar link</a>
+        </div>
+        <div class="next-prep">
+          <strong>What FormulaLab will prepare before the POC:</strong> a draft implementation timeline by April 18, plus the carrier API spec parsed into rows so the team can review before the call. <strong>What we need from Cargolane:</strong> one signed NDA addendum covering the carrier-API spec, plus one routing engineer freed for the 90-minute session.
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; text-align: left;">
+          <div style="background: var(--brand-bg); border: 1px solid var(--brand-border); border-radius: 6px; padding: 12px 16px;">
+            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px;">Reference call</div>
+            <div style="font-size: 13px; color: var(--brand-text);">Adrian Voss at Freightnest. Sara can set up a 30-min call this week.</div>
+          </div>
+          <div style="background: var(--brand-bg); border: 1px solid var(--brand-border); border-radius: 6px; padding: 12px 16px;">
+            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px;">Security packet</div>
+            <div style="font-size: 13px; color: var(--brand-text);">SOC 2 Type II, pen test, SIG questionnaire ready on request.</div>
+          </div>
+          <div style="background: var(--brand-bg); border: 1px solid var(--brand-border); border-radius: 6px; padding: 12px 16px;">
+            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px;">Pricing letter</div>
+            <div style="font-size: 13px; color: var(--brand-text);">Draft order form for the Team tier, drafted post-POC, valid 30 days.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="progress-line"></div>
+    <div class="nav-counter"><span class="cur">01</span> / <span class="total">11</span></div>
+    <div class="nav-arrows">
+      <button class="nav-btn prev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="nav-btn next" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const deck = document.querySelector('.deck');
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const progress = document.querySelector('.progress-line');
+  const counter = document.querySelector('.nav-counter .cur');
+  const totalEl = document.querySelector('.nav-counter .total');
+  const prevBtn = document.querySelector('.nav-btn.prev');
+  const nextBtn = document.querySelector('.nav-btn.next');
+
+  totalEl.textContent = String(total).padStart(2, '0');
+
+  function setScale() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const scale = Math.min(w / 1440, h / 810);
+    deck.style.transform = 'scale(' + scale + ')';
+  }
+  setScale();
+  window.addEventListener('resize', setScale);
+  window.addEventListener('orientationchange', setScale);
+
+  function go(to) {
+    if (to < 0 || to >= total) return;
+    slides[current].classList.remove('active');
+    current = to;
+    slides[current].classList.add('active');
+    progress.style.width = (((current + 1) / total) * 100) + '%';
+    counter.textContent = String(current + 1).padStart(2, '0');
+  }
+  const next = () => go(current + 1);
+  const prev = () => go(current - 1);
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', (e) => {
+    const editingText = e.target && e.target.getAttribute &&
+                        e.target.getAttribute('contenteditable') === 'true';
+    if (editingText) return;
+    if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', (e) => { tx = e.changedTouches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 60) dx < 0 ? next() : prev();
+  }, { passive: true });
+})();
+</script>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'deck-edits:' + location.pathname;
+  const SAVE_DEBOUNCE_MS = 500;
+  const HOVER_GRACE_MS = 400;
+
+  const editor = { isActive: false, saveTimer: null, hideTimer: null };
+
+  const EDITABLE_SELECTORS = [
+    '.slide h1', '.slide h2', '.slide h3', '.slide h4',
+    '.slide p', '.slide li', '.slide blockquote',
+    '.slide .eyebrow', '.slide .lead',
+    '.slide .cover-title', '.slide .cover-context',
+    '.slide .discovery-row .detail', '.slide .discovery-quote .q', '.slide .discovery-quote .src',
+    '.slide .problem-quote .q', '.slide .problem-quote .src', '.slide .problem-context p',
+    '.slide .ps-num', '.slide .ps-label',
+    '.slide .urgency-intro', '.slide .urgency-card .uc-num', '.slide .urgency-card .uc-detail',
+    '.slide .solution-headline', '.slide .sol-bullet .txt',
+    '.slide .step h4', '.slide .step .step-desc', '.slide .step .step-outcome',
+    '.slide .pc-logo', '.slide .pc-meta', '.slide .pc-quote', '.slide .pc-attr',
+    '.slide .pc-result .v', '.slide .pc-result .l',
+    '.slide .roi-row .val', '.slide .roi-card .v', '.slide .roi-note',
+    '.slide .gantt-row .ph-name', '.slide .gantt-row .ph-owner', '.slide .impl-note',
+    '.slide .pc-num', '.slide .pc-per', '.slide .pc-incl li',
+    '.slide .col-val', '.slide .col-label',
+    '.slide .next-title', '.slide .next-action', '.slide .next-date', '.slide .next-owner', '.slide .next-context',
+    '.slide .next-prep',
+    '.brand-mark', '.slide-meta'
+  ];
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(saved, 'text/html');
+      const restoredDeck = doc.querySelector('.deck');
+      const liveDeck = document.querySelector('.deck');
+      if (restoredDeck && liveDeck) liveDeck.innerHTML = restoredDeck.innerHTML;
+    }
+  } catch (e) {
+    console.warn('Inline-edit restore failed:', e);
+  }
+
+  const hotzone = document.querySelector('.edit-hotzone');
+  const toggle = document.getElementById('editToggle');
+
+  function showToggle() { clearTimeout(editor.hideTimer); toggle.classList.add('show'); }
+  function scheduleHideToggle() {
+    clearTimeout(editor.hideTimer);
+    editor.hideTimer = setTimeout(() => {
+      if (!editor.isActive) toggle.classList.remove('show');
+    }, HOVER_GRACE_MS);
+  }
+
+  hotzone.addEventListener('mouseenter', showToggle);
+  hotzone.addEventListener('mouseleave', scheduleHideToggle);
+  toggle.addEventListener('mouseenter', showToggle);
+  toggle.addEventListener('mouseleave', scheduleHideToggle);
+
+  hotzone.addEventListener('click', () => toggleEditMode());
+  toggle.addEventListener('click', () => toggleEditMode());
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'e' && e.key !== 'E') return;
+    const inEditable = e.target && e.target.getAttribute &&
+                       e.target.getAttribute('contenteditable') === 'true';
+    if (inEditable) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    e.preventDefault();
+    toggleEditMode();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      downloadHtml();
+    }
+  });
+
+  function toggleEditMode() {
+    editor.isActive = !editor.isActive;
+    document.body.classList.toggle('edit-mode', editor.isActive);
+    toggle.classList.toggle('active', editor.isActive);
+    toggle.classList.add('show');
+
+    const targets = document.querySelectorAll(EDITABLE_SELECTORS.join(','));
+    targets.forEach(el => {
+      if (editor.isActive) {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'true');
+      } else {
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('spellcheck');
+      }
+    });
+
+    if (!editor.isActive) scheduleHideToggle();
+  }
+
+  document.addEventListener('input', (e) => {
+    if (!e.target || !e.target.getAttribute) return;
+    if (e.target.getAttribute('contenteditable') !== 'true') return;
+    clearTimeout(editor.saveTimer);
+    editor.saveTimer = setTimeout(() => {
+      try {
+        const deck = document.querySelector('.deck');
+        const wrapper = document.createElement('div');
+        const clonedDeck = deck.cloneNode(true);
+        wrapper.appendChild(clonedDeck);
+        const html = '<!doctype html><html><body>' + wrapper.innerHTML + '</body></html>';
+        localStorage.setItem(STORAGE_KEY, html);
+      } catch (err) {
+        console.warn('Inline-edit autosave failed:', err);
+      }
+    }, SAVE_DEBOUNCE_MS);
+  });
+
+  function downloadHtml() {
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+    clone.querySelectorAll('[spellcheck]').forEach(el => el.removeAttribute('spellcheck'));
+    const hotzoneEl = clone.querySelector('.edit-hotzone');
+    const toggleEl = clone.querySelector('.edit-toggle');
+    if (hotzoneEl) hotzoneEl.remove();
+    if (toggleEl) toggleEl.remove();
+    clone.querySelector('body').classList.remove('edit-mode');
+
+    const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const title = (document.title || 'deck').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = title + '.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+})();
+</script>
+</body>
+</html>

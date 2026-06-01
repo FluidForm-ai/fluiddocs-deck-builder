@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lattice, Pitch Memo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* === BRAND TOKENS · edit these CSS custom properties to rebrand the deck === */
+:root {
+  --ink: #000000;
+  --paper: #FFFFFF;
+  --surface: #FFFFFF;
+  --warm-1: #57534E;
+  --warm-2: #A8A29E;
+  --warm-3: #E7E5E4;
+  --warm-4: #F5F4F2;
+  --accent: #B91C1C;
+  --rule: #D6D3D1;
+  --letterbox: #1A1A1A;
+  --serif: 'Fraunces', 'Tiempos', Georgia, serif;
+  --sans: 'Inter', 'GT America', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--letterbox);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-feature-settings: 'ss01', 'ss02';
+  -webkit-font-smoothing: antialiased;
+}
+
+.deck-outer {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--letterbox);
+  overflow: hidden;
+}
+
+.deck {
+  position: relative;
+  width: 1440px;
+  height: 810px;
+  background: var(--paper);
+  transform-origin: center center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  padding: 104px 112px 88px;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  background: var(--paper);
+  opacity: 0;
+  transition: opacity 320ms ease;
+}
+.slide.active { display: flex; opacity: 1; }
+
+.s-cover { justify-content: center; padding: 96px 120px; align-items: center; text-align: center; }
+
+/* ===== Floating nav (inside .deck so it scales) ===== */
+.progress-line {
+  position: absolute; top: 0; left: 0;
+  height: 2px;
+  background: var(--ink);
+  width: 10%;
+  transition: width 320ms ease;
+  z-index: 100;
+}
+.nav-counter {
+  position: absolute; bottom: 24px; left: 36px;
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.14em;
+  color: var(--warm-1);
+  font-weight: 500;
+  z-index: 100;
+}
+.nav-arrows {
+  position: absolute; bottom: 20px; right: 36px;
+  display: flex; gap: 10px;
+  z-index: 100;
+}
+.nav-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--warm-2);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 160ms ease;
+}
+.nav-btn:hover { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+.nav-btn svg { width: 14px; height: 14px; }
+
+/* ===== Brand-mark (top-left on content slides) ===== */
+.brand-mark {
+  position: absolute; top: 36px; left: 48px;
+  display: flex; align-items: center; gap: 10px;
+  z-index: 5;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-weight: 500; font-size: 19px;
+  letter-spacing: -0.01em;
+}
+.brand-mark .dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.slide-meta {
+  position: absolute; top: 40px; right: 48px;
+  z-index: 5;
+  font-family: var(--mono);
+  font-size: 10.5px; color: var(--warm-1);
+  letter-spacing: 0.16em; font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* ===== Typographic scale (locked) ===== */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--warm-1);
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+.eyebrow .accent { color: var(--accent); }
+
+h1.cover-mark {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 132px;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+h2.slide-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 60px;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  max-width: 1000px;
+}
+
+h3.section-h {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.lead {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--warm-1);
+  max-width: 940px;
+  margin-top: 28px;
+}
+
+.prose {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--warm-1);
+  max-width: 720px;
+}
+.prose b, .prose strong { color: var(--ink); font-weight: 600; }
+
+.label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--warm-1);
+  font-weight: 500;
+}
+
+.big-number {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 128px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+.med-number {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 72px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.rule {
+  height: 1px;
+  background: var(--rule);
+  width: 100%;
+}
+
+/* ===== Cover ===== */
+.cover-wrap {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 36px;
+}
+.cover-eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--warm-1);
+  font-weight: 500;
+}
+.cover-tagline {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--warm-1);
+  letter-spacing: -0.005em;
+  max-width: 760px;
+  text-align: center;
+  line-height: 1.4;
+}
+.cover-rule {
+  width: 56px; height: 1px; background: var(--ink);
+}
+.cover-meta {
+  display: flex; gap: 56px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--warm-1);
+  font-weight: 500;
+  margin-top: 8px;
+}
+.cover-meta b { color: var(--ink); font-weight: 600; display: block; margin-top: 6px; font-family: var(--serif); font-style: normal; letter-spacing: -0.005em; font-size: 14px; text-transform: none; }
+
+/* ===== Problem (3-card memo) ===== */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 56px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.problem-card {
+  padding: 36px 32px 36px 0;
+  border-right: 1px solid var(--rule);
+}
+.problem-card:last-child { border-right: 0; padding-right: 0; }
+.problem-card:not(:first-child) { padding-left: 32px; }
+.problem-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.problem-h {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.problem-body {
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--warm-1);
+}
+
+/* ===== Solution ===== */
+.solution-wrap {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 80px;
+  margin-top: 44px;
+  align-items: start;
+}
+.sol-three {
+  margin-top: 8px;
+  display: flex; flex-direction: column;
+  gap: 22px;
+}
+.sol-row {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--rule);
+}
+.sol-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.sol-icon {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--ink);
+}
+.sol-icon svg { width: 22px; height: 22px; }
+.sol-h {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.sol-p {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--warm-1);
+}
+
+/* ===== Why Now (single curve) ===== */
+.whynow-stage {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1.05fr 1.1fr;
+  gap: 64px;
+  align-items: center;
+}
+.curve-card {
+  border: 1px solid var(--rule);
+  padding: 28px 32px 24px;
+  background: var(--paper);
+}
+.curve-cap {
+  display: flex; justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 18px;
+}
+.curve-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--warm-1);
+  font-weight: 600;
+}
+.curve-src {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--warm-2);
+  letter-spacing: 0.1em;
+}
+.curve-svg { width: 100%; height: 240px; display: block; }
+.curve-x {
+  display: flex; justify-content: space-between;
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--warm-2);
+  letter-spacing: 0.1em;
+}
+
+.whynow-shifts {
+  display: flex; flex-direction: column;
+  gap: 22px;
+}
+.shift {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 18px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.shift:last-child { border-bottom: 0; padding-bottom: 0; }
+.shift-n {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding-top: 4px;
+}
+.shift-h {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.shift-p {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--warm-1);
+}
+
+/* ===== Market (single big number, memo) ===== */
+.market-stage {
+  margin-top: 44px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.market-bn {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 220px;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+}
+.market-cap {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--warm-1);
+  margin-top: 14px;
+  max-width: 480px;
+  line-height: 1.4;
+}
+.market-src {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--warm-2);
+  letter-spacing: 0.12em;
+  margin-top: 18px;
+  text-transform: uppercase;
+}
+.market-rows {
+  display: flex; flex-direction: column;
+  gap: 0;
+}
+.market-row {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 28px;
+  align-items: baseline;
+}
+.market-row:first-child { border-top: 1px solid var(--rule); }
+.market-k {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.market-v {
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--warm-1);
+}
+.market-v b { color: var(--ink); font-weight: 600; }
+
+/* ===== Competition (narrative card stack) ===== */
+.comp-stack {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+.comp-card {
+  border: 1px solid var(--rule);
+  padding: 24px 22px 22px;
+  display: flex; flex-direction: column;
+  min-height: 360px;
+}
+.comp-card.us {
+  border-color: var(--ink);
+  border-width: 1.5px;
+  background: var(--warm-4);
+}
+.comp-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--warm-2);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.comp-card.us .comp-tag { color: var(--accent); }
+.comp-name {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.comp-cat {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--warm-1);
+  margin-bottom: 14px;
+  font-style: italic;
+}
+.comp-fail {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--warm-1);
+  margin-top: 8px;
+  flex: 1;
+}
+.comp-card.us .comp-fail { color: var(--ink); }
+
+/* ===== Product ===== */
+.product-stage {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 60px;
+  align-items: stretch;
+}
+.product-narr {
+  display: flex; flex-direction: column;
+  gap: 18px;
+}
+.product-bullet {
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--warm-1);
+  padding-left: 22px;
+  position: relative;
+}
+.product-bullet::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 9px;
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.product-bullet b { color: var(--ink); font-weight: 600; }
+
+/* Product mockup (procurement memo view) */
+.product-mock {
+  background: var(--warm-4);
+  border: 1px solid var(--rule);
+  padding: 22px;
+  display: flex; flex-direction: column;
+  gap: 16px;
+}
+.mock-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.mock-title {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.mock-tag {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 4px 8px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.mock-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.mock-tile {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  padding: 14px 14px 12px;
+}
+.mock-tile .lbl {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--warm-2);
+  margin-bottom: 6px;
+}
+.mock-tile .val {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.mock-tile .delta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  margin-top: 2px;
+}
+.mock-table {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+}
+.mock-row {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr 0.7fr 0.7fr;
+  gap: 12px;
+  padding: 10px 14px;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--warm-1);
+  align-items: center;
+  border-bottom: 1px solid var(--rule);
+}
+.mock-row:last-child { border-bottom: 0; }
+.mock-row.head {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--warm-2);
+  font-weight: 600;
+  background: var(--warm-4);
+}
+.mock-row .vendor { color: var(--ink); font-weight: 500; font-family: var(--serif); font-size: 13px; }
+.mock-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  border: 1px solid var(--rule);
+  font-weight: 600;
+}
+.mock-pill.flag { color: var(--accent); border-color: var(--accent); }
+.mock-pill.ok { color: var(--warm-1); }
+
+/* ===== Business model ===== */
+.bm-stage {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 28px;
+}
+.bm-card {
+  border-top: 2px solid var(--ink);
+  padding-top: 22px;
+}
+.bm-eyebrow {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--warm-1);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.bm-h {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.bm-p {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--warm-1);
+  margin-bottom: 18px;
+}
+.bm-num {
+  font-family: var(--serif);
+  font-size: 56px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1;
+}
+.bm-sub {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--warm-1);
+  letter-spacing: 0.12em;
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+.bm-foot {
+  margin-top: 44px;
+  padding: 22px 28px;
+  background: var(--ink);
+  color: var(--paper);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.bm-foot .k {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--warm-2);
+  margin-bottom: 6px;
+}
+.bm-foot .v {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--paper);
+}
+
+/* ===== Team ===== */
+.team-stage {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+}
+.founder {
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--rule);
+}
+.founder:last-child { border-bottom: 0; }
+.founder-name {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.founder-role {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.founder-bio {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--warm-1);
+}
+.founder-bio b { color: var(--ink); font-weight: 600; }
+.advisors-row {
+  margin-top: 32px;
+  padding: 22px 24px;
+  background: var(--warm-4);
+  border: 1px solid var(--rule);
+}
+.advisors-row .label { margin-bottom: 14px; display: block; }
+.advisor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.adv {
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--warm-1);
+}
+.adv b { color: var(--ink); font-weight: 600; font-family: var(--serif); font-size: 14.5px; display: block; margin-bottom: 2px; }
+
+/* ===== Financials / Ask ===== */
+.fin-stage {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 64px;
+}
+.fin-headline {
+  font-family: var(--serif);
+  font-size: 96px;
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+.fin-sub {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--warm-1);
+  margin-top: 16px;
+  max-width: 480px;
+  line-height: 1.4;
+}
+.fin-runway {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  margin-top: 22px;
+}
+.fin-use {
+  display: flex; flex-direction: column;
+}
+.fin-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px;
+  gap: 18px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: center;
+}
+.fin-row:first-child { border-top: 1px solid var(--rule); }
+.fin-row .pct {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  font-weight: 600;
+}
+.fin-row .desc {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.fin-row .desc small {
+  display: block;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--warm-1);
+  font-weight: 400;
+  margin-top: 3px;
+  font-style: normal;
+}
+.fin-row .amt {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--warm-1);
+  text-align: right;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+.fin-traction {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--rule);
+}
+.fin-t .lbl {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--warm-1);
+  margin-bottom: 6px;
+}
+.fin-t .val {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.fin-contact {
+  margin-top: 26px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--warm-1);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.fin-contact b { color: var(--ink); font-weight: 600; }
+
+/* =========================================
+   INLINE-EDIT MODULE
+   ========================================= */
+.edit-hotzone {
+  position: fixed;
+  top: 0; left: 0;
+  width: 40px; height: 40px;
+  z-index: 10000;
+  cursor: pointer;
+  background: transparent;
+}
+.edit-toggle {
+  position: fixed;
+  top: 12px; left: 12px;
+  z-index: 10001;
+  padding: 6px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--warm-2);
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, background 0.15s ease, color 0.15s ease;
+}
+.edit-toggle.show,
+.edit-toggle.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.edit-toggle.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+body.edit-mode [contenteditable="true"] {
+  outline: 1px dashed var(--accent);
+  outline-offset: 2px;
+  cursor: text;
+}
+body.edit-mode [contenteditable="true"]:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+
+<div class="edit-hotzone" aria-hidden="true"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)" aria-label="Toggle edit mode">Edit</button>
+
+<div class="deck-outer">
+  <div class="deck">
+
+    <!-- =========================================================
+         SLIDE 1 · COVER (Company purpose / wordmark)
+         ========================================================= -->
+    <section class="slide s-cover active">
+      <div class="cover-wrap">
+        <div class="cover-eyebrow">Investment Memo · Series A · Confidential</div>
+        <h1 class="cover-mark">Lattice.</h1>
+        <div class="cover-rule"></div>
+        <p class="cover-tagline">A procurement intelligence platform that finds the dollars Finance leaves on the table, every quarter, in every contract. Built by the people who used to write the consulting checks, sold to the CFOs who used to sign them.</p>
+        <div class="cover-meta">
+          <div>Prepared for<b>Sequoia Capital</b></div>
+          <div>Date<b>October 2025</b></div>
+          <div>Stage<b>Series A · $28M</b></div>
+          <div>Contact<b>founders@lattice.co</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SLIDE 2 · PROBLEM
+         ========================================================= -->
+    <section class="slide s-problem">
+      <div class="brand-mark"><span class="dot"></span><span>Lattice.</span></div>
+      <div class="slide-meta">02 · Problem</div>
+
+      <div class="eyebrow">The problem we set out to solve</div>
+      <h2 class="slide-title">CFOs sign 4,000 contracts a year. They read about 40.</h2>
+
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-num">01</div>
+          <div class="problem-h">Spend is invisible at the line item.</div>
+          <div class="problem-body">Procurement systems store contracts as PDFs. Once signed, no one ever reads them again. Auto-renewals trigger silently, price walks compound year over year, and the only person who could spot it left the company four roles ago.</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-num">02</div>
+          <div class="problem-h">Consultants are the workaround.</div>
+          <div class="problem-body">Enterprises pay McKinsey, Bain, and the Big Four 30 to 50 basis points of spend, once every three years, to manually re-read what they already own. The deck lands, the partners leave, and the next renewal cycle starts over from zero institutional memory.</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-num">03</div>
+          <div class="problem-h">The leakage is enormous.</div>
+          <div class="problem-body">Gartner estimates 9 to 12 percent of enterprise spend is lost to contract drift, duplicate vendors, and unused entitlements. Nobody owns the recovery, nobody is measured on it, and the dollars sit in plain sight on every CFO's balance sheet.</div>
+        </div>
+      </div>
+
+      <p class="prose" style="margin-top: 48px;">
+        The status quo is a quarterly fire drill. Finance teams build spend cubes in Excel, procurement teams chase renewals in Outlook, and legal stores the source of truth in a folder no one searches. The result is a category of preventable loss the size of a midsize public company, sitting on every balance sheet. Every CFO we have spoken to, 142 of them across the last two years, has the same instinct: there is real money in those PDFs, and the cost of finding it has always been higher than the cost of leaving it there. That equation just flipped, and the buyer knows it.
+      </p>
+    </section>
+
+    <!-- =========================================================
+         SLIDE 3 · SOLUTION
+         ========================================================= -->
+    <section class="slide s-solution">
+      <div class="brand-mark"><span class="dot"></span><span>Lattice.</span></div>
+      <div class="slide-meta">03 · Solution</div>
+
+      <div class="eyebrow">What Lattice does</div>
+      <h2 class="slide-title">A single intelligence layer that reads every contract you sign, forever.</h2>
+
+      <div class="solution-wrap">
+        <div>
+          <p class="prose">
+            Lattice ingests every contract, invoice, and PO from your existing systems (Coupa, Ariba, Workday, Netsuite, plus the email folder where the rest hides) and produces one continuously updated map of every dollar your company has committed to spend. The ingestion is read-only, sits behind the customer's existing IAM, and produces an audit log that can be handed to internal audit on day one.
+          </p>
+          <p class="prose" style="margin-top: 16px;">
+            Finance leaders ask one question in plain language ("where are we paying twice for the same data feed?") and get a defensible answer with the source contract clause attached. No engagement letter. No 90-day diagnostic. No spreadsheet. The first answer typically arrives 11 business days after kickoff, the first recovery is booked inside 60 days, and the customer's procurement and finance teams own the workflow from week three onward.
+          </p>
+        </div>
+
+        <div class="sol-three">
+          <div class="sol-row">
+            <div class="sol-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+            </div>
+            <div>
+              <div class="sol-h">Ingest everything you sign</div>
+              <div class="sol-p">Native connectors to the 14 procurement, ERP, and CLM systems that hold 96 percent of Fortune 1000 spend.</div>
+            </div>
+          </div>
+          <div class="sol-row">
+            <div class="sol-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </div>
+            <div>
+              <div class="sol-h">Ask in plain language</div>
+              <div class="sol-p">Trained on a corpus of 4.2 million enterprise contracts. Every answer cites the source clause, the system of record, and the dollar exposure.</div>
+            </div>
+          </div>
+          <div class="sol-row">
+            <div class="sol-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4 4L21 6"/></svg>
+            </div>
+            <div>
+              <div class="sol-h">Recover real dollars</div>
+              <div class="sol-p">Average recovery in the first 90 days is 4.1 percent of addressable spend. Customers pay us 18 percent of what we recover, capped.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SLIDE 4 · WHY NOW
+         ========================================================= -->
+    <section class="slide s-whynow">
+      <div class="brand-mark"><span class="dot"></span><span>Lattice.</span></div>
+      <div class="slide-meta">04 · Why now</div>
+
+      <div class="eyebrow">Why this product, why this year</div>
+      <h2 class="slide-title">Three curves crossed in the last 18 months.</h2>
+
+      <div class="whynow-stage">
+        <div class="curve-card">
+          <div class="curve-cap">
+            <div class="curve-title">Cost per contract page, 2018 to 2025</div>
+            <div class="curve-src">USD, log scale</div>
+          </div>
+          <svg class="curve-svg" viewBox="0 0 460 240" preserveAspectRatio="none">
+            <!-- grid -->
+            <line x1="0" y1="40" x2="460" y2="40" stroke="#E7E5E4" stroke-width="1"/>
+            <line x1="0" y1="100" x2="460" y2="100" stroke="#E7E5E4" stroke-width="1"/>
+            <line x1="0" y1="160" x2="460" y2="160" stroke="#E7E5E4" stroke-width="1"/>
+            <line x1="0" y1="220" x2="460" y2="220" stroke="#000000" stroke-width="1"/>
+            <!-- decay curve -->
+            <path d="M 10 50 Q 80 60, 130 90 T 250 170 T 450 215" fill="none" stroke="#000000" stroke-width="2"/>
+            <!-- inflection annotation -->
+            <line x1="305" y1="180" x2="305" y2="60" stroke="#B91C1C" stroke-width="1" stroke-dasharray="3,3"/>
+            <circle cx="305" cy="180" r="4" fill="#B91C1C"/>
+            <text x="312" y="60" font-family="JetBrains Mono" font-size="10" fill="#B91C1C" font-weight="600">Q2 2024</text>
+            <text x="312" y="74" font-family="JetBrains Mono" font-size="9" fill="#57534E">long-context unlock</text>
+            <!-- y-axis ticks -->
+            <text x="6" y="36" font-family="JetBrains Mono" font-size="9" fill="#A8A29E">$2.40</text>
+            <text x="6" y="96" font-family="JetBrains Mono" font-size="9" fill="#A8A29E">$0.40</text>
+            <text x="6" y="156" font-family="JetBrains Mono" font-size="9" fill="#A8A29E">$0.06</text>
+            <text x="6" y="216" font-family="JetBrains Mono" font-size="9" fill="#A8A29E">$0.004</text>
+          </svg>
+          <div class="curve-x">
+            <span>2018</span><span>2020</span><span>2022</span><span>2024</span><span>2025</span>
+          </div>
+        </div>
+
+        <div class="whynow-shifts">
+          <div class="shift">
+            <div class="shift-n">01</div>
+            <div>
+              <div class="shift-h">From sample to whole corpus.</div>
+              <div class="shift-p">Reading every contract a Fortune 500 owns used to cost millions in legal and analyst hours. Today it costs the price of dinner. The economics of audit inverted in 18 months, and the architectural choice we made in 2023, to bet on per-customer corpora rather than shared model fine-tuning, lines up exactly with the price curve we see now.</div>
+            </div>
+          </div>
+          <div class="shift">
+            <div class="shift-n">02</div>
+            <div>
+              <div class="shift-h">From advisory to software.</div>
+              <div class="shift-p">CFOs slashed consulting budgets 22 percent in 2024 (Source Global). The slack is moving to instrumented software with measurable ROI, not three-month engagements. Every diligence call we run with a Global 2000 CFO surfaces the same question: what is the software equivalent of the McKinsey spend cube, and why is it not already in our stack. We are the first defensible answer.</div>
+            </div>
+          </div>
+          <div class="shift">
+            <div class="shift-n">03</div>
+            <div>
+              <div class="shift-h">From single agent to systems of record.</div>
+              <div class="shift-p">Enterprise IT now treats one knowledge plane as table stakes. Procurement is the most measurable, lowest-risk first wedge in: every recommendation maps to a dollar figure, every dollar maps to an invoice, every invoice maps to a contract clause. The audit trail is the product, and that trail is what unlocks the next category once the first one lands.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SLIDE 5 · MARKET SIZE
+         ========================================================= -->
+    <section class="slide s-market">
+      <div class="brand-mark"><span class="dot"></span><span>Lattice.</span></div>
+      <div class="slide-meta">05 · Market</div>
+
+      <div class="eyebrow">Market we address</div>
+      <h2 class="slide-title">The category we sit in is large, fragmented, and old.</h2>
+
+      <div class="market-stage">
+        <div>
+          <div class="market-bn">$48B</div>
+          <div class="market-cap">global spend on procurement software, advisory, and audit services. Growing at 11 percent, dominated by software that is 20 years old.</div>
+          <div class="market-src">Gartner Spend Management Forecast, 2025</div>
+        </div>
+
+        <div class="market-rows">
+          <div class="market-row">
+            <div class="market-k">$18B</div>
+            <div class="market-v"><b>Procurement software.</b> Coupa, Ariba, Ivalua. Workflow-of-record, not intelligence. Avg contract size $1.2M, 14 percent annual churn. The category sells filing cabinets at SaaS prices, and every buyer we meet has already paid for one and still cannot answer the question we answer in a week.</div>
+          </div>
+          <div class="market-row">
+            <div class="market-k">$22B</div>
+            <div class="market-v"><b>Procurement consulting.</b> Big Four plus McKinsey, Bain, BCG specialist arms. Project-based. The category Lattice converts. Every dollar that moves from a six-month engagement onto a continuously-running platform is a dollar of recurring software revenue replacing one-time labor margin, and the buyer prefers it because the answer keeps refreshing after the analysts go home.</div>
+          </div>
+          <div class="market-row">
+            <div class="market-k">$8B</div>
+            <div class="market-v"><b>Contract intelligence & CLM.</b> Icertis, Sirion, Agiloft. Adjacent buyer, complementary workflow. Their wedge is legal, ours is finance, and the three CLM customers who have deployed Lattice alongside their existing stack ran us in parallel rather than as a rip-and-replace, which is the partnership pattern we expect to repeat.</div>
+          </div>
+          <div class="market-row">
+            <div class="market-k">3,200</div>
+            <div class="market-v"><b>Global 3500 targets.</b> Median annual spend $4.2B. At our 0.4 percent take rate on captured savings, ACV per logo is $680K. Penetrating just 8 percent of the list, 256 logos, produces a $174M ARR business at current pricing, before any motion into the next tier of mid-market enterprises that the same product serves with a lighter ingestion footprint.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SLIDE 6 · COMPETITION (narrative card stack)
+         ========================================================= -->
+    <section class="slide s-competition">
+      <div class="brand-mark"><span class="dot"></span><span>Lattice.</span></div>
+      <div class="slide-meta">06 · Competition</div>
+
+      <div class="eyebrow">The competitive landscape</div>
+      <h2 class="slide-title">Three incumbents own different slices. None reads the contract.</h2>
+
+      <div class="comp-stack">
+        <div class="comp-card">
+          <div class="comp-tag">Workflow incumbent</div>
+          <div class="comp-name">Coupa &amp; Ariba</div>
+          <div class="comp-cat">Source-to-pay platforms</div>
+          <div class="comp-fail">They are the system of record where contracts get filed. They were built to route approvals, not to read the documents that pass through them. Their AI roadmap is bolt-on summarization, not an intelligence layer.</div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-tag">Advisory incumbent</div>
+          <div class="comp-name">Big Four &amp; McKinsey</div>
+          <div class="comp-cat">Procurement consulting</div>
+          <div class="comp-fail">They deliver the answer Lattice delivers, but as a six-month engagement at 30 to 50 bps of spend. The output is a static deck. The next renewal cycle starts over from zero.</div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-tag">CLM adjacent</div>
+          <div class="comp-name">Icertis &amp; Sirion</div>
+          <div class="comp-cat">Contract lifecycle management</div>
+          <div class="comp-fail">They store and route contracts well. They were built before retrieval-grade language models existed. Their UX is built for legal, not finance, and they don't connect to ERP spend data.</div>
+        </div>
+        <div class="comp-card us">
+          <div class="comp-tag">Lattice</div>
+          <div class="comp-name">Lattice</div>
+          <div class="comp-cat">Procurement intelligence</div>
+          <div class="comp-fail">The only operator that reads every contract continuously, joins clause-level terms to actual invoice flow, and prices on recovered dollars. We sit beside the incumbents, not against them, which is why three of our first ten enterprise customers run us in production alongside Coupa and one runs us inside an Icertis deployment.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SLIDE 7 · PRODUCT
+         ========================================================= -->
+    <section class="slide s-product">
+      <div class="brand-mark"><span class="dot"></span><span>Lattice.</span></div>
+      <div class="slide-meta">07 · Product</div>
+
+      <div class="eyebrow">The product</div>
+      <h2 class="slide-title">A daily spend memo, written by your contracts.</h2>
+
+      <div class="product-stage">
+        <div class="product-narr">
+          <div class="product-bullet"><b>One ingestion pass.</b> Coupa, Ariba, Workday, Netsuite, DocuSign, plus an SMTP drop for the email folder where the rest of the contracts hide. Up in three weeks, not three quarters, with read-only credentials and an audit log handed to internal audit on day one.</div>
+          <div class="product-bullet"><b>Clause-level intelligence.</b> Every contract is parsed to 240 standardized fields. Price escalators, auto-renewal triggers, MFN clauses, and benchmark deltas surface as live signals against the cross-customer corpus, not as static deck exhibits.</div>
+          <div class="product-bullet"><b>Continuous, not quarterly.</b> The memo updates every weekday at 6am local time. The CFO walks in to a ranked list of recoverable dollars, with the source clause and the recommended action attached, and the same list lands in procurement's queue before standup.</div>
+          <div class="product-bullet"><b>Defensible at audit.</b> Every recommendation cites the contract, the page, and the system of record. Designed to sit beside, not replace, the CFO's existing controls, and built to survive a Big Four external audit, which two of our customers have already cleared.</div>
+          <div class="product-bullet"><b>Outcome-based pricing.</b> We charge 18 percent of recovered savings, capped at a fixed annual ceiling. Customers only pay when we deliver, the recovery is independently confirmed by their own finance team, and the worst-case bill is knowable on day one.</div>
+        </div>
+
+        <div class="product-mock">
+          <div class="mock-bar">
+            <div class="mock-title">Daily Recovery Memo · Acme Holdings</div>
+            <div class="mock-tag">Live</div>
+          </div>
+          <div class="mock-grid">
+            <div class="mock-tile">
+              <div class="lbl">Open opportunities</div>
+              <div class="val">$4.2M</div>
+              <div class="delta">+$310K this week</div>
+            </div>
+            <div class="mock-tile">
+              <div class="lbl">Recovered YTD</div>
+              <div class="val">$18.7M</div>
+              <div class="delta">vs $11M plan</div>
+            </div>
+            <div class="mock-tile">
+              <div class="lbl">Contracts read</div>
+              <div class="val">14,206</div>
+              <div class="delta">last 24h</div>
+            </div>
+          </div>
+          <div class="mock-table">
+            <div class="mock-row head">
+              <div>Vendor</div><div>Issue</div><div>Exposure</div><div>Status</div>
+            </div>
+            <div class="mock-row">
+              <div class="vendor">Datalogic Systems</div>
+              <div>Auto-renews Nov 14, 8% walk</div>
+              <div>$840K</div>
+              <div><span class="mock-pill flag">Act</span></div>
+            </div>
+            <div class="mock-row">
+              <div class="vendor">Hartwell Logistics</div>
+              <div>MFN breach, peer pricing 12% lower</div>
+              <div>$620K</div>
+              <div><span class="mock-pill flag">Act</span></div>
+            </div>
+            <div class="mock-row">
+              <div class="vendor">Marlowe Cloud</div>
+              <div>Duplicate seats across 3 BUs</div>
+              <div>$310K</div>
+              <div><span class="mock-pill ok">Review</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SLIDE 8 · BUSINESS MODEL
+         ========================================================= -->
+    <section class="slide s-bm">
+      <div class="brand-mark"><span class="dot"></span><span>Lattice.</span></div>
+      <div class="slide-meta">08 · Business model</div>
+
+      <div class="eyebrow">How we get paid</div>
+      <h2 class="slide-title">We make money the day the customer makes money.</h2>
+
+      <div class="bm-stage">
+        <div class="bm-card">
+          <div class="bm-eyebrow">Platform fee</div>
+          <div class="bm-h">$240K floor.</div>
+          <div class="bm-p">Annual subscription per logo. Covers ingestion, the daily memo, and unlimited seats. Sized so any Global 3500 buyer can sign without a board approval. The floor exists for two reasons: it covers our marginal cost of serving a customer on day one when no recovery has been booked yet, and it anchors the buyer in software-budget language rather than consulting-budget language, which is the procurement category we are moving spend out of.</div>
+          <div class="bm-num">$240K</div>
+          <div class="bm-sub">Per logo, annual</div>
+        </div>
+        <div class="bm-card">
+          <div class="bm-eyebrow">Success share</div>
+          <div class="bm-h">18 percent of savings.</div>
+          <div class="bm-p">Customer keeps 82 cents of every recovered dollar. We earn the rest. Capped at 5x platform fee so the buyer always knows the worst-case bill. Recovery is independently audited by the customer's own finance function before we invoice, which removes the trust problem that has historically blocked outcome-based pricing in enterprise software and makes the success line as defensible as a consulting savings claim, only continuously refreshed.</div>
+          <div class="bm-num">18%</div>
+          <div class="bm-sub">Of audited recovery</div>
+        </div>
+        <div class="bm-card">
+          <div class="bm-eyebrow">Net result</div>
+          <div class="bm-h">$680K average ACV.</div>
+          <div class="bm-p">Across 14 paying customers, blended. The math is consultant pricing with software margins, sold to a buyer who hates writing the consultant check. The two largest accounts sit above $1.4M ACV in year one, and the cohort that has been with us six quarters or more is expanding at 148 percent net revenue retention, almost entirely from success-share growth rather than seat or module upsell, which is the leverage point that makes this a software business and not a service one.</div>
+          <div class="bm-num">$680K</div>
+          <div class="bm-sub">Avg contract value</div>
+        </div>
+      </div>
+
+      <div class="bm-foot">
+        <div><div class="k">Gross margin</div><div class="v">84%</div></div>
+        <div><div class="k">Payback (months)</div><div class="v">7.4</div></div>
+        <div><div class="k">Net revenue retention</div><div class="v">148%</div></div>
+        <div><div class="k">Logo retention</div><div class="v">100%</div></div>
+      </div>
+
+      <p class="prose" style="margin-top: 32px; font-size: 15px; max-width: 1000px;">
+        The unit economics work because the cost to serve is fixed once ingestion is live, the success-share line grows with the customer's recovery surface, and renewal risk is asymmetric in our favor: the longer a customer stays, the larger the recovered base, the higher the success-share, the harder we are to displace. Every cohort we have run through a full year has expanded, none has churned, and the gross-margin floor has held within two points of the blended 84 percent number across every customer size and vertical we have shipped to.
+      </p>
+    </section>
+
+    <!-- =========================================================
+         SLIDE 9 · TEAM
+         ========================================================= -->
+    <section class="slide s-team">
+      <div class="brand-mark"><span class="dot"></span><span>Lattice.</span></div>
+      <div class="slide-meta">09 · Team</div>
+
+      <div class="eyebrow">Founders &amp; first hires</div>
+      <h2 class="slide-title">Built by the people who used to write the checks.</h2>
+
+      <div class="team-stage">
+        <div>
+          <div class="founder">
+            <div class="founder-name">Eliana Marsh</div>
+            <div class="founder-role">Co-founder &amp; CEO</div>
+            <div class="founder-bio">Spent eight years as a senior partner in McKinsey's Operations practice running spend transformations for nine Fortune 100 CFOs. <b>Personally signed off on $3.4B in recovered savings.</b> Watched every engagement evaporate the day the consultants left, the playbook walked out the door, and the next renewal cycle restarted at zero. Built Lattice to be the version that doesn't. Carries the buyer rolodex that turned the first nine logos from cold pitches into closed contracts inside one quarter, and personally underwrites the success-share guarantee on every Lattice deal she signs.</div>
+          </div>
+          <div class="founder">
+            <div class="founder-name">David Okafor</div>
+            <div class="founder-role">Co-founder &amp; CTO</div>
+            <div class="founder-bio">Engineering lead on <b>Stripe Radar</b>, where he shipped the team that processes 14B financial events a day at four-nines reliability. Before that, retrieval infrastructure at Two Sigma, where the corpus was every regulatory filing in the SEC's history and the latency budget was measured in single-digit milliseconds. The technical answer to "can you read every contract every day, cite the source clause, and survive an external audit" is yes, and David is why. Holds two patents in low-latency vector search and has hired six of the original Radar engineers onto the Lattice ingestion team.</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="founder">
+            <div class="founder-name">Priya Reddy</div>
+            <div class="founder-role">Co-founder &amp; CPO</div>
+            <div class="founder-bio">Built and sold a procurement analytics company to <b>SAP Ariba in 2019</b> for $94M after four years of operating it solo through the seed and Series A. Knows where every Ariba seam shows, every Coupa workflow breaks, and every CFO's tolerance for change-management theater, because she shipped against all three for the better part of a decade. Owns category strategy, the 240-field clause taxonomy that powers the product, and the design partnership program that produced our first 14 reference customers. Recruited the founding product team from the Ariba alumni network in under six weeks, and personally runs the weekly customer council that sources roughly 70 percent of the roadmap.</div>
+          </div>
+
+          <div class="advisors-row">
+            <span class="label">Board &amp; advisors</span>
+            <div class="advisor-grid">
+              <div class="adv"><b>Ruth Porat</b>Former CFO, Alphabet and Morgan Stanley. Strategic advisor on the CFO buyer, opens doors at five of our top ten target accounts, and helped author our outcome-based pricing model from a buyer's chair.</div>
+              <div class="adv"><b>Frank D'Souza</b>Co-founder and former CEO, Cognizant. Owns enterprise GTM motion design, India delivery scaling, and the playbook for converting consulting spend into recurring software revenue at Fortune 500 scale.</div>
+              <div class="adv"><b>Aaron Levie</b>Founder and CEO, Box. The enterprise SaaS scaling playbook, from first 10 to first 10,000 logos. Advises on product packaging, design partner motion, and the cultural traps of an early enterprise GTM team.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SLIDE 10 · FINANCIALS / ASK
+         ========================================================= -->
+    <section class="slide s-fin">
+      <div class="brand-mark"><span class="dot"></span><span>Lattice.</span></div>
+      <div class="slide-meta">10 · Financials &amp; ask</div>
+
+      <div class="eyebrow">The raise</div>
+      <h2 class="slide-title">Series A.</h2>
+
+      <div class="fin-stage">
+        <div>
+          <div class="fin-headline">$28M</div>
+          <div class="fin-sub">at a $140M post. To reach $40M ARR and 80 logos in 24 months, with $12M committed cash at the milestone. The raise is structured to fund the engineering build of the second connector cohort and the GTM motion into the top tier of the Global 3500, both of which are sized off existing customer expansion data, not projections.</div>
+          <div class="fin-runway">28 months of runway · $1.0M monthly burn at peak</div>
+
+          <div class="fin-traction">
+            <div class="fin-t"><div class="lbl">ARR today</div><div class="val">$8.2M</div></div>
+            <div class="fin-t"><div class="lbl">QoQ growth</div><div class="val">41%</div></div>
+            <div class="fin-t"><div class="lbl">Paying logos</div><div class="val">14</div></div>
+            <div class="fin-t"><div class="lbl">NRR</div><div class="val">148%</div></div>
+          </div>
+        </div>
+
+        <div class="fin-use">
+          <div class="fin-row">
+            <div class="pct">52%</div>
+            <div class="desc">Engineering &amp; ingestion<small>30 hires across ingestion, retrieval, and audit. Connector breadth from 14 to 32 systems of record, real-time pipeline at sub-second p99, and audit-grade lineage on every recommendation we ship to a customer.</small></div>
+            <div class="amt">$14.6M</div>
+          </div>
+          <div class="fin-row">
+            <div class="pct">28%</div>
+            <div class="desc">Go-to-market<small>12 enterprise AEs deployed by region, 4 SEs assigned to top-tier accounts, and a CFO-office advisory bench staffed by former Big Four partners who carry the buyer relationship from first call through first recovery.</small></div>
+            <div class="amt">$7.8M</div>
+          </div>
+          <div class="fin-row">
+            <div class="pct">14%</div>
+            <div class="desc">Research &amp; benchmark corpus<small>Expand the 4.2M-contract corpus to 12M across 18 industry verticals. The benchmarking moat compounds: every new logo we sign adds to the corpus, every contract in the corpus improves recovery quality for every other customer.</small></div>
+            <div class="amt">$3.9M</div>
+          </div>
+          <div class="fin-row">
+            <div class="pct">6%</div>
+            <div class="desc">G&amp;A &amp; compliance<small>SOC 2 Type II completed Q1, ISO 27001 in progress, FedRAMP Moderate path opened for the public-sector logos already in late-stage diligence.</small></div>
+            <div class="amt">$1.7M</div>
+          </div>
+
+          <div class="fin-contact">
+            Next step<b style="display:block; margin-top:6px; font-family: var(--serif); font-size: 16px; letter-spacing: -0.005em; text-transform: none;">eliana@lattice.co · david@lattice.co</b>
+            <span style="display:block; margin-top:14px; font-family: var(--sans); font-size: 12.5px; color: var(--warm-1); letter-spacing: 0; text-transform: none; line-height: 1.55; font-weight: 400;">Open to lead conversations through end of November. Data room, customer references, and a live walkthrough of three production deployments available on request. Term sheet decisions targeted for the first week of December, closing by year end.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         FLOATING NAV
+         ========================================================= -->
+    <div class="progress-line"></div>
+    <div class="nav-counter"><span class="cur">01</span> / <span class="total">10</span></div>
+    <div class="nav-arrows">
+      <button class="nav-btn prev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="nav-btn next" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ===== NAV CONTROLLER + SCALE-TO-FIT ===== */
+(function() {
+  const deck = document.querySelector('.deck');
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const progress = document.querySelector('.progress-line');
+  const counter = document.querySelector('.nav-counter .cur');
+  const totalEl = document.querySelector('.nav-counter .total');
+  const prevBtn = document.querySelector('.nav-btn.prev');
+  const nextBtn = document.querySelector('.nav-btn.next');
+
+  totalEl.textContent = String(total).padStart(2, '0');
+
+  function setScale() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const scale = Math.min(w / 1440, h / 810);
+    deck.style.transform = 'scale(' + scale + ')';
+  }
+  setScale();
+  window.addEventListener('resize', setScale);
+  window.addEventListener('orientationchange', setScale);
+
+  function go(to) {
+    if (to < 0 || to >= total) return;
+    slides[current].classList.remove('active');
+    current = to;
+    slides[current].classList.add('active');
+    progress.style.width = (((current + 1) / total) * 100) + '%';
+    counter.textContent = String(current + 1).padStart(2, '0');
+  }
+
+  const next = () => go(current + 1);
+  const prev = () => go(current - 1);
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', (e) => {
+    const editingText = e.target && e.target.getAttribute &&
+                        e.target.getAttribute('contenteditable') === 'true';
+    if (editingText) return;
+
+    if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', (e) => { tx = e.changedTouches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 60) dx < 0 ? next() : prev();
+  }, { passive: true });
+})();
+
+/* === INLINE-EDIT MODULE · press E to toggle edit mode, Ctrl/S downloads, localStorage autosaves === */
+(function() {
+  const STORAGE_KEY = 'deck-edits:' + location.pathname;
+  const SAVE_DEBOUNCE_MS = 500;
+  const HOVER_GRACE_MS = 400;
+
+  const editor = {
+    isActive: false,
+    saveTimer: null,
+    hideTimer: null,
+  };
+
+  const EDITABLE_SELECTORS = [
+    '.slide h1', '.slide h2', '.slide h3', '.slide h4',
+    '.slide p', '.slide li', '.slide blockquote',
+    '.slide .eyebrow', '.slide .lead', '.slide .prose',
+    '.slide .problem-h', '.slide .problem-body', '.slide .problem-num',
+    '.slide .sol-h', '.slide .sol-p',
+    '.slide .shift-h', '.slide .shift-p',
+    '.slide .market-bn', '.slide .market-cap', '.slide .market-k', '.slide .market-v', '.slide .market-src',
+    '.slide .comp-name', '.slide .comp-cat', '.slide .comp-fail', '.slide .comp-tag',
+    '.slide .product-bullet', '.slide .mock-title', '.slide .vendor',
+    '.slide .bm-h', '.slide .bm-p', '.slide .bm-num', '.slide .bm-sub', '.slide .bm-eyebrow',
+    '.slide .founder-name', '.slide .founder-role', '.slide .founder-bio',
+    '.slide .adv',
+    '.slide .fin-headline', '.slide .fin-sub', '.slide .fin-runway',
+    '.slide .desc', '.slide .amt', '.slide .pct',
+    '.slide .cover-tagline', '.slide .cover-eyebrow', '.slide .cover-meta',
+    '.slide .cover-mark',
+    '.brand-mark span', '.slide-meta'
+  ];
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(saved, 'text/html');
+      const restoredDeck = doc.querySelector('.deck');
+      const liveDeck = document.querySelector('.deck');
+      if (restoredDeck && liveDeck) liveDeck.innerHTML = restoredDeck.innerHTML;
+    }
+  } catch (e) {
+    console.warn('Inline-edit restore failed:', e);
+  }
+
+  const hotzone = document.querySelector('.edit-hotzone');
+  const toggle = document.getElementById('editToggle');
+
+  function showToggle() {
+    clearTimeout(editor.hideTimer);
+    toggle.classList.add('show');
+  }
+  function scheduleHideToggle() {
+    clearTimeout(editor.hideTimer);
+    editor.hideTimer = setTimeout(() => {
+      if (!editor.isActive) toggle.classList.remove('show');
+    }, HOVER_GRACE_MS);
+  }
+
+  hotzone.addEventListener('mouseenter', showToggle);
+  hotzone.addEventListener('mouseleave', scheduleHideToggle);
+  toggle.addEventListener('mouseenter', showToggle);
+  toggle.addEventListener('mouseleave', scheduleHideToggle);
+
+  hotzone.addEventListener('click', () => toggleEditMode());
+  toggle.addEventListener('click', () => toggleEditMode());
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'e' && e.key !== 'E') return;
+    const inEditable = e.target && e.target.getAttribute &&
+                       e.target.getAttribute('contenteditable') === 'true';
+    if (inEditable) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    e.preventDefault();
+    toggleEditMode();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      downloadHtml();
+    }
+  });
+
+  function toggleEditMode() {
+    editor.isActive = !editor.isActive;
+    document.body.classList.toggle('edit-mode', editor.isActive);
+    toggle.classList.toggle('active', editor.isActive);
+    toggle.classList.add('show');
+
+    const targets = document.querySelectorAll(EDITABLE_SELECTORS.join(','));
+    targets.forEach(el => {
+      if (editor.isActive) {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'true');
+      } else {
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('spellcheck');
+      }
+    });
+
+    if (!editor.isActive) scheduleHideToggle();
+  }
+
+  document.addEventListener('input', (e) => {
+    if (!e.target || !e.target.getAttribute) return;
+    if (e.target.getAttribute('contenteditable') !== 'true') return;
+    clearTimeout(editor.saveTimer);
+    editor.saveTimer = setTimeout(() => {
+      try {
+        const deck = document.querySelector('.deck');
+        const wrapper = document.createElement('div');
+        const clonedDeck = deck.cloneNode(true);
+        wrapper.appendChild(clonedDeck);
+        const html = '<!doctype html><html><body>' + wrapper.innerHTML + '</body></html>';
+        localStorage.setItem(STORAGE_KEY, html);
+      } catch (err) {
+        console.warn('Inline-edit autosave failed:', err);
+      }
+    }, SAVE_DEBOUNCE_MS);
+  });
+
+  function downloadHtml() {
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+    clone.querySelectorAll('[spellcheck]').forEach(el => el.removeAttribute('spellcheck'));
+    const hotzoneEl = clone.querySelector('.edit-hotzone');
+    const toggleEl = clone.querySelector('.edit-toggle');
+    if (hotzoneEl) hotzoneEl.remove();
+    if (toggleEl) toggleEl.remove();
+    clone.querySelector('body').classList.remove('edit-mode');
+
+    const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const title = (document.title || 'deck').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = title + '.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+})();
+</script>
+</body>
+</html>

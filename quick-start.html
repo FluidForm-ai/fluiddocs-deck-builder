@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Try a deck in your browser, right now · FluidDocs Deck Builder</title>
+<meta name="description" content="A live, editable pitch deck in your browser. No install. No signup. Press E, edit anything, Ctrl/Cmd+S to download your own copy." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --orange:#F97316;
+    --orange-deep:#EA580C;
+    --orange-soft:#FFF7ED;
+    --ink:#0F172A;
+    --body:#334155;
+    --muted:#6B7280;
+    --soft:#94A3B8;
+    --line:#E5E7EB;
+    --line-soft:#F1F5F9;
+    --paper:#FAFAF9;
+    --white:#FFFFFF;
+    --code-bg:#0F172A;
+    --code-fg:#E2E8F0;
+    --code-key:#FB923C;
+    --font-display:'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-body:'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-mono:'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    --max:1180px;
+    --radius:14px;
+    --radius-sm:10px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font-body);
+    color:var(--body);
+    background:var(--white);
+    line-height:1.6;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  a{color:var(--orange-deep);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---------- shared nav ---------- */
+  .fd-nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.94);
+    backdrop-filter:saturate(180%) blur(10px);
+    -webkit-backdrop-filter:saturate(180%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .fd-nav-inner{
+    max-width:var(--max);
+    margin:0 auto;
+    padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+  }
+  .fd-nav-logo{display:inline-flex;align-items:center}
+  .fd-nav-links{
+    display:flex;align-items:center;gap:6px;font-size:14px;
+  }
+  .fd-nav-links a{
+    color:var(--muted);font-weight:500;
+    padding:7px 12px;border-radius:7px;
+    transition:color .15s ease, background .15s ease;
+    position:relative;
+  }
+  .fd-nav-links a:hover{color:var(--ink);background:var(--paper);text-decoration:none}
+  .fd-nav-links a.is-active{
+    color:var(--orange-deep);
+    background:var(--orange-soft);
+  }
+  .fd-nav-cta{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:7px 14px !important;
+    border-radius:8px !important;
+    background:var(--ink);
+    color:var(--white) !important;
+    font-weight:600 !important;
+    font-size:13px;
+  }
+  .fd-nav-cta:hover{background:#1E293B !important;color:var(--white) !important;text-decoration:none}
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:80px 24px 64px;
+    text-align:center;
+    background:
+      radial-gradient(ellipse 800px 400px at 50% 0%, rgba(249,115,22,.07), transparent 70%),
+      var(--white);
+  }
+  .hero-inner{max-width:880px;margin:0 auto}
+  .hero-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 12px;border-radius:999px;
+    background:var(--orange-soft);
+    color:var(--orange-deep);
+    font-family:var(--font-mono);
+    font-size:11px;font-weight:600;
+    letter-spacing:.08em;text-transform:uppercase;
+    margin-bottom:24px;
+    border:1px solid rgba(249,115,22,.18);
+  }
+  .hero-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 4px rgba(249,115,22,.18)}
+  .hero h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:60px;
+    line-height:1.05;
+    letter-spacing:-.03em;
+    color:var(--ink);
+    margin-bottom:20px;
+  }
+  .hero h1 .accent{color:var(--orange)}
+  .hero p.lead{
+    font-size:20px;
+    line-height:1.5;
+    color:var(--muted);
+    max-width:620px;
+    margin:0 auto 36px;
+  }
+  .hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:14px 24px;
+    border-radius:10px;
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    text-decoration:none;
+  }
+  .btn-primary{
+    background:var(--orange);
+    color:var(--white);
+    box-shadow:0 1px 0 rgba(0,0,0,.04), 0 10px 24px -10px rgba(249,115,22,.55);
+  }
+  .btn-primary:hover{background:var(--orange-deep);text-decoration:none;transform:translateY(-1px)}
+  .btn-ghost{
+    background:var(--white);
+    color:var(--ink);
+    border-color:var(--line);
+  }
+  .btn-ghost:hover{background:var(--paper);text-decoration:none}
+  .btn-arrow{transition:transform .15s ease}
+  .btn:hover .btn-arrow{transform:translateX(2px)}
+
+  .hero-meta{
+    margin-top:24px;
+    display:flex;justify-content:center;gap:24px;flex-wrap:wrap;
+    color:var(--soft);
+    font-size:13px;
+  }
+  .hero-meta span{display:inline-flex;align-items:center;gap:6px}
+  .check{
+    width:14px;height:14px;border-radius:50%;
+    background:#DCFCE7;color:#15803D;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:700;
+  }
+
+  /* ---------- live preview ---------- */
+  .preview{
+    padding:24px 24px 80px;
+    background:var(--white);
+  }
+  .preview-inner{max-width:var(--max);margin:0 auto}
+  .preview-callout{
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    padding:16px 20px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--paper);
+    margin-bottom:16px;
+    flex-wrap:wrap;
+  }
+  .callout-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .callout-icon{
+    width:36px;height:36px;border-radius:8px;
+    background:var(--orange-soft);
+    color:var(--orange-deep);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .callout-text{font-size:14px;color:var(--ink);font-weight:500}
+  .kbd{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:22px;height:22px;padding:0 6px;
+    border-radius:5px;
+    background:var(--white);
+    border:1px solid var(--line);
+    border-bottom-width:2px;
+    font-family:var(--font-mono);
+    font-size:11px;font-weight:600;
+    color:var(--ink);
+    margin:0 2px;
+    vertical-align:1px;
+  }
+  .callout-right a{
+    font-size:13px;font-weight:600;color:var(--orange-deep);
+    display:inline-flex;align-items:center;gap:4px;
+  }
+
+  .frame-wrap{
+    position:relative;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:#0A0A0A;
+    box-shadow:0 1px 0 rgba(0,0,0,.04), 0 30px 60px -30px rgba(15,23,42,.18);
+  }
+  .frame-bar{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 14px;
+    background:#1E293B;
+    border-bottom:1px solid #334155;
+  }
+  .dots{display:flex;gap:6px}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .dot.r{background:#FF5F57}
+  .dot.y{background:#FEBC2E}
+  .dot.g{background:#28C840}
+  .frame-url{
+    flex:1;text-align:center;
+    font-family:var(--font-mono);font-size:11px;color:#94A3B8;
+    letter-spacing:.04em;
+    padding:4px 12px;
+    background:#0F172A;border-radius:6px;
+    max-width:420px;margin:0 auto;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .frame-actions{display:flex;gap:8px}
+  .frame-actions a{
+    font-family:var(--font-mono);
+    font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    color:#94A3B8;
+    padding:4px 8px;border-radius:5px;
+    border:1px solid #334155;
+  }
+  .frame-actions a:hover{color:#FFF;background:#334155;text-decoration:none}
+  .frame-iframe{
+    width:100%;
+    height:680px;
+    border:0;
+    display:block;
+    background:#000;
+  }
+
+  /* ---------- section ---------- */
+  .section{padding:80px 24px;border-top:1px solid var(--line-soft)}
+  .section.alt{background:var(--paper)}
+  .section-inner{max-width:var(--max);margin:0 auto}
+  .section-head{text-align:center;max-width:680px;margin:0 auto 56px}
+  .section-eyebrow{
+    font-family:var(--font-mono);
+    font-size:11px;font-weight:600;
+    color:var(--orange-deep);
+    letter-spacing:.12em;text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .section h2{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:36px;
+    line-height:1.15;
+    letter-spacing:-.02em;
+    color:var(--ink);
+    margin-bottom:14px;
+  }
+  .section-head p{
+    font-size:17px;
+    color:var(--muted);
+    line-height:1.55;
+  }
+
+  /* ---------- 3-step ---------- */
+  .steps{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+  }
+  .step{
+    padding:32px 28px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--white);
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .step:hover{
+    transform:translateY(-2px);
+    border-color:#FED7AA;
+    box-shadow:0 1px 0 rgba(0,0,0,.04), 0 24px 48px -28px rgba(15,23,42,.18);
+  }
+  .step-num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:38px;height:38px;border-radius:10px;
+    background:var(--orange-soft);
+    color:var(--orange-deep);
+    font-family:var(--font-display);
+    font-weight:700;font-size:16px;
+    margin-bottom:20px;
+  }
+  .step h3{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:18px;
+    color:var(--ink);
+    margin-bottom:10px;
+    line-height:1.3;
+  }
+  .step p{
+    font-size:14px;
+    color:var(--muted);
+    line-height:1.6;
+  }
+  .step p code{
+    font-family:var(--font-mono);
+    font-size:12px;
+    background:var(--orange-soft);
+    color:var(--orange-deep);
+    padding:1px 6px;
+    border-radius:4px;
+    font-weight:600;
+  }
+
+  /* ---------- install block ---------- */
+  .install-card{
+    display:grid;
+    grid-template-columns:1fr 1.1fr;
+    gap:48px;
+    align-items:center;
+    padding:48px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--white);
+    box-shadow:0 1px 0 rgba(0,0,0,.04), 0 30px 60px -30px rgba(15,23,42,.12);
+  }
+  .install-card h2{
+    font-size:30px;
+    margin-bottom:12px;
+  }
+  .install-card p{
+    font-size:15px;color:var(--muted);
+    margin-bottom:24px;line-height:1.6;
+  }
+  .install-card .cta-row{display:flex;gap:10px;flex-wrap:wrap}
+  .install-block{
+    background:var(--code-bg);
+    border-radius:var(--radius-sm);
+    padding:22px 20px;
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--code-fg);
+    line-height:1.7;
+    position:relative;
+    overflow:hidden;
+  }
+  .install-block .label{
+    position:absolute;top:10px;right:14px;
+    font-size:10px;color:#64748B;letter-spacing:.1em;text-transform:uppercase;
+  }
+  .install-block .line{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .install-block .prompt{color:#64748B;margin-right:8px;user-select:none}
+  .install-block .cmd{color:#FB923C}
+  .install-block .arg{color:#E2E8F0}
+  .install-block .comment{color:#475569;display:block;margin:14px 0 4px}
+
+  /* ---------- browse templates ---------- */
+  .templates-block{
+    text-align:center;
+  }
+  .template-thumbs{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:16px;
+    margin:40px 0 32px;
+  }
+  .thumb{
+    aspect-ratio:16/10;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--white);
+    display:flex;align-items:center;justify-content:center;
+    padding:14px;
+    transition:transform .15s ease, border-color .15s ease;
+    text-decoration:none;
+  }
+  .thumb:hover{
+    transform:translateY(-2px);
+    border-color:#FED7AA;
+    text-decoration:none;
+  }
+  .thumb-name{
+    font-family:var(--font-display);
+    font-weight:600;font-size:13px;
+    color:var(--ink);
+    text-align:center;
+  }
+  .thumb-meta{
+    font-family:var(--font-mono);
+    font-size:10px;
+    color:var(--muted);
+    margin-top:4px;
+    letter-spacing:.06em;text-transform:uppercase;
+  }
+  .thumb-wm{
+    font-family:var(--font-display);
+    font-weight:700;font-size:24px;
+    letter-spacing:-.02em;
+  }
+  .thumb.stripe .thumb-wm{color:#635BFF}
+  .thumb.airbnb .thumb-wm{color:#FF385C}
+  .thumb.anthropic .thumb-wm{color:#CC785C}
+  .thumb.sequoia .thumb-wm{color:#1A2332;font-family:Georgia, serif}
+
+  /* ---------- FAQ ---------- */
+  .faq{
+    max-width:760px;margin:0 auto;
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .faq-item{
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--white);
+    overflow:hidden;
+    transition:border-color .15s ease;
+  }
+  .faq-item[open]{border-color:#FED7AA}
+  .faq-item summary{
+    list-style:none;
+    padding:20px 24px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:16px;
+    color:var(--ink);
+  }
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-toggle{
+    width:24px;height:24px;flex-shrink:0;
+    border-radius:6px;background:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .2s ease, background .15s ease;
+    color:var(--muted);
+  }
+  .faq-item[open] .faq-toggle{
+    transform:rotate(45deg);
+    background:var(--orange-soft);
+    color:var(--orange-deep);
+  }
+  .faq-body{
+    padding:0 24px 22px;
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.65;
+  }
+  .faq-body p + p{margin-top:12px}
+
+  /* ---------- footer ---------- */
+  .footer{
+    padding:48px 24px 56px;
+    border-top:1px solid var(--line);
+    background:var(--white);
+  }
+  .footer-inner{
+    max-width:var(--max);margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:24px;
+  }
+  .footer-brand{display:flex;align-items:center;gap:14px}
+  .footer-brand-text{
+    font-size:13px;color:var(--muted);
+  }
+  .footer-brand-text strong{color:var(--ink);font-weight:600}
+  .footer-links{
+    display:flex;gap:24px;font-size:14px;
+  }
+  .footer-links a{color:var(--muted);font-weight:500}
+  .footer-links a:hover{color:var(--ink);text-decoration:none}
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 960px){
+    .hero{padding:64px 20px 48px}
+    .hero h1{font-size:44px}
+    .hero p.lead{font-size:18px}
+    .section{padding:64px 20px}
+    .section h2{font-size:30px}
+    .steps{grid-template-columns:1fr;gap:16px}
+    .install-card{grid-template-columns:1fr;padding:32px;gap:32px}
+    .template-thumbs{grid-template-columns:repeat(2, 1fr)}
+    .frame-iframe{height:560px}
+    .frame-url{font-size:10px;max-width:200px}
+  }
+
+  @media (max-width: 600px){
+    .hero{padding:48px 18px 36px}
+    .hero h1{font-size:34px;letter-spacing:-.025em}
+    .hero p.lead{font-size:16px}
+    .hero-meta{gap:14px;font-size:12px}
+    .section{padding:56px 18px}
+    .section h2{font-size:26px}
+    .section-head{margin-bottom:40px}
+    .preview{padding:20px 18px 56px}
+    .preview-callout{padding:14px 16px;flex-direction:column;align-items:flex-start;gap:12px}
+    .callout-right{align-self:flex-end}
+    .frame-bar{padding:8px 10px;gap:8px}
+    .frame-url{display:none}
+    .frame-iframe{height:420px}
+    .install-card{padding:24px}
+    .install-card h2{font-size:24px}
+    .install-block{font-size:11px;padding:18px 16px}
+    .template-thumbs{grid-template-columns:1fr 1fr;gap:10px}
+    .footer-inner{flex-direction:column;text-align:center}
+    .fd-nav-links a.hide-sm{display:none}
+    .faq-item summary{font-size:15px;padding:18px 18px}
+    .faq-body{padding:0 18px 20px;font-size:14px}
+  }
+
+  /* ---------- a11y ---------- */
+  :focus-visible{outline:2px solid var(--orange);outline-offset:2px;border-radius:6px}
+</style>
+</head>
+<body>
+
+<!-- ===== SHARED NAV ===== -->
+<header class="fd-nav">
+  <div class="fd-nav-inner">
+    <a href="quick-start.html" class="fd-nav-logo" aria-label="FluidDocs Deck Builder home">
+      <svg viewBox="0 0 260 38" height="22" role="img" aria-label="Fluid docs logo">
+        <path d="M0 2 Q0 0 2 0 L16 0 Q17.5 0 17.5 1.5 Q17.5 3 16 3 L5 3 L5 12 L14 12 Q15.5 12 15.5 13.5 Q15.5 15 14 15 L5 15 L5 26 Q5 28 2.5 28 Q0 28 0 26 Z" fill="#4B5563"/>
+        <path d="M22 2 Q22 0 24.5 0 Q27 0 27 2 L27 24.5 L38 24.5 Q39.5 24.5 39.5 26 Q39.5 28 38 28 L24.5 28 Q22 28 22 25.5 Z" fill="#4B5563"/>
+        <path d="M44 2 Q44 0 46.5 0 Q49 0 49 2 L49 22 Q49 33 56.5 33 Q64 33 64 22 L64 2 Q64 0 66.5 0 Q69 0 69 2 L69 22.5 Q69 38 56.5 38 Q44 38 44 22.5 Z" fill="#4B5563"/>
+        <path d="M75 2 Q75 0 77.5 0 Q80 0 80 2 L80 26 Q80 28 77.5 28 Q75 28 75 26 Z" fill="#4B5563"/>
+        <path d="M86 2 Q86 0 88 0 L97 0 Q108 0 108 14 Q108 28 97 28 L88 28 Q86 28 86 26 Z M91 3.5 L91 24.5 L96.5 24.5 Q103 24.5 103 14 Q103 3.5 96.5 3.5 Z" fill="#4B5563"/>
+        <rect x="118" y="0" width="3" height="28" rx="1.5" fill="#F97316"/>
+        <text x="132" y="22" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-weight="500" font-size="22" letter-spacing="2" fill="#6B7280">docs</text>
+      </svg>
+    </a>
+    <nav class="fd-nav-links" aria-label="Primary">
+      <a href="templates/index.html" class="hide-sm">Templates</a>
+      <a href="style-presets/index.html" class="hide-sm">Presets</a>
+      <a href="quick-start.html" class="is-active" aria-current="page">Quick Start</a>
+      <a href="#install" class="hide-sm">Install</a>
+      <a href="https://github.com/FluidForm-ai/fluiddocs-deck-builder" class="fd-nav-cta">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span class="hero-dot"></span> Live in your browser</div>
+    <h1>Try a deck in your browser, <span class="accent">right now.</span></h1>
+    <p class="lead">No install. No signup. Just click and edit. The full deck loads as one HTML file, runs offline, and downloads as a copy you own.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="templates/stripe/stripe-pitch.html" target="_blank" rel="noopener">
+        Open the live demo
+        <span class="btn-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="btn btn-ghost" href="#what-happened">
+        How it works
+      </a>
+    </div>
+    <div class="hero-meta">
+      <span><span class="check">&#10003;</span> MIT licensed</span>
+      <span><span class="check">&#10003;</span> Zero dependencies</span>
+      <span><span class="check">&#10003;</span> Works offline</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LIVE PREVIEW ===== -->
+<section class="preview" id="demo">
+  <div class="preview-inner">
+    <div class="preview-callout" role="note">
+      <div class="callout-left">
+        <div class="callout-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 2 4 4-14 14H4v-4z"/></svg>
+        </div>
+        <div class="callout-text">
+          Press <span class="kbd">E</span> to enter edit mode. Edit any heading. <span class="kbd">Ctrl</span>/<span class="kbd">&#8984;</span><span class="kbd">S</span> to download your version.
+        </div>
+      </div>
+      <div class="callout-right">
+        <a href="templates/stripe/stripe-pitch.html" target="_blank" rel="noopener">Open in new tab &rarr;</a>
+      </div>
+    </div>
+
+    <div class="frame-wrap">
+      <div class="frame-bar">
+        <div class="dots" aria-hidden="true">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        </div>
+        <div class="frame-url">templates/stripe/stripe-pitch.html</div>
+        <div class="frame-actions">
+          <a href="templates/stripe/stripe-pitch.html" target="_blank" rel="noopener">Fullscreen</a>
+        </div>
+      </div>
+      <iframe
+        class="frame-iframe"
+        src="templates/stripe/stripe-pitch.html"
+        title="Live Stripe pitch deck template, editable in your browser"
+        loading="eager"
+        sandbox="allow-same-origin allow-scripts allow-downloads allow-popups"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHAT JUST HAPPENED ===== -->
+<section class="section" id="what-happened">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-eyebrow">What just happened</div>
+      <h2>One file. Three moves. A deck you own.</h2>
+      <p>Every template in FluidDocs Deck Builder is a single, self-contained HTML file. No server, no build step, no account. Here is what the demo above is doing.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>You loaded a template</h3>
+        <p>Pure HTML, CSS, and a sprinkle of JS. No install, no signup, no analytics beacons. The file works offline the moment it lands in your browser cache.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Inline edit lets you customize</h3>
+        <p>Hover the top-left, press <code>E</code>, and every heading becomes editable. Changes auto-save to <code>localStorage</code> so a refresh keeps your edits.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Ctrl / Cmd + S downloads your version</h3>
+        <p>The save shortcut serializes your edited DOM and downloads a fresh HTML file. Real bytes, on your machine, ready to send, host, or open offline.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INSTALL ===== -->
+<section class="section alt" id="install">
+  <div class="section-inner">
+    <div class="install-card">
+      <div class="install-copy">
+        <div class="section-eyebrow">Generate from scratch</div>
+        <h2>Want decks like this generated for you?</h2>
+        <p>The templates are the front door. Behind them is a full Claude Code plugin: five type-correct deck builders, four brand-mirror pitch templates, PDF and PPTX import, and a multi-reviewer quality pipeline. Install the plugin and ask for any deck.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://github.com/FluidForm-ai/fluiddocs-deck-builder">
+            View on GitHub
+            <span class="btn-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+          <a class="btn btn-ghost" href="README.md">Read the docs</a>
+        </div>
+      </div>
+      <div class="install-block" aria-label="Install command">
+        <span class="label">Terminal</span>
+        <span class="comment"># Install with Claude Code</span>
+        <span class="line"><span class="prompt">$</span><span class="cmd">/plugin</span> <span class="arg">marketplace add FluidForm-ai/fluiddocs-deck-builder</span></span>
+        <span class="line"><span class="prompt">$</span><span class="cmd">/plugin</span> <span class="arg">install fluiddocs-deck-builder@fluiddocs-deck-builder</span></span>
+        <span class="comment"># Then ask for any deck</span>
+        <span class="line"><span class="prompt">&gt;</span> <span class="arg">/fluiddocs-deck-builder:deck-pitch</span></span>
+        <span class="line"><span class="prompt">&gt;</span> <span class="arg">/fluiddocs-deck-builder:deck-sales</span></span>
+        <span class="line"><span class="prompt">&gt;</span> <span class="arg">/fluiddocs-deck-builder:deck-import</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TEMPLATES ===== -->
+<section class="section" id="templates">
+  <div class="section-inner templates-block">
+    <div class="section-head">
+      <div class="section-eyebrow">Eight templates, ready to fork</div>
+      <h2>Pick a brand. Edit it. Ship it.</h2>
+      <p>Four brand-mirror pitch templates and four type-correct defaults for sales, launch, keynote, and all-hands. Each one is the same single-file recipe as the Stripe demo above.</p>
+    </div>
+
+    <div class="template-thumbs">
+      <a class="thumb stripe" href="templates/stripe/stripe-pitch.html" target="_blank" rel="noopener">
+        <div>
+          <div class="thumb-wm">stripe</div>
+          <div class="thumb-meta">Pitch &middot; 14 slides</div>
+        </div>
+      </a>
+      <a class="thumb airbnb" href="templates/airbnb/airbnb-pitch.html" target="_blank" rel="noopener">
+        <div>
+          <div class="thumb-wm">airbnb</div>
+          <div class="thumb-meta">Pitch &middot; 14 slides</div>
+        </div>
+      </a>
+      <a class="thumb anthropic" href="templates/anthropic/anthropic-pitch.html" target="_blank" rel="noopener">
+        <div>
+          <div class="thumb-wm">Anthropic</div>
+          <div class="thumb-meta">Pitch &middot; 14 slides</div>
+        </div>
+      </a>
+      <a class="thumb sequoia" href="templates/sequoia-classic/sequoia-classic.html" target="_blank" rel="noopener">
+        <div>
+          <div class="thumb-wm">Sequoia</div>
+          <div class="thumb-meta">Classic &middot; 10 slides</div>
+        </div>
+      </a>
+    </div>
+
+    <a class="btn btn-ghost" href="templates/index.html">
+      Browse all 8 templates
+      <span class="btn-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="section alt" id="faq">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-eyebrow">FAQ</div>
+      <h2>Questions you are probably asking.</h2>
+    </div>
+
+    <div class="faq">
+      <details class="faq-item" open>
+        <summary>
+          What is the catch?
+          <span class="faq-toggle" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 1v10M1 6h10"/></svg>
+          </span>
+        </summary>
+        <div class="faq-body">
+          <p>None. FluidDocs Deck Builder is MIT licensed. Fork it, ship it, sell what you build with it. No telemetry, no signup wall, no rate limits. The templates are the same files you would write by hand, just done already.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          Do I need Claude Code to use this?
+          <span class="faq-toggle" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 1v10M1 6h10"/></svg>
+          </span>
+        </summary>
+        <div class="faq-body">
+          <p>No, not for the templates. Open any HTML file in a browser, edit it, download your copy. You will never touch a CLI.</p>
+          <p>Yes, if you want to generate a new deck from scratch (pitch, sales, launch, keynote, all-hands) or convert a PDF or PPTX into an interactive HTML deck. That is what the plugin and skills are for. Install instructions are in the section above.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          Can I change the colors, fonts, and layout?
+          <span class="faq-toggle" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 1v10M1 6h10"/></svg>
+          </span>
+        </summary>
+        <div class="faq-body">
+          <p>Yes. Easy path: press <span class="kbd">E</span> and rewrite any heading or body copy in the browser, then save.</p>
+          <p>Full control: open the HTML in any editor. Tokens live at the top of the <code>&lt;style&gt;</code> block as CSS variables (<code>--primary</code>, <code>--ink</code>, <code>--font-display</code>, etc.). Change the values, save, refresh. The whole deck rebrands.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          How is this different from Pitch, Tome, or Gamma?
+          <span class="faq-toggle" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 1v10M1 6h10"/></svg>
+          </span>
+        </summary>
+        <div class="faq-body">
+          <p>Pitch, Tome, and Gamma are full SaaS products with editors, accounts, and hosting. They are great if you want a closed loop.</p>
+          <p>FluidDocs Deck Builder is a free, open-source toolkit. The output is a single HTML file you fully own. No vendor lock-in, no monthly fee, runs offline, version-controllable in Git, embeddable anywhere a static file can live. It is the opposite shape: less polish on day one, total control forever.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg viewBox="0 0 260 38" height="22" role="img" aria-label="Fluid docs logo">
+        <path d="M0 2 Q0 0 2 0 L16 0 Q17.5 0 17.5 1.5 Q17.5 3 16 3 L5 3 L5 12 L14 12 Q15.5 12 15.5 13.5 Q15.5 15 14 15 L5 15 L5 26 Q5 28 2.5 28 Q0 28 0 26 Z" fill="#4B5563"/>
+        <path d="M22 2 Q22 0 24.5 0 Q27 0 27 2 L27 24.5 L38 24.5 Q39.5 24.5 39.5 26 Q39.5 28 38 28 L24.5 28 Q22 28 22 25.5 Z" fill="#4B5563"/>
+        <path d="M44 2 Q44 0 46.5 0 Q49 0 49 2 L49 22 Q49 33 56.5 33 Q64 33 64 22 L64 2 Q64 0 66.5 0 Q69 0 69 2 L69 22.5 Q69 38 56.5 38 Q44 38 44 22.5 Z" fill="#4B5563"/>
+        <path d="M75 2 Q75 0 77.5 0 Q80 0 80 2 L80 26 Q80 28 77.5 28 Q75 28 75 26 Z" fill="#4B5563"/>
+        <path d="M86 2 Q86 0 88 0 L97 0 Q108 0 108 14 Q108 28 97 28 L88 28 Q86 28 86 26 Z M91 3.5 L91 24.5 L96.5 24.5 Q103 24.5 103 14 Q103 3.5 96.5 3.5 Z" fill="#4B5563"/>
+        <rect x="118" y="0" width="3" height="28" rx="1.5" fill="#F97316"/>
+        <text x="132" y="22" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-weight="500" font-size="22" letter-spacing="2" fill="#6B7280">docs</text>
+      </svg>
+      <span class="footer-brand-text">Powered by <strong><a href="https://fluiddocs.ai">FluidDocs</a></strong></span>
+    </div>
+    <nav class="footer-links" aria-label="Footer">
+      <a href="https://github.com/FluidForm-ai/fluiddocs-deck-builder">GitHub</a>
+      <a href="README.md">Docs</a>
+      <a href="templates/index.html">Templates</a>
+      <a href="https://fluiddocs.ai">fluiddocs.ai</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

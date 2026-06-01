@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledgerline · Northwind Logistics · Sales Engagement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* === BRAND TOKENS · edit these CSS custom properties to rebrand the deck === */
+/* Typography scale (7 sizes): 10px, 12px, 14px, 18px, 24px, 36px, 56px */
+
+:root {
+  --brand-primary: #4A5D4F;
+  --brand-accent:  #8B6F47;
+  --brand-text:    #2D3A2F;
+  --brand-muted:   #6E7B70;
+  --brand-bg:      #FAF8F3;
+  --brand-surface: #F2EFE7;
+  --brand-border:  #D9D4C5;
+  --brand-warn:    #B8654C;
+  --brand-warn-soft: #F0DACB;
+  --brand-primary-soft: #E2E6DC;
+  --brand-primary-tint: #EDEFE6;
+  --letterbox:     #1A1F1B;
+  --font-display:  'Source Serif Pro', 'Georgia', serif;
+  --font-body:     'Inter', system-ui, sans-serif;
+  --font-mono:     'JetBrains Mono', 'SF Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--letterbox);
+  color: var(--brand-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.deck-outer {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--letterbox);
+  overflow: hidden;
+}
+
+.deck {
+  position: relative;
+  width: 1440px;
+  height: 810px;
+  background: var(--brand-bg);
+  transform-origin: center center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  padding: 104px 96px 96px;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  background: var(--brand-bg);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  color: var(--brand-text);
+}
+.slide.active { display: flex; opacity: 1; }
+
+.s-cover, .s-closing { justify-content: center; padding: 96px 120px; }
+
+/* Nav chrome */
+.progress-line {
+  position: absolute; top: 0; left: 0;
+  height: 3px;
+  background: var(--brand-primary);
+  width: 9.09%;
+  transition: width 300ms ease;
+  z-index: 100;
+}
+.nav-counter {
+  position: absolute; bottom: 24px; left: 32px;
+  font-family: var(--font-mono);
+  font-size: 12px; letter-spacing: 0.08em;
+  color: var(--brand-muted);
+  z-index: 100;
+}
+.nav-arrows {
+  position: absolute; bottom: 20px; right: 32px;
+  display: flex; gap: 10px;
+  z-index: 100;
+}
+.nav-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1.5px solid var(--brand-border);
+  background: transparent;
+  color: var(--brand-text);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 180ms ease;
+}
+.nav-btn:hover { border-color: var(--brand-primary); background: var(--brand-primary); color: white; }
+.nav-btn svg { width: 16px; height: 16px; }
+
+/* Brand mark + slide-meta */
+.brand-mark {
+  position: absolute; top: 32px; left: 48px;
+  display: flex; align-items: center; gap: 10px;
+  z-index: 5;
+  color: var(--brand-text);
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 18px;
+  letter-spacing: -0.01em;
+}
+.brand-mark .mark-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--brand-primary);
+  display: inline-block;
+}
+.slide-meta {
+  position: absolute; top: 32px; right: 48px;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 10px; color: var(--brand-muted);
+  letter-spacing: 0.1em; font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* Inline-edit module */
+.edit-hotzone {
+  position: fixed;
+  top: 0; left: 0;
+  width: 40px; height: 40px;
+  z-index: 10000;
+  cursor: pointer;
+  background: transparent;
+}
+.edit-toggle {
+  position: fixed;
+  top: 12px; left: 12px;
+  z-index: 10001;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--brand-text);
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, background 0.15s ease, color 0.15s ease;
+  text-transform: uppercase;
+}
+.edit-toggle.show,
+.edit-toggle.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.edit-toggle.active {
+  background: var(--brand-primary);
+  color: white;
+  border-color: var(--brand-primary);
+}
+body.edit-mode [contenteditable="true"] {
+  outline: 1px dashed var(--brand-primary);
+  outline-offset: 2px;
+  cursor: text;
+}
+body.edit-mode [contenteditable="true"]:focus {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* ---- Shared type ---- */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--brand-text);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+h1 { font-size: 56px; }
+h2 { font-size: 36px; margin-bottom: 18px; }
+h3 { font-size: 24px; }
+h4 { font-size: 18px; }
+p  { font-size: 14px; color: var(--brand-text); }
+.lead {
+  font-size: 18px;
+  color: var(--brand-muted);
+  line-height: 1.55;
+  max-width: 880px;
+}
+.fineprint {
+  font-size: 10px;
+  color: var(--brand-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+}
+.muted { color: var(--brand-muted); }
+.accent { color: var(--brand-accent); }
+.primary { color: var(--brand-primary); }
+.serif { font-family: var(--font-display); }
+.mono { font-family: var(--font-mono); }
+
+/* ===== Slide 1 · Cover ===== */
+.s-cover { text-align: left; align-items: flex-start; }
+.cover-logos {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 56px;
+}
+.cover-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--brand-text);
+}
+.cover-logo .mark-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--brand-primary);
+}
+.cover-logo.client { color: var(--brand-muted); font-weight: 600; }
+.cover-logo.client .mark-dot { background: var(--brand-accent); }
+.cover-divider {
+  width: 1px; height: 24px; background: var(--brand-border);
+}
+.cover-title {
+  font-size: 56px;
+  line-height: 1.05;
+  margin-bottom: 24px;
+  max-width: 1080px;
+}
+.cover-context {
+  font-size: 18px;
+  color: var(--brand-muted);
+  max-width: 760px;
+  margin-bottom: 56px;
+}
+.cover-meta {
+  display: flex;
+  gap: 56px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  border-top: 1px solid var(--brand-border);
+  padding-top: 24px;
+  width: 100%;
+  max-width: 880px;
+}
+.cover-meta div span {
+  display: block;
+  color: var(--brand-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* ===== Slide 2 · Discovery Summary ===== */
+.discovery-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 48px;
+  margin-top: 12px;
+}
+.discovery-bullets {
+  display: flex; flex-direction: column; gap: 18px;
+}
+.discovery-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--brand-border);
+}
+.discovery-row:last-child { border-bottom: none; }
+.discovery-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  padding-top: 3px;
+}
+.discovery-detail {
+  font-size: 14px;
+  color: var(--brand-text);
+  line-height: 1.55;
+}
+.discovery-detail strong {
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+.discovery-side {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.discovery-side h4 {
+  font-size: 14px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.discovery-quote {
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.45;
+  color: var(--brand-text);
+  font-style: italic;
+}
+.discovery-quote .attr {
+  display: block;
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  margin-top: 16px;
+}
+.discovery-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: auto;
+}
+.discovery-facts .fact-block {
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  padding: 12px 14px;
+}
+.discovery-facts .fact-num {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+.discovery-facts .fact-label {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* ===== Slide 3 · Problem ===== */
+.problem-wrap {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 56px;
+  align-items: start;
+  margin-top: 8px;
+}
+.problem-quote {
+  font-family: var(--font-display);
+  font-size: 36px;
+  line-height: 1.25;
+  color: var(--brand-text);
+  font-style: italic;
+  margin-bottom: 28px;
+}
+.problem-attr {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.problem-context {
+  font-size: 14px;
+  color: var(--brand-text);
+  line-height: 1.6;
+  max-width: 560px;
+}
+.problem-context p + p { margin-top: 14px; }
+.problem-stats {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 28px 28px 24px;
+}
+.problem-stats h4 {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--brand-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 22px;
+}
+.problem-stat {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--brand-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 18px;
+}
+.problem-stat:last-child { border-bottom: none; }
+.problem-stat .num {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--brand-warn);
+  line-height: 1;
+}
+.problem-stat .label {
+  font-size: 12px;
+  color: var(--brand-muted);
+  text-align: right;
+  max-width: 200px;
+  line-height: 1.35;
+}
+
+/* ===== Slide 4 · Why Today ===== */
+.urgency-wrap {
+  display: flex; flex-direction: column;
+  gap: 36px;
+  margin-top: 8px;
+}
+.urgency-intro {
+  font-size: 18px;
+  color: var(--brand-text);
+  line-height: 1.55;
+  max-width: 940px;
+}
+.urgency-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 18px;
+}
+.urgency-card {
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 24px 22px;
+  background: var(--brand-bg);
+  display: flex; flex-direction: column;
+  gap: 12px;
+}
+.urgency-card.warm {
+  background: var(--brand-warn-soft);
+  border-color: var(--brand-warn);
+}
+.urgency-card.brand {
+  background: var(--brand-primary-tint);
+  border-color: var(--brand-primary);
+}
+.urgency-card .uc-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+.urgency-card .uc-num {
+  font-family: var(--font-display);
+  font-size: 56px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--brand-text);
+}
+.urgency-card.warm .uc-num { color: var(--brand-warn); }
+.urgency-card.brand .uc-num { color: var(--brand-primary); }
+.urgency-card .uc-detail {
+  font-size: 12px;
+  color: var(--brand-muted);
+  line-height: 1.5;
+}
+.urgency-timeline {
+  margin-top: 8px;
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 22px 28px;
+  background: var(--brand-surface);
+}
+.urgency-timeline-row {
+  display: grid;
+  grid-template-columns: 1fr 14px 1fr 14px 1fr 14px 1fr;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+.urgency-timeline-row .tick {
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  background: var(--brand-border);
+  justify-self: center;
+}
+.urgency-timeline-row .tick.now { background: var(--brand-primary); }
+.urgency-timeline-row .tick.risk { background: var(--brand-warn); }
+.urgency-timeline-bar {
+  height: 6px;
+  background: linear-gradient(to right, var(--brand-primary-tint) 0%, var(--brand-warn-soft) 100%);
+  border-radius: 3px;
+  margin: 14px 0 10px;
+}
+.urgency-timeline-labels {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--brand-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ===== Slide 5 · Solution ===== */
+.solution-wrap {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 56px;
+  align-items: start;
+  margin-top: 8px;
+}
+.solution-headline {
+  font-family: var(--font-display);
+  font-size: 36px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--brand-text);
+  margin-bottom: 18px;
+}
+.solution-headline em {
+  font-style: italic;
+  color: var(--brand-primary);
+}
+.solution-bullets {
+  display: flex; flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+.sol-bullet {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+.sol-bullet .icon {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--brand-primary-soft);
+  color: var(--brand-primary);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.sol-bullet .icon svg { width: 14px; height: 14px; }
+.sol-bullet .txt {
+  font-size: 14px; line-height: 1.5;
+  color: var(--brand-text);
+}
+.sol-bullet .txt b {
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+.solution-side {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 28px 28px;
+}
+.solution-side h4 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+.solution-pyramid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.sp-tier {
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  padding: 14px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px;
+  border-radius: 4px;
+}
+.sp-tier.t1 { width: 100%; }
+.sp-tier.t2 { width: 88%; align-self: center; }
+.sp-tier.t3 { width: 72%; align-self: center; background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
+.sp-tier .sp-lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+}
+.sp-tier.t3 .sp-lbl { color: var(--brand-primary-tint); }
+.sp-tier .sp-val {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+.solution-side .not-this {
+  font-size: 12px;
+  color: var(--brand-muted);
+  line-height: 1.5;
+  border-top: 1px solid var(--brand-border);
+  padding-top: 16px;
+}
+.solution-side .not-this strong {
+  color: var(--brand-text);
+  font-weight: 600;
+}
+
+/* ===== Slide 6 · How It Works ===== */
+.howitworks-intro {
+  font-size: 18px;
+  color: var(--brand-muted);
+  line-height: 1.5;
+  max-width: 900px;
+  margin-bottom: 36px;
+}
+.steps-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  position: relative;
+}
+.step-card {
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 22px 20px;
+  display: flex; flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+.step-card .step-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  color: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+.step-card .step-icon {
+  width: 36px; height: 36px;
+  color: var(--brand-primary);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.step-card .step-icon svg { width: 28px; height: 28px; }
+.step-card h4 {
+  font-size: 18px;
+  font-family: var(--font-display);
+}
+.step-card .step-desc {
+  font-size: 12px;
+  color: var(--brand-muted);
+  line-height: 1.5;
+}
+.step-card .step-outcome {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--brand-primary);
+  text-transform: uppercase;
+}
+.howitworks-illustration {
+  margin-top: 28px;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 22px 28px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+.howitworks-illustration .copy h4 {
+  font-size: 14px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.howitworks-illustration .copy p {
+  font-size: 12px; color: var(--brand-text);
+  line-height: 1.55;
+}
+.howitworks-illustration .copy p + p { margin-top: 8px; }
+.system-diagram {
+  display: grid;
+  grid-template-columns: 1fr 24px 1fr 24px 1fr;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-align: center;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.system-diagram .node {
+  padding: 12px 8px;
+  border-radius: 4px;
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  color: var(--brand-muted);
+  line-height: 1.3;
+}
+.system-diagram .node.hub {
+  background: var(--brand-primary);
+  color: white;
+  border-color: var(--brand-primary);
+}
+.system-diagram .arrow {
+  color: var(--brand-muted);
+  font-family: var(--font-body);
+  font-size: 18px;
+}
+
+/* ===== Slide 7 · Proof ===== */
+.proof-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 18px;
+  margin-top: 8px;
+}
+.proof-card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 24px 22px;
+  display: flex; flex-direction: column;
+  gap: 14px;
+  border-left: 3px solid var(--brand-primary);
+}
+.proof-card .pc-logo {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--brand-text);
+  letter-spacing: -0.01em;
+}
+.proof-card .pc-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+.proof-card .pc-quote {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--brand-text);
+  font-family: var(--font-display);
+  line-height: 1.45;
+}
+.proof-card .pc-attr {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+.proof-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border);
+}
+.proof-metrics .pm {
+  display: flex; flex-direction: column;
+}
+.proof-metrics .pm-num {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+.proof-metrics .pm-label {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+.proof-bar {
+  margin-top: 22px;
+  background: var(--brand-primary);
+  color: white;
+  border-radius: 6px;
+  padding: 18px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+.proof-bar .pb-text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+}
+.proof-bar .pb-stat {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+}
+.proof-bar .pb-note {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-primary-tint);
+  text-transform: uppercase;
+  text-align: right;
+}
+
+/* ===== Slide 8 · ROI ===== */
+.roi-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-top: 8px;
+}
+.roi-table {
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--brand-bg);
+}
+.roi-table .roi-head, .roi-table .roi-row {
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 1fr 1fr;
+  gap: 0;
+}
+.roi-table .roi-head {
+  background: var(--brand-primary);
+  color: white;
+}
+.roi-table .roi-head div, .roi-table .roi-row div {
+  padding: 12px 16px;
+  font-size: 12px;
+  border-right: 1px solid rgba(255,255,255,0.18);
+}
+.roi-table .roi-head div {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.roi-table .roi-row {
+  border-top: 1px solid var(--brand-border);
+}
+.roi-table .roi-row:nth-child(even) {
+  background: var(--brand-surface);
+}
+.roi-table .roi-row div {
+  color: var(--brand-text);
+  border-right: 1px solid var(--brand-border);
+}
+.roi-table .roi-row.total {
+  background: var(--brand-primary-tint);
+  font-weight: 600;
+}
+.roi-table .roi-row.total div {
+  color: var(--brand-primary);
+  font-size: 14px;
+}
+.roi-waterfall {
+  display: flex; flex-direction: column;
+  gap: 14px;
+}
+.roi-waterfall h4 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.roi-bars {
+  display: flex; flex-direction: column;
+  gap: 10px;
+}
+.roi-bar {
+  display: grid;
+  grid-template-columns: 160px 1fr 100px;
+  align-items: center;
+  gap: 14px;
+}
+.roi-bar .lbl {
+  font-size: 12px;
+  color: var(--brand-text);
+}
+.roi-bar .track {
+  height: 18px;
+  border-radius: 3px;
+  background: var(--brand-surface);
+  position: relative;
+  overflow: hidden;
+}
+.roi-bar .fill {
+  height: 100%;
+  border-radius: 3px;
+}
+.roi-bar.cost .fill { background: var(--brand-warn); width: 18%; }
+.roi-bar.impl .fill { background: var(--brand-warn); width: 8%; }
+.roi-bar.gross .fill { background: var(--brand-primary); width: 96%; }
+.roi-bar.net .fill { background: var(--brand-primary); width: 70%; }
+.roi-bar .val {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: right;
+  color: var(--brand-text);
+}
+.roi-bar.cost .val, .roi-bar.impl .val { color: var(--brand-warn); }
+.roi-bar.gross .val, .roi-bar.net .val { color: var(--brand-primary); }
+.roi-callout {
+  margin-top: 8px;
+  background: var(--brand-primary);
+  color: white;
+  border-radius: 6px;
+  padding: 16px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+.roi-callout .rc-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-primary-tint);
+}
+.roi-callout .rc-val {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+}
+.roi-assumptions {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--brand-muted);
+  line-height: 1.6;
+}
+
+/* ===== Slide 9 · Implementation ===== */
+.impl-wrap {
+  display: flex; flex-direction: column;
+  gap: 18px;
+  margin-top: 8px;
+}
+.impl-intro {
+  font-size: 14px;
+  color: var(--brand-muted);
+  line-height: 1.5;
+  max-width: 940px;
+}
+.gantt {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 24px 28px;
+}
+.gantt .week-axis {
+  display: grid;
+  grid-template-columns: 200px repeat(12, 1fr);
+  gap: 6px;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.gantt .week-axis .axis-lbl { text-align: center; }
+.gantt .week-axis .corner { text-align: left; }
+.gantt-row {
+  display: grid;
+  grid-template-columns: 200px repeat(12, 1fr);
+  gap: 6px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid var(--brand-border);
+}
+.gantt-row .phase {
+  display: flex; flex-direction: column;
+  gap: 2px;
+}
+.gantt-row .phase .ph-name {
+  font-size: 12px; font-weight: 600;
+  color: var(--brand-text);
+}
+.gantt-row .phase .ph-owner {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+}
+.gantt-row .bar {
+  height: 14px;
+  border-radius: 3px;
+}
+.gantt-row .bar.brand { background: var(--brand-primary); }
+.gantt-row .bar.client { background: var(--brand-accent); }
+.gantt-row .bar.shared { background: var(--brand-muted); }
+.gantt-legend {
+  display: flex;
+  gap: 20px;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+.gantt-legend .swatch {
+  display: inline-block;
+  width: 12px; height: 12px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* ===== Slide 10 · Pricing ===== */
+.pricing-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 8px;
+}
+.price-card {
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 28px 30px;
+  background: var(--brand-bg);
+  display: flex; flex-direction: column;
+  gap: 18px;
+  position: relative;
+}
+.price-card.featured {
+  background: var(--brand-primary);
+  color: white;
+  border-color: var(--brand-primary);
+}
+.price-card.featured .pc-tier,
+.price-card.featured .pc-num,
+.price-card.featured .pc-per,
+.price-card.featured .pc-incl li,
+.price-card.featured .pc-excl li,
+.price-card.featured h5 { color: white; }
+.price-card.featured .pc-incl li::before { color: white; }
+.price-card.featured .pc-excl li::before { color: var(--brand-primary-tint); }
+.price-card .pc-tier {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+.price-card .pc-num {
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+.price-card .pc-per {
+  font-size: 12px;
+  color: var(--brand-muted);
+  margin-top: 4px;
+}
+.price-card h5 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 8px;
+}
+.price-card .pc-incl, .price-card .pc-excl {
+  list-style: none;
+  display: flex; flex-direction: column;
+  gap: 6px;
+}
+.price-card .pc-incl li, .price-card .pc-excl li {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--brand-text);
+  padding-left: 18px;
+  position: relative;
+}
+.price-card .pc-incl li::before {
+  content: "+"; position: absolute; left: 0;
+  font-weight: 700; color: var(--brand-primary);
+}
+.price-card .pc-excl li::before {
+  content: "·"; position: absolute; left: 4px;
+  color: var(--brand-muted);
+}
+.price-card .featured-tag {
+  position: absolute;
+  top: -10px; right: 22px;
+  background: var(--brand-accent);
+  color: white;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 3px;
+}
+.price-compare {
+  grid-column: 1 / -1;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 18px 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+}
+.price-compare .col {
+  display: flex; flex-direction: column;
+  gap: 4px;
+}
+.price-compare .col-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+.price-compare .col-val {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--brand-primary);
+}
+.price-compare .col.warm .col-val { color: var(--brand-warn); }
+
+/* ===== Slide 11 · Next Steps ===== */
+.s-closing { text-align: left; align-items: flex-start; }
+.next-wrap {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  width: 100%;
+  align-items: start;
+}
+.next-card {
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  border-left: 4px solid var(--brand-primary);
+  border-radius: 6px;
+  padding: 36px 40px;
+  display: flex; flex-direction: column;
+  gap: 18px;
+}
+.next-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+.next-action {
+  font-family: var(--font-display);
+  font-size: 36px;
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--brand-text);
+}
+.next-date {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+.next-owner {
+  font-size: 14px;
+  color: var(--brand-text);
+  line-height: 1.5;
+}
+.next-owner strong { color: var(--brand-primary); font-weight: 600; }
+.next-context {
+  font-size: 12px;
+  color: var(--brand-muted);
+  line-height: 1.5;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border);
+}
+.next-side {
+  display: flex; flex-direction: column;
+  gap: 18px;
+}
+.next-checklist {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 24px 26px;
+}
+.next-checklist h4 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.next-checklist ul {
+  list-style: none;
+  display: flex; flex-direction: column;
+  gap: 8px;
+}
+.next-checklist li {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--brand-text);
+  padding-left: 20px;
+  position: relative;
+}
+.next-checklist li::before {
+  content: ""; position: absolute;
+  left: 0; top: 5px;
+  width: 12px; height: 12px;
+  border: 1.5px solid var(--brand-border);
+  border-radius: 2px;
+}
+.next-ask {
+  background: var(--brand-primary);
+  color: white;
+  border-radius: 6px;
+  padding: 18px 22px;
+}
+.next-ask .ask-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-primary-tint);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.next-ask .ask-text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* Section title row for content slides */
+.slide-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 28px;
+}
+.slide-title-row h2 { margin-bottom: 0; }
+.slide-title-row .tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+  <div class="edit-hotzone" aria-hidden="true"></div>
+  <button class="edit-toggle" id="editToggle" title="Edit mode (E)" aria-label="Toggle edit mode">Edit</button>
+
+  <div class="deck-outer">
+    <div class="deck">
+
+      <!-- Slide 1 · Cover -->
+      <section class="slide s-cover active">
+        <div class="cover-logos">
+          <div class="cover-logo"><span class="mark-dot"></span>Ledgerline</div>
+          <div class="cover-divider"></div>
+          <div class="cover-logo client"><span class="mark-dot"></span>Northwind Logistics</div>
+        </div>
+        <h1 class="cover-title">Closing the books in one day, not five.</h1>
+        <p class="cover-context">A working proposal for Northwind's finance team, prepared after our March 18 discovery session with Priya, Daniel, and the controllership group.</p>
+        <div class="cover-meta">
+          <div>Prepared for<span>Priya Raman, VP Finance</span></div>
+          <div>Prepared by<span>Marcus Chen, Ledgerline</span></div>
+          <div>Engagement<span>Q2 Financial Close Automation</span></div>
+          <div>Date<span>April 02, 2026</span></div>
+        </div>
+      </section>
+
+      <!-- Slide 2 · About You (Discovery Summary) -->
+      <section class="slide s-discovery">
+        <div class="brand-mark"><span class="mark-dot"></span>Ledgerline</div>
+        <div class="slide-meta">02 · About Northwind</div>
+        <div class="slide-title-row">
+          <h2>What we heard, in your context.</h2>
+          <div class="tag">Discovery synthesis</div>
+        </div>
+        <div class="discovery-grid">
+          <div class="discovery-bullets">
+            <div class="discovery-row">
+              <div class="discovery-label">Stage</div>
+              <div class="discovery-detail">Series C logistics platform, <strong>$84M ARR</strong> on track to $120M by FY26 close, 420 employees across Chicago, Toronto, and Mexico City.</div>
+            </div>
+            <div class="discovery-row">
+              <div class="discovery-label">Recent move</div>
+              <div class="discovery-detail">Closed the <strong>Velo Freight acquisition</strong> in February. Combined entity now operates <strong>three ledgers</strong> across NetSuite, QuickBooks, and Velo's bespoke ERP.</div>
+            </div>
+            <div class="discovery-row">
+              <div class="discovery-label">Hiring signal</div>
+              <div class="discovery-detail">Posting for a <strong>Director of Controllership</strong> and two senior accountants since January. Reporting line up to CFO. Suggests close-cycle pain is being escalated, not absorbed.</div>
+            </div>
+            <div class="discovery-row">
+              <div class="discovery-label">Public commitment</div>
+              <div class="discovery-detail">Series C deck (Q4 2025) promised investors a <strong>S-1 ready posture by Q3 FY27</strong>. Big-Four readiness audit slated for August.</div>
+            </div>
+            <div class="discovery-row">
+              <div class="discovery-label">Team affected</div>
+              <div class="discovery-detail">Controllership team of 11, three of whom spend 30+ hours per close on reconciliation. Daniel Okafor is the operational owner; Priya owns the budget call.</div>
+            </div>
+          </div>
+          <aside class="discovery-side">
+            <h4>Voice from discovery</h4>
+            <div class="discovery-quote">
+              "Our seniors are spending more time chasing intercompany breaks than closing the period. The Velo deal made it worse, not easier."
+              <span class="attr">Daniel Okafor, Controller · March 18 call</span>
+            </div>
+            <div class="discovery-facts">
+              <div class="fact-block"><div class="fact-num">3</div><div class="fact-label">Ledgers in scope</div></div>
+              <div class="fact-block"><div class="fact-num">11</div><div class="fact-label">Controllership FTE</div></div>
+              <div class="fact-block"><div class="fact-num">5d</div><div class="fact-label">Current close cycle</div></div>
+              <div class="fact-block"><div class="fact-num">Aug</div><div class="fact-label">Audit readiness</div></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Slide 3 · Problem -->
+      <section class="slide s-problem">
+        <div class="brand-mark"><span class="mark-dot"></span>Ledgerline</div>
+        <div class="slide-meta">03 · The problem</div>
+        <div class="slide-title-row">
+          <h2>The cost of a five-day close.</h2>
+          <div class="tag">In Daniel's words</div>
+        </div>
+        <div class="problem-wrap">
+          <div>
+            <div class="problem-quote">"Every quarter we lose the first week of the next quarter to closing the last one. We are perpetually behind."</div>
+            <div class="problem-attr">Daniel Okafor, Controller · March 18 discovery call</div>
+            <div class="problem-context">
+              <p>Today, the Northwind close runs five business days. Three of those days are intercompany reconciliation across NetSuite, QuickBooks, and the legacy Velo ERP. Two senior accountants spend roughly 32 hours each on this in any given close, much of it in shared spreadsheets that no one trusts after edits compound.</p>
+              <p>The Velo acquisition added a third ledger with no shared chart of accounts. Manual mapping happens during close, not before, and the team flags 40 to 60 reconciliation breaks each month. Roughly 15 of those require formal journal adjustments after the period has closed.</p>
+              <p>The CFO's stated concern, captured in your last board pack, is that this pattern is incompatible with the August audit readiness commitment.</p>
+            </div>
+          </div>
+          <div class="problem-stats">
+            <h4>Quantified impact, last twelve months</h4>
+            <div class="problem-stat">
+              <div class="num">5 days</div>
+              <div class="label">Average close cycle, against your 1-day stated target</div>
+            </div>
+            <div class="problem-stat">
+              <div class="num">64 hrs</div>
+              <div class="label">Senior accountant time per close, on reconciliation alone</div>
+            </div>
+            <div class="problem-stat">
+              <div class="num">15</div>
+              <div class="label">Post-close journal adjustments per month, average</div>
+            </div>
+            <div class="problem-stat">
+              <div class="num">$340K</div>
+              <div class="label">Estimated annual rework cost at fully-loaded rates, FY25</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 4 · Why Today -->
+      <section class="slide s-urgency">
+        <div class="brand-mark"><span class="mark-dot"></span>Ledgerline</div>
+        <div class="slide-meta">04 · Why now</div>
+        <div class="slide-title-row">
+          <h2>The August audit window is the constraint.</h2>
+          <div class="tag">Cost of waiting</div>
+        </div>
+        <div class="urgency-wrap">
+          <p class="urgency-intro">Your Big-Four readiness audit begins August 18. To present a clean close to the audit team, the new process needs to run two full cycles in production. That makes <strong>June 1</strong> the practical drop-dead for going live, and <strong>April 21</strong> the practical drop-dead for signing.</p>
+            <div class="urgency-cards">
+              <div class="urgency-card warm">
+                <div class="uc-label">If signed by April 21</div>
+                <div class="uc-num">2 cycles</div>
+                <div class="uc-detail">Production runs complete before audit fieldwork. Auditors see a stable, automated close with two months of clean intercompany history.</div>
+              </div>
+              <div class="urgency-card brand">
+                <div class="uc-label">If signed by May 19</div>
+                <div class="uc-num">1 cycle</div>
+                <div class="uc-detail">One full production close before audit. Workable, but Ledgerline support spends August on the floor instead of in optimization.</div>
+              </div>
+              <div class="urgency-card warm">
+                <div class="uc-label">If signed after June 9</div>
+                <div class="uc-num">0 cycles</div>
+                <div class="uc-detail">August audit runs against the current five-day process. Probable material weakness flag on intercompany reconciliation per PCAOB AS 2201.</div>
+              </div>
+            </div>
+          <div class="urgency-timeline">
+            <div class="urgency-timeline-bar"></div>
+            <div class="urgency-timeline-labels">
+              <span>Apr 21 · sign window</span>
+              <span>May 19 · last responsible moment</span>
+              <span>Jun 1 · go-live cutoff</span>
+              <span>Aug 18 · audit fieldwork begins</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 5 · Solution -->
+      <section class="slide s-solution">
+        <div class="brand-mark"><span class="mark-dot"></span>Ledgerline</div>
+        <div class="slide-meta">05 · Our solution</div>
+        <div class="slide-title-row">
+          <h2>What Ledgerline does, in plain language.</h2>
+          <div class="tag">Capability, not features</div>
+        </div>
+        <div class="solution-wrap">
+          <div>
+            <div class="solution-headline">We <em>auto-reconcile intercompany activity</em> across your three ledgers so your team can close in one business day instead of five.</div>
+            <div class="solution-bullets">
+              <div class="sol-bullet">
+                <div class="icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+                <div class="txt"><b>What we do.</b> Pull transactions from NetSuite, QuickBooks, and the Velo ERP. Match them by counterparty, amount, and date. Flag exceptions for human review. Post approved entries back to the system of record.</div>
+              </div>
+              <div class="sol-bullet">
+                <div class="icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2M21 21v-2a4 4 0 00-3-3.9M17 3.1a4 4 0 010 7.8"/></svg>
+                </div>
+                <div class="txt"><b>Who it serves.</b> Your senior accountants stop reconciling line by line. Daniel gets a real-time exception queue. Priya gets a single dashboard for cycle time, break count, and audit trail by entity.</div>
+              </div>
+              <div class="sol-bullet">
+                <div class="icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </div>
+                <div class="txt"><b>What we do not do.</b> We are not a general ledger. We do not replace NetSuite or QuickBooks. We do not handle revenue recognition, AR, AP, or payroll. We do one job and we do it cleanly.</div>
+              </div>
+              <div class="sol-bullet">
+                <div class="icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </div>
+                <div class="txt"><b>Differentiator.</b> Read-only by default. Every posting requires explicit human approval, by entity, with full audit trail. Big-Four firms have signed off on our control design at six customers.</div>
+              </div>
+              <div class="sol-bullet">
+                <div class="icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+                </div>
+                <div class="txt"><b>Implementation.</b> Eight weeks to go-live with two full close cycles before audit. Your team commits roughly four hours per week during weeks two through six.</div>
+              </div>
+            </div>
+          </div>
+          <div class="solution-side">
+            <h4>How value compounds</h4>
+            <div class="solution-pyramid">
+              <div class="sp-tier t1"><span class="sp-lbl">Layer 1</span><span class="sp-val">Connect ledgers</span></div>
+              <div class="sp-tier t2"><span class="sp-lbl">Layer 2</span><span class="sp-val">Auto-match</span></div>
+              <div class="sp-tier t3"><span class="sp-lbl">Layer 3</span><span class="sp-val">Audit-ready close</span></div>
+            </div>
+            <div class="not-this">
+              <strong>What this is not.</strong> Not an ETL pipeline you maintain. Not a BI dashboard. Not a consulting engagement. Software with a controllership focus, deployed in eight weeks, owned by your team after go-live.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 6 · How It Works -->
+      <section class="slide s-howitworks">
+        <div class="brand-mark"><span class="mark-dot"></span>Ledgerline</div>
+        <div class="slide-meta">06 · How it works</div>
+        <div class="slide-title-row">
+          <h2>From ledger pull to posted entry, in four steps.</h2>
+          <div class="tag">Workflow</div>
+        </div>
+        <p class="howitworks-intro">What your team actually does in the new close. Ledgerline runs continuously; the team only touches exceptions.</p>
+        <div class="steps-row">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.7 4 3 9 3s9-1.3 9-3V5M3 11v6c0 1.7 4 3 9 3s9-1.3 9-3v-6"/></svg>
+            </div>
+            <h4>Pull</h4>
+            <div class="step-desc">Read-only connectors stream transactions from NetSuite, QuickBooks, and Velo every fifteen minutes. No batch jobs to schedule, no CSV exports to chase.</div>
+            <div class="step-outcome">Continuous · zero manual export</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.4 8.4 0 01-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.4 8.4 0 013.8-.9h.5a8.5 8.5 0 018 8v.5z"/></svg>
+            </div>
+            <h4>Match</h4>
+            <div class="step-desc">Three-way match by counterparty, amount, and date. Rules engine you control covers 92 percent of intercompany activity on day one based on our other logistics customers.</div>
+            <div class="step-outcome">92 percent auto-match target</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.8L1.8 18a2 2 0 001.7 3h16.9a2 2 0 001.7-3L13.7 3.8a2 2 0 00-3.4 0zM12 9v4M12 17h.01"/></svg>
+            </div>
+            <h4>Review</h4>
+            <div class="step-desc">Remaining 8 percent lands in Daniel's exception queue with full context. One click to accept the suggested adjustment, two clicks to dispute and route to the source entity owner.</div>
+            <div class="step-outcome">Median 90 seconds per exception</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">4</div>
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+            </div>
+            <h4>Post</h4>
+            <div class="step-desc">Approved adjustments post back to the system of record under named user credentials. Every entry carries an immutable audit trail accessible to your auditors via read-only export.</div>
+            <div class="step-outcome">Full audit trail · SOC 2 Type II</div>
+          </div>
+        </div>
+        <div class="howitworks-illustration">
+          <div class="copy">
+            <h4>System diagram, simplified</h4>
+            <p>Three source ledgers, one Ledgerline workspace, posting back to system of record. Connectors are read-only by default; posting credentials are scoped per entity and rotate quarterly.</p>
+            <p>Your IT team controls connector setup. Posting credentials live in your secrets vault, not ours. We never store ledger data outside your customer-managed encryption keys.</p>
+          </div>
+          <div class="system-diagram">
+            <div class="node">NetSuite<br>QuickBooks<br>Velo ERP</div>
+            <div class="arrow">&rarr;</div>
+            <div class="node hub">Ledgerline<br>workspace</div>
+            <div class="arrow">&rarr;</div>
+            <div class="node">System of<br>record posting</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 7 · Proof -->
+      <section class="slide s-proof">
+        <div class="brand-mark"><span class="mark-dot"></span>Ledgerline</div>
+        <div class="slide-meta">07 · Proof</div>
+        <div class="slide-title-row">
+          <h2>Companies that look like Northwind, before audit.</h2>
+          <div class="tag">Named references</div>
+        </div>
+        <div class="proof-wrap">
+          <div class="proof-card">
+            <div class="pc-logo">Cargolane</div>
+            <div class="pc-meta">Series D · $140M ARR · Freight forwarding</div>
+            <div class="pc-quote">"We went from a five-day close to a one-day close in eleven weeks. Our auditors flagged the control environment as best-in-class for our size."</div>
+            <div class="pc-attr">Wei Lin · VP Finance, Cargolane</div>
+            <div class="proof-metrics">
+              <div class="pm"><div class="pm-num">5d to 1d</div><div class="pm-label">Close cycle</div></div>
+              <div class="pm"><div class="pm-num">94%</div><div class="pm-label">Auto-match rate</div></div>
+              <div class="pm"><div class="pm-num">$420K</div><div class="pm-label">Year-1 savings</div></div>
+              <div class="pm"><div class="pm-num">11 wk</div><div class="pm-label">Go-live</div></div>
+            </div>
+          </div>
+          <div class="proof-card">
+            <div class="pc-logo">Meridian Bio</div>
+            <div class="pc-meta">Pre-IPO · $90M ARR · Diagnostics</div>
+            <div class="pc-quote">"Ledgerline replaced four spreadsheets and one full-time reconciliation analyst. The team did not lose anyone, we just redeployed them to FP&A work that matters."</div>
+            <div class="pc-attr">Sara Bhatt · Controller, Meridian Bio</div>
+            <div class="proof-metrics">
+              <div class="pm"><div class="pm-num">4d to 2d</div><div class="pm-label">Close cycle</div></div>
+              <div class="pm"><div class="pm-num">88%</div><div class="pm-label">Auto-match rate</div></div>
+              <div class="pm"><div class="pm-num">1.0 FTE</div><div class="pm-label">Redeployed</div></div>
+              <div class="pm"><div class="pm-num">9 wk</div><div class="pm-label">Go-live</div></div>
+            </div>
+          </div>
+          <div class="proof-card">
+            <div class="pc-logo">Atlas Transit</div>
+            <div class="pc-meta">Series C · $65M ARR · Last-mile logistics</div>
+            <div class="pc-quote">"The acquisition we did last year would have broken our close. Instead, the new entity was on the same reconciliation cadence within three weeks."</div>
+            <div class="pc-attr">James Okenwa · CFO, Atlas Transit</div>
+            <div class="proof-metrics">
+              <div class="pm"><div class="pm-num">6d to 1d</div><div class="pm-label">Close cycle</div></div>
+              <div class="pm"><div class="pm-num">91%</div><div class="pm-label">Auto-match rate</div></div>
+              <div class="pm"><div class="pm-num">3 wk</div><div class="pm-label">New entity onboarded</div></div>
+              <div class="pm"><div class="pm-num">$310K</div><div class="pm-label">Year-1 savings</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="proof-bar">
+          <div class="pb-text">Across 14 customers with multi-ledger close, the median outcome is:</div>
+          <div class="pb-stat">76%</div>
+          <div class="pb-note">Reduction in close cycle time, year one · Customer Outcomes Index, FY25</div>
+        </div>
+      </section>
+
+      <!-- Slide 8 · ROI -->
+      <section class="slide s-roi">
+        <div class="brand-mark"><span class="mark-dot"></span>Ledgerline</div>
+        <div class="slide-meta">08 · ROI</div>
+        <div class="slide-title-row">
+          <h2>The math, with your assumptions.</h2>
+          <div class="tag">Conservative case</div>
+        </div>
+        <div class="roi-wrap">
+          <div>
+            <div class="roi-table">
+              <div class="roi-head">
+                <div>Variable</div>
+                <div>Assumption</div>
+                <div>Unit impact</div>
+                <div>Annual</div>
+              </div>
+              <div class="roi-row">
+                <div>Senior accountants in scope</div>
+                <div>3</div>
+                <div>64 hrs saved per close</div>
+                <div>2,304 hrs / yr</div>
+              </div>
+              <div class="roi-row">
+                <div>Fully-loaded hourly rate</div>
+                <div>$95</div>
+                <div>Per hour avoided</div>
+                <div>$218,880</div>
+              </div>
+              <div class="roi-row">
+                <div>Post-close journal adjustments</div>
+                <div>15 / mo</div>
+                <div>$520 rework cost each</div>
+                <div>$93,600</div>
+              </div>
+              <div class="roi-row">
+                <div>Audit prep time avoided</div>
+                <div>120 hrs</div>
+                <div>External rate $325 / hr</div>
+                <div>$39,000</div>
+              </div>
+              <div class="roi-row total">
+                <div>Gross annual savings</div>
+                <div></div>
+                <div></div>
+                <div>$351,480</div>
+              </div>
+            </div>
+            <div class="roi-assumptions">
+              Assumptions verified with Daniel on March 18. Hourly rate per Northwind's standard FY26 budget. Rework cost benchmarked against Cargolane and Meridian Bio outcomes. Audit prep avoidance uses Big-Four hourly rate, capped conservatively at 120 hours.
+            </div>
+          </div>
+          <div class="roi-waterfall">
+            <h4>From cost to net value, year one</h4>
+            <div class="roi-bars">
+              <div class="roi-bar cost">
+                <div class="lbl">Annual license</div>
+                <div class="track"><div class="fill"></div></div>
+                <div class="val">$64,000</div>
+              </div>
+              <div class="roi-bar impl">
+                <div class="lbl">Implementation</div>
+                <div class="track"><div class="fill"></div></div>
+                <div class="val">$28,000</div>
+              </div>
+              <div class="roi-bar gross">
+                <div class="lbl">Gross savings</div>
+                <div class="track"><div class="fill"></div></div>
+                <div class="val">$351,480</div>
+              </div>
+              <div class="roi-bar net">
+                <div class="lbl">Year-one net</div>
+                <div class="track"><div class="fill"></div></div>
+                <div class="val">$259,480</div>
+              </div>
+            </div>
+            <div class="roi-callout">
+              <div>
+                <div class="rc-label">Payback period</div>
+                <div class="rc-val">3.1 months</div>
+              </div>
+              <div>
+                <div class="rc-label">3-year net value</div>
+                <div class="rc-val">$860K+</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 9 · Implementation -->
+      <section class="slide s-impl">
+        <div class="brand-mark"><span class="mark-dot"></span>Ledgerline</div>
+        <div class="slide-meta">09 · Implementation</div>
+        <div class="slide-title-row">
+          <h2>Eight weeks from kickoff to first clean close.</h2>
+          <div class="tag">April 28 to June 23</div>
+        </div>
+        <div class="impl-wrap">
+          <p class="impl-intro">Five phases, named owners, explicit effort from your side. Your total team commitment is roughly 38 hours across eight weeks, concentrated in weeks two through five.</p>
+          <div class="gantt">
+            <div class="week-axis">
+              <div class="corner">Phase &middot; Owner</div>
+              <div class="axis-lbl">W1</div>
+              <div class="axis-lbl">W2</div>
+              <div class="axis-lbl">W3</div>
+              <div class="axis-lbl">W4</div>
+              <div class="axis-lbl">W5</div>
+              <div class="axis-lbl">W6</div>
+              <div class="axis-lbl">W7</div>
+              <div class="axis-lbl">W8</div>
+              <div class="axis-lbl">Audit</div>
+              <div class="axis-lbl">Aug</div>
+              <div class="axis-lbl">Sep</div>
+              <div class="axis-lbl">Q4</div>
+            </div>
+            <div class="gantt-row">
+              <div class="phase"><div class="ph-name">1 · Kickoff &middot; discovery</div><div class="ph-owner">Marcus + Priya · 4 hrs total</div></div>
+              <div class="bar brand" style="grid-column: 2 / 4;"></div>
+            </div>
+            <div class="gantt-row">
+              <div class="phase"><div class="ph-name">2 · Connector setup</div><div class="ph-owner">Ledgerline + your IT · 6 hrs your side</div></div>
+              <div class="bar shared" style="grid-column: 3 / 5;"></div>
+            </div>
+            <div class="gantt-row">
+              <div class="phase"><div class="ph-name">3 · Rule design &middot; mapping</div><div class="ph-owner">Daniel + Marcus · 12 hrs your side</div></div>
+              <div class="bar client" style="grid-column: 4 / 7;"></div>
+            </div>
+            <div class="gantt-row">
+              <div class="phase"><div class="ph-name">4 · Parallel run &middot; UAT</div><div class="ph-owner">Daniel's team · 12 hrs your side</div></div>
+              <div class="bar client" style="grid-column: 6 / 8;"></div>
+            </div>
+            <div class="gantt-row">
+              <div class="phase"><div class="ph-name">5 · Go-live &middot; optimization</div><div class="ph-owner">Joint · 4 hrs your side</div></div>
+              <div class="bar brand" style="grid-column: 7 / 10;"></div>
+            </div>
+            <div class="gantt-row">
+              <div class="phase"><div class="ph-name">Audit cycle 1 + 2</div><div class="ph-owner">Daniel + auditors · Ledgerline standby</div></div>
+              <div class="bar shared" style="grid-column: 10 / 13;"></div>
+            </div>
+            <div class="gantt-legend">
+              <div><span class="swatch" style="background: var(--brand-primary);"></span>Ledgerline owns</div>
+              <div><span class="swatch" style="background: var(--brand-accent);"></span>Your team owns</div>
+              <div><span class="swatch" style="background: var(--brand-muted);"></span>Shared</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 10 · Pricing -->
+      <section class="slide s-pricing">
+        <div class="brand-mark"><span class="mark-dot"></span>Ledgerline</div>
+        <div class="slide-meta">10 · Investment</div>
+        <div class="slide-title-row">
+          <h2>Pricing, in full, with what is and is not included.</h2>
+          <div class="tag">Two options</div>
+        </div>
+        <div class="pricing-wrap">
+          <div class="price-card">
+            <div class="pc-tier">Annual</div>
+            <div>
+              <div class="pc-num">$64K</div>
+              <div class="pc-per">per year &middot; 1-year term &middot; net 30</div>
+            </div>
+            <h5>Included</h5>
+            <ul class="pc-incl">
+              <li>Up to 3 ledgers and 5 entities</li>
+              <li>Unlimited transaction volume</li>
+              <li>Standard support, 8 business hours response</li>
+              <li>Quarterly business review with named CSM</li>
+              <li>SOC 2 Type II and read-only audit export</li>
+            </ul>
+            <h5>Not included</h5>
+            <ul class="pc-excl">
+              <li>One-time implementation, $28K</li>
+              <li>Additional entities, $4K per entity per year</li>
+              <li>Custom rule engineering beyond standard library</li>
+            </ul>
+          </div>
+          <div class="price-card featured">
+            <div class="featured-tag">Recommended</div>
+            <div class="pc-tier">3-year</div>
+            <div>
+              <div class="pc-num">$48K</div>
+              <div class="pc-per">per year &middot; 3-year term &middot; locked rate</div>
+            </div>
+            <h5>Included</h5>
+            <ul class="pc-incl">
+              <li>Everything in Annual, plus the items below</li>
+              <li>Up to 5 ledgers and unlimited entities</li>
+              <li>Premium support, 4 business hours response</li>
+              <li>Implementation included (save $28K)</li>
+              <li>Locked pricing, no annual uplift</li>
+            </ul>
+            <h5>Not included</h5>
+            <ul class="pc-excl">
+              <li>Custom integrations beyond standard connectors</li>
+              <li>Onsite workshops, billed separately</li>
+            </ul>
+          </div>
+          <div class="price-compare">
+            <div class="col warm">
+              <div class="col-label">3-year total investment</div>
+              <div class="col-val">$144,000</div>
+            </div>
+            <div class="col">
+              <div class="col-label">3-year gross savings</div>
+              <div class="col-val">$1,054,440</div>
+            </div>
+            <div class="col">
+              <div class="col-label">Net value &middot; ROI ratio</div>
+              <div class="col-val">$910K &middot; 7.3x</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 11 · Next Steps -->
+      <section class="slide s-closing">
+        <div class="brand-mark"><span class="mark-dot"></span>Ledgerline</div>
+        <div class="slide-meta">11 · Next steps</div>
+        <div class="slide-title-row" style="margin-bottom: 24px; width: 100%;">
+          <h2 style="font-size: 36px;">A concrete path to a signed agreement by April 21.</h2>
+          <div class="tag">Names &middot; Dates</div>
+        </div>
+        <div class="next-wrap">
+          <div class="next-card">
+            <div class="next-eyebrow">Confirmed next session</div>
+            <div class="next-action">Technical deep-dive with Daniel and your IT lead.</div>
+            <div class="next-date">Thursday, April 10 &middot; 1:00pm CT</div>
+            <div class="next-owner">Hosted by <strong>Marcus Chen, Ledgerline AE</strong>, with <strong>Ana Velasquez, Solutions Architect</strong>. We will walk through the NetSuite, QuickBooks, and Velo connector pattern with your IT lead and confirm scoped credentials.</div>
+            <div class="next-context">Calendar invite goes out by end of day Friday, April 04. Pre-read: a one-page integration diagram and a sample rule library, both sent by Tuesday, April 08.</div>
+          </div>
+          <div class="next-side">
+            <div class="next-checklist">
+              <h4>What we will prepare before April 10</h4>
+              <ul>
+                <li>Reference call slot with Wei Lin (Cargolane VP Finance), if useful</li>
+                <li>Draft Master Services Agreement, redlined against your standard paper</li>
+                <li>Security questionnaire pre-filled (CAIQ Lite + SOC 2 Type II report)</li>
+                <li>Sample audit-trail export from a Meridian Bio close</li>
+              </ul>
+            </div>
+            <div class="next-ask">
+              <div class="ask-label">One ask of you</div>
+              <div class="ask-text">Confirm by Monday, April 07 whether the April 10 slot works for Daniel and Northwind IT. If not, we have backup slots Friday April 11 morning.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Nav chrome -->
+      <div class="progress-line"></div>
+      <div class="nav-counter"><span class="cur">01</span> / <span class="total">11</span></div>
+      <div class="nav-arrows">
+        <button class="nav-btn prev" aria-label="Previous slide">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="nav-btn next" aria-label="Next slide">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function() {
+  const deck = document.querySelector('.deck');
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const progress = document.querySelector('.progress-line');
+  const counter = document.querySelector('.nav-counter .cur');
+  const totalEl = document.querySelector('.nav-counter .total');
+  const prevBtn = document.querySelector('.nav-btn.prev');
+  const nextBtn = document.querySelector('.nav-btn.next');
+
+  totalEl.textContent = String(total).padStart(2, '0');
+
+  function setScale() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const scale = Math.min(w / 1440, h / 810);
+    deck.style.transform = 'scale(' + scale + ')';
+  }
+  setScale();
+  window.addEventListener('resize', setScale);
+  window.addEventListener('orientationchange', setScale);
+
+  function go(to) {
+    if (to < 0 || to >= total) return;
+    slides[current].classList.remove('active');
+    current = to;
+    slides[current].classList.add('active');
+    progress.style.width = (((current + 1) / total) * 100) + '%';
+    counter.textContent = String(current + 1).padStart(2, '0');
+  }
+  const next = () => go(current + 1);
+  const prev = () => go(current - 1);
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', (e) => {
+    const editingText = e.target && e.target.getAttribute &&
+                        e.target.getAttribute('contenteditable') === 'true';
+    if (editingText) return;
+    if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', (e) => { tx = e.changedTouches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 60) dx < 0 ? next() : prev();
+  }, { passive: true });
+})();
+</script>
+
+<script>
+/* === INLINE-EDIT MODULE · press E to toggle edit mode, Ctrl/S downloads, localStorage autosaves === */
+(function() {
+  const STORAGE_KEY = 'deck-edits:' + location.pathname;
+  const SAVE_DEBOUNCE_MS = 500;
+  const HOVER_GRACE_MS = 400;
+
+  const editor = { isActive: false, saveTimer: null, hideTimer: null };
+
+  const EDITABLE_SELECTORS = [
+    '.slide h1', '.slide h2', '.slide h3', '.slide h4', '.slide h5',
+    '.slide p', '.slide li', '.slide blockquote',
+    '.slide .eyebrow', '.slide .lead', '.slide .fact',
+    '.slide .stat-label', '.slide .stat-value',
+    '.slide .quote', '.slide .attribution',
+    '.slide .cover-title', '.slide .cover-context',
+    '.slide .discovery-detail', '.slide .discovery-quote',
+    '.slide .problem-quote', '.slide .problem-context p',
+    '.slide .urgency-intro', '.slide .urgency-card .uc-detail', '.slide .uc-num',
+    '.slide .solution-headline', '.slide .sol-bullet .txt',
+    '.slide .step-card .step-desc', '.slide .step-card .step-outcome',
+    '.slide .howitworks-intro', '.slide .system-diagram .node',
+    '.slide .pc-logo', '.slide .pc-meta', '.slide .pc-quote', '.slide .pc-attr',
+    '.slide .pm-num', '.slide .pm-label',
+    '.slide .roi-row div', '.slide .roi-bar .lbl', '.slide .roi-bar .val', '.slide .rc-val',
+    '.slide .gantt-row .ph-name', '.slide .gantt-row .ph-owner',
+    '.slide .pc-num', '.slide .pc-per', '.slide .pc-incl li', '.slide .pc-excl li',
+    '.slide .col-val', '.slide .col-label',
+    '.slide .next-action', '.slide .next-date', '.slide .next-owner', '.slide .next-context',
+    '.slide .ask-text',
+    '.brand-mark', '.slide-meta'
+  ];
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(saved, 'text/html');
+      const restoredDeck = doc.querySelector('.deck');
+      const liveDeck = document.querySelector('.deck');
+      if (restoredDeck && liveDeck) liveDeck.innerHTML = restoredDeck.innerHTML;
+    }
+  } catch (e) {
+    console.warn('Inline-edit restore failed:', e);
+  }
+
+  const hotzone = document.querySelector('.edit-hotzone');
+  const toggle = document.getElementById('editToggle');
+
+  function showToggle() {
+    clearTimeout(editor.hideTimer);
+    toggle.classList.add('show');
+  }
+  function scheduleHideToggle() {
+    clearTimeout(editor.hideTimer);
+    editor.hideTimer = setTimeout(() => {
+      if (!editor.isActive) toggle.classList.remove('show');
+    }, HOVER_GRACE_MS);
+  }
+
+  hotzone.addEventListener('mouseenter', showToggle);
+  hotzone.addEventListener('mouseleave', scheduleHideToggle);
+  toggle.addEventListener('mouseenter', showToggle);
+  toggle.addEventListener('mouseleave', scheduleHideToggle);
+
+  hotzone.addEventListener('click', () => toggleEditMode());
+  toggle.addEventListener('click', () => toggleEditMode());
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'e' && e.key !== 'E') return;
+    const inEditable = e.target && e.target.getAttribute &&
+                       e.target.getAttribute('contenteditable') === 'true';
+    if (inEditable) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    e.preventDefault();
+    toggleEditMode();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      downloadHtml();
+    }
+  });
+
+  function toggleEditMode() {
+    editor.isActive = !editor.isActive;
+    document.body.classList.toggle('edit-mode', editor.isActive);
+    toggle.classList.toggle('active', editor.isActive);
+    toggle.classList.add('show');
+
+    const targets = document.querySelectorAll(EDITABLE_SELECTORS.join(','));
+    targets.forEach(el => {
+      if (editor.isActive) {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'true');
+      } else {
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('spellcheck');
+      }
+    });
+
+    if (!editor.isActive) scheduleHideToggle();
+  }
+
+  document.addEventListener('input', (e) => {
+    if (!e.target || !e.target.getAttribute) return;
+    if (e.target.getAttribute('contenteditable') !== 'true') return;
+    clearTimeout(editor.saveTimer);
+    editor.saveTimer = setTimeout(() => {
+      try {
+        const deck = document.querySelector('.deck');
+        const wrapper = document.createElement('div');
+        const clonedDeck = deck.cloneNode(true);
+        wrapper.appendChild(clonedDeck);
+        const html = '<!doctype html><html><body>' + wrapper.innerHTML + '</body></html>';
+        localStorage.setItem(STORAGE_KEY, html);
+      } catch (err) {
+        console.warn('Inline-edit autosave failed:', err);
+      }
+    }, SAVE_DEBOUNCE_MS);
+  });
+
+  function downloadHtml() {
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+    clone.querySelectorAll('[spellcheck]').forEach(el => el.removeAttribute('spellcheck'));
+    const hotzoneEl = clone.querySelector('.edit-hotzone');
+    const toggleEl = clone.querySelector('.edit-toggle');
+    if (hotzoneEl) hotzoneEl.remove();
+    if (toggleEl) toggleEl.remove();
+    clone.querySelector('body').classList.remove('edit-mode');
+
+    const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const title = (document.title || 'deck').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = title + '.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+})();
+</script>
+</body>
+</html>

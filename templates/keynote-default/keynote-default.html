@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Discipline of Small Decisions · A Keynote</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* === BRAND TOKENS · edit these CSS custom properties to rebrand the deck === */
+:root {
+  /* Editorial Serif preset */
+  --brand-primary: #1F1F1F;
+  --brand-accent:  #A0344B;
+  --brand-text:    #1F1F1F;
+  --brand-muted:   #5C5C5C;
+  --brand-bg:      #FFFCF7;
+  --brand-surface: #F5F1E8;
+  --brand-border:  #D8D1C3;
+  --letterbox:     #14110D;
+  --font-display:  'Lora', 'Source Serif Pro', 'Georgia', serif;
+  --font-body:     'Source Serif Pro', 'Georgia', serif;
+  --font-mono:     'JetBrains Mono', 'SF Mono', monospace;
+
+  /* Typographic scale (locked) */
+  --t-mega:    260px;
+  --t-hero:    180px;
+  --t-display: 132px;
+  --t-h1:       96px;
+  --t-h2:       72px;
+  --t-h3:       52px;
+  --t-h4:       36px;
+  --t-lead:     28px;
+  --t-body:     20px;
+  --t-small:    16px;
+  --t-meta:     12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--letterbox);
+  color: var(--brand-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Inline-edit hotzone + toggle */
+.edit-hotzone {
+  position: fixed; top: 0; left: 0;
+  width: 40px; height: 40px;
+  z-index: 10000; cursor: pointer; background: transparent;
+}
+.edit-toggle {
+  position: fixed; top: 12px; left: 12px;
+  z-index: 10001; padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+  color: var(--brand-text);
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px; cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease, background 0.15s ease, color 0.15s ease;
+}
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle.active { background: var(--brand-accent); color: #FFFCF7; border-color: var(--brand-accent); }
+body.edit-mode [contenteditable="true"] {
+  outline: 1px dashed var(--brand-accent);
+  outline-offset: 2px; cursor: text;
+}
+body.edit-mode [contenteditable="true"]:focus {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+}
+
+/* Viewport-sized centerer, letterbox lives here */
+.deck-outer {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--letterbox); overflow: hidden;
+}
+
+/* Fixed design canvas */
+.deck {
+  position: relative;
+  width: 1440px; height: 810px;
+  background: var(--brand-bg);
+  transform-origin: center center;
+  overflow: hidden; flex-shrink: 0;
+}
+
+/* Slides */
+.slide {
+  position: absolute; inset: 0;
+  padding: 104px 96px 96px;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  background: var(--brand-bg);
+  opacity: 0;
+  transition: opacity 320ms ease;
+}
+.slide.active { display: flex; opacity: 1; }
+.s-cover { justify-content: center; padding: 96px 120px; }
+
+/* Floating nav */
+.progress-line {
+  position: absolute; top: 0; left: 0;
+  height: 3px;
+  background: var(--brand-accent);
+  width: 3.57%;
+  transition: width 320ms ease;
+  z-index: 100;
+}
+.nav-counter {
+  position: absolute; bottom: 24px; left: 32px;
+  font-family: var(--font-mono);
+  font-size: var(--t-meta); letter-spacing: 0.08em;
+  color: var(--brand-muted);
+  z-index: 100;
+}
+.nav-arrows {
+  position: absolute; bottom: 20px; right: 32px;
+  display: flex; gap: 10px; z-index: 100;
+}
+.nav-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1.5px solid var(--brand-border);
+  background: transparent;
+  color: var(--brand-text);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 180ms ease;
+}
+.nav-btn:hover { border-color: var(--brand-accent); background: var(--brand-accent); color: #FFFCF7; }
+.nav-btn svg { width: 16px; height: 16px; }
+
+/* Brand mark + slide meta */
+.brand-mark {
+  position: absolute; top: 32px; left: 48px;
+  display: flex; align-items: center; gap: 10px;
+  z-index: 5;
+  color: var(--brand-text);
+  font-family: var(--font-display);
+  font-weight: 600; font-size: var(--t-small);
+  letter-spacing: -0.01em;
+}
+.brand-mark .dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--brand-accent);
+}
+.slide-meta {
+  position: absolute; top: 32px; right: 48px;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: var(--t-meta); color: var(--brand-muted);
+  letter-spacing: 0.12em; font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* Typography utilities */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-accent);
+  font-weight: 600;
+  margin-bottom: 28px;
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--brand-text);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+h1 { font-size: var(--t-h1); }
+h2 { font-size: var(--t-h2); }
+h3 { font-size: var(--t-h3); }
+h4 { font-size: var(--t-h4); font-weight: 500; }
+.lead {
+  font-family: var(--font-body);
+  font-size: var(--t-lead);
+  line-height: 1.45;
+  color: var(--brand-muted);
+  font-style: italic;
+}
+p { font-size: var(--t-body); line-height: 1.55; color: var(--brand-text); }
+.muted { color: var(--brand-muted); }
+.accent { color: var(--brand-accent); }
+.serif-italic { font-style: italic; font-family: var(--font-display); }
+
+/* ===== Slide 1, Cover ===== */
+.s-cover { text-align: center; }
+.s-cover .cover-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--brand-accent);
+  margin-bottom: 64px;
+}
+.s-cover h1 {
+  font-size: var(--t-display);
+  line-height: 0.98;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.s-cover .cover-rule {
+  width: 96px; height: 2px;
+  background: var(--brand-accent);
+  margin: 56px auto 40px;
+}
+.s-cover .cover-author {
+  font-family: var(--font-display);
+  font-size: var(--t-h4);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--brand-text);
+}
+.s-cover .cover-meta {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-top: 14px;
+}
+
+/* ===== Slide 2, Hook ===== */
+.s-hook {
+  background: var(--brand-text);
+  color: var(--brand-bg);
+}
+.s-hook .brand-mark, .s-hook .slide-meta { color: var(--brand-bg); }
+.s-hook .slide-meta { color: rgba(255, 252, 247, 0.5); }
+.s-hook .hook-stat {
+  font-family: var(--font-display);
+  font-size: var(--t-mega);
+  line-height: 0.92;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  color: var(--brand-bg);
+  margin-top: auto;
+}
+.s-hook .hook-stat sup {
+  font-size: 96px; vertical-align: super;
+  color: var(--brand-accent);
+}
+.s-hook .hook-line {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--t-h3);
+  line-height: 1.25;
+  max-width: 880px;
+  color: rgba(255, 252, 247, 0.78);
+  margin-top: 32px;
+  margin-bottom: auto;
+}
+
+/* ===== Slide 3, Thesis ===== */
+.s-thesis { justify-content: center; align-items: flex-start; }
+.s-thesis .thesis-rule {
+  width: 64px; height: 2px;
+  background: var(--brand-accent);
+  margin-bottom: 36px;
+}
+.s-thesis h2 {
+  font-size: var(--t-hero);
+  line-height: 0.98;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  max-width: 1180px;
+}
+.s-thesis .thesis-foot {
+  margin-top: 48px;
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+}
+
+/* ===== Slide 4, Why Now (timeline) ===== */
+.s-why .why-grid {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: start;
+}
+.s-why .why-quote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--t-h3);
+  line-height: 1.25;
+  color: var(--brand-text);
+}
+.s-why .timeline {
+  position: relative;
+  padding-left: 28px;
+  border-left: 2px solid var(--brand-border);
+}
+.s-why .timeline-item {
+  position: relative;
+  padding-bottom: 28px;
+}
+.s-why .timeline-item:last-child { padding-bottom: 0; }
+.s-why .timeline-item::before {
+  content: ''; position: absolute;
+  left: -36px; top: 8px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--brand-accent);
+}
+.s-why .ti-year {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  font-weight: 600;
+}
+.s-why .ti-body {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.45;
+  color: var(--brand-text);
+  margin-top: 6px;
+}
+
+/* ===== Generic argument layouts (slides 5 to 10) ===== */
+.s-arg .arg-grid {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  flex: 1;
+}
+.s-arg h2 { max-width: 700px; }
+.s-arg p.lead { max-width: 560px; margin-top: 24px; }
+
+/* Slide 5, big chart */
+.bar-chart {
+  display: flex; flex-direction: column;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  padding: 36px 32px;
+  border-radius: 4px;
+}
+.bar-chart .bc-title {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-bottom: 24px;
+}
+.bar-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 80px;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.bar-row .bar-label {
+  font-family: var(--font-display);
+  font-size: var(--t-small);
+  color: var(--brand-text);
+  font-weight: 600;
+}
+.bar-row .bar-track {
+  height: 18px;
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  position: relative;
+}
+.bar-row .bar-fill {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: var(--brand-accent);
+}
+.bar-row .bar-fill.muted-fill {
+  background: var(--brand-text);
+}
+.bar-row .bar-val {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  color: var(--brand-text);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Slide 6, side-by-side comparison */
+.s-compare .compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-top: 48px;
+  flex: 1;
+  border-top: 2px solid var(--brand-border);
+}
+.compare-col {
+  padding: 40px 32px 0;
+  border-right: 1px solid var(--brand-border);
+}
+.compare-col:last-child { border-right: none; }
+.compare-col.right { background: var(--brand-surface); }
+.compare-col .label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand-accent);
+  margin-bottom: 24px;
+}
+.compare-col h3 {
+  font-size: var(--t-h3);
+  margin-bottom: 28px;
+  font-style: italic;
+}
+.compare-col ul {
+  list-style: none;
+}
+.compare-col li {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.55;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--brand-border);
+  color: var(--brand-text);
+}
+.compare-col li:last-child { border-bottom: none; }
+
+/* Slide 7, icon + argument */
+.s-icon-arg .ia-grid {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 80px;
+  align-items: center;
+  flex: 1;
+}
+.ia-icon-box {
+  width: 320px; height: 320px;
+  border: 2px solid var(--brand-accent);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--brand-accent);
+}
+.ia-icon-box svg { width: 144px; height: 144px; }
+.s-icon-arg .ia-text h2 { font-size: var(--t-h1); max-width: 720px; }
+.s-icon-arg .ia-text p { margin-top: 32px; max-width: 640px; font-size: var(--t-lead); line-height: 1.45; color: var(--brand-muted); font-style: italic; }
+
+/* Slide 8, three principle cards */
+.s-three .three-grid {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  flex: 1;
+}
+.principle {
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  border-top: 4px solid var(--brand-accent);
+  padding: 36px 28px;
+  display: flex; flex-direction: column;
+}
+.principle .p-num {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  color: var(--brand-accent);
+  letter-spacing: 0.16em;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+.principle h4 {
+  font-family: var(--font-display);
+  font-size: var(--t-h4);
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.principle p {
+  font-size: var(--t-body);
+  color: var(--brand-muted);
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* Slide 9, scatter-style visual */
+.s-scatter .scatter-grid {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: 1fr 520px;
+  gap: 56px;
+  align-items: center;
+  flex: 1;
+}
+.scatter-plot {
+  position: relative;
+  width: 520px; height: 360px;
+  border-left: 2px solid var(--brand-border);
+  border-bottom: 2px solid var(--brand-border);
+  background: var(--brand-surface);
+}
+.scatter-plot .axis-x, .scatter-plot .axis-y {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  color: var(--brand-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.scatter-plot .axis-x { bottom: -24px; right: 0; }
+.scatter-plot .axis-y { top: -24px; left: -2px; }
+.scatter-plot .dot {
+  position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--brand-text);
+  transform: translate(-50%, -50%);
+}
+.scatter-plot .dot.high {
+  background: var(--brand-accent);
+  width: 22px; height: 22px;
+}
+.scatter-plot .trend {
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+/* Slide 10, synthesis pull-quote */
+.s-synth { justify-content: center; }
+.s-synth .synth-quote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--t-display);
+  line-height: 1.05;
+  font-weight: 500;
+  max-width: 1180px;
+  letter-spacing: -0.02em;
+}
+.s-synth .synth-quote::before {
+  content: '\201C';
+  display: block;
+  font-size: 220px;
+  color: var(--brand-accent);
+  line-height: 0.6;
+  margin-bottom: 16px;
+  font-style: normal;
+  font-family: var(--font-display);
+}
+.s-synth .synth-attr {
+  margin-top: 40px;
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+}
+
+/* Slide 11, story setup, portrait card */
+.s-story-setup .story-grid {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 64px;
+  align-items: center;
+  flex: 1;
+}
+.portrait {
+  width: 320px; height: 400px;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  position: relative;
+  overflow: hidden;
+}
+.portrait .silhouette {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+  color: var(--brand-accent);
+}
+.portrait .silhouette svg { width: 220px; height: 320px; }
+.portrait .frame-label {
+  position: absolute; bottom: 14px; left: 16px;
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+.s-story-setup .story-text .role {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-accent);
+  margin-bottom: 18px;
+}
+.s-story-setup .story-text h2 { font-size: 88px; line-height: 1.02; }
+.s-story-setup .story-text p { font-size: var(--t-lead); color: var(--brand-muted); font-style: italic; margin-top: 28px; max-width: 540px; line-height: 1.4; }
+
+/* Slide 12, story problem, narrative + numbers */
+.s-story-problem .sp-grid {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 56px;
+  flex: 1;
+  align-items: stretch;
+}
+.sp-narrative {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--t-h4);
+  line-height: 1.35;
+  color: var(--brand-text);
+}
+.sp-stats {
+  display: flex; flex-direction: column; gap: 18px;
+}
+.stat-card {
+  padding: 24px 26px;
+  background: var(--brand-surface);
+  border-left: 4px solid var(--brand-accent);
+}
+.stat-card .stat-value {
+  font-family: var(--font-display);
+  font-size: var(--t-h2);
+  font-weight: 600;
+  color: var(--brand-text);
+  line-height: 1;
+}
+.stat-card .stat-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-top: 10px;
+}
+
+/* Slide 13, the shift, single moment */
+.s-shift {
+  background: var(--brand-surface);
+}
+.s-shift .shift-eyebrow { color: var(--brand-accent); }
+.s-shift .shift-line {
+  margin-top: 56px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 132px;
+  line-height: 1.0;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  color: var(--brand-text);
+  max-width: 1200px;
+}
+.s-shift .shift-foot {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+  border-top: 1px solid var(--brand-border);
+  padding-top: 28px;
+}
+.shift-foot .sf-num {
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 600;
+  color: var(--brand-accent);
+}
+.shift-foot .sf-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-top: 10px;
+}
+
+/* Slide 14, the outcome, big metric */
+.s-outcome { justify-content: center; }
+.s-outcome .outcome-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.outcome-big {
+  font-family: var(--font-display);
+  font-size: var(--t-mega);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  color: var(--brand-accent);
+  line-height: 0.9;
+}
+.outcome-big .sub {
+  display: block;
+  font-size: var(--t-h4);
+  font-family: var(--font-mono);
+  font-style: normal;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-top: 20px;
+  font-weight: 500;
+}
+.outcome-text h2 { font-size: var(--t-h2); max-width: 520px; }
+.outcome-text p { font-size: var(--t-lead); color: var(--brand-muted); font-style: italic; margin-top: 24px; max-width: 480px; line-height: 1.4; }
+
+/* Slide 15, second story setup */
+.s-story-setup-2 .ss2-grid {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  flex: 1;
+}
+.org-mark {
+  width: 100%; height: 360px;
+  background: var(--brand-text);
+  color: var(--brand-bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 18px;
+  font-family: var(--font-display);
+}
+.org-mark .om-letter {
+  font-size: 200px;
+  font-weight: 700;
+  line-height: 0.9;
+  color: var(--brand-accent);
+}
+.org-mark .om-name {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--brand-bg);
+}
+
+/* Slide 16, story 2 problem */
+.s-story-problem-2 .sp2-grid {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  flex: 1;
+}
+.sp2-decline {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  padding: 36px 32px;
+}
+.sp2-decline .dc-title {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-bottom: 32px;
+}
+.line-chart {
+  position: relative;
+  width: 100%; height: 240px;
+}
+.line-chart svg { width: 100%; height: 100%; }
+.sp2-list h3 { font-size: var(--t-h3); margin-bottom: 28px; font-style: italic; }
+.sp2-list ol {
+  list-style: none;
+  counter-reset: failures;
+}
+.sp2-list li {
+  counter-increment: failures;
+  padding: 16px 0 16px 56px;
+  border-bottom: 1px solid var(--brand-border);
+  position: relative;
+  font-size: var(--t-body);
+  line-height: 1.4;
+}
+.sp2-list li:last-child { border-bottom: none; }
+.sp2-list li::before {
+  content: counter(failures, decimal-leading-zero);
+  position: absolute; left: 0; top: 16px;
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  color: var(--brand-accent);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+/* Slide 17, action + outcome compressed */
+.s-action-outcome .ao-grid {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  flex: 1;
+  border: 1px solid var(--brand-border);
+}
+.ao-col { padding: 40px 36px; display: flex; flex-direction: column; }
+.ao-col.action { background: var(--brand-bg); border-right: 1px solid var(--brand-border); }
+.ao-col.outcome { background: var(--brand-text); color: var(--brand-bg); }
+.ao-col .ao-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-accent);
+  margin-bottom: 24px;
+}
+.ao-col h3 {
+  font-size: var(--t-h3);
+  font-style: italic;
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+.ao-col.outcome h3 { color: var(--brand-bg); }
+.ao-col p { font-size: var(--t-body); line-height: 1.5; }
+.ao-col.outcome p { color: rgba(255, 252, 247, 0.82); }
+.ao-col .ao-metric {
+  margin-top: auto;
+  font-family: var(--font-display);
+  font-size: 120px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--brand-accent);
+}
+
+/* Slide 18, proof, logo grid + line */
+.s-proof .proof-lead {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--t-h2);
+  line-height: 1.15;
+  max-width: 1080px;
+  margin-top: 16px;
+}
+.s-proof .proof-grid {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--brand-border);
+  border-bottom: 1px solid var(--brand-border);
+}
+.proof-cell {
+  padding: 32px 18px;
+  border-right: 1px solid var(--brand-border);
+  display: flex; align-items: center; justify-content: center;
+  min-height: 110px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 24px;
+  color: var(--brand-muted);
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+.proof-cell:last-child { border-right: none; }
+.proof-cell.italic { font-style: italic; font-weight: 400; }
+.s-proof .proof-foot {
+  margin-top: 20px;
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+}
+
+/* Slide 19, mindset reframe */
+.s-mindset { justify-content: center; align-items: flex-start; }
+.s-mindset .mind-arrow {
+  display: flex; align-items: center; gap: 40px;
+  margin-top: 24px;
+}
+.mind-side {
+  display: flex; flex-direction: column;
+  width: 460px;
+}
+.mind-side .ms-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-bottom: 16px;
+}
+.mind-side .ms-text {
+  font-family: var(--font-display);
+  font-size: 76px;
+  line-height: 1.0;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+.mind-side.from { color: var(--brand-muted); }
+.mind-side.from .ms-text { text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--brand-accent); }
+.mind-side.to .ms-text { color: var(--brand-text); }
+.mind-arrow .arrow-mark {
+  color: var(--brand-accent);
+}
+.mind-arrow .arrow-mark svg { width: 96px; height: 64px; }
+
+/* Slide 20, implication, audience card */
+.s-imp1 .imp1-grid {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  flex: 1;
+}
+.audience-tag {
+  display: inline-flex;
+  padding: 10px 18px;
+  background: var(--brand-accent);
+  color: var(--brand-bg);
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.imp-action h2 { font-size: 88px; line-height: 1.05; max-width: 540px; font-style: italic; }
+.imp-action p { font-size: var(--t-lead); color: var(--brand-muted); margin-top: 24px; max-width: 480px; line-height: 1.4; }
+.imp-detail {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  padding: 40px 36px;
+}
+.imp-detail h4 {
+  font-family: var(--font-display);
+  font-size: var(--t-h4);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+.imp-detail .checks {
+  list-style: none;
+}
+.imp-detail .checks li {
+  padding: 14px 0 14px 32px;
+  position: relative;
+  font-size: var(--t-body);
+  line-height: 1.4;
+  border-bottom: 1px solid var(--brand-border);
+}
+.imp-detail .checks li:last-child { border-bottom: none; }
+.imp-detail .checks li::before {
+  content: ''; position: absolute;
+  left: 0; top: 22px;
+  width: 14px; height: 14px;
+  border: 2px solid var(--brand-accent);
+}
+
+/* Slide 21, implication 2, different visual, diagram */
+.s-imp2 .imp2-diagram {
+  margin-top: 48px;
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.cycle {
+  position: relative;
+  width: 520px; height: 360px;
+}
+.cycle-node {
+  position: absolute;
+  width: 180px;
+  padding: 18px 20px;
+  background: var(--brand-bg);
+  border: 1.5px solid var(--brand-border);
+  text-align: center;
+}
+.cycle-node .cn-num {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  color: var(--brand-accent);
+  font-weight: 600;
+}
+.cycle-node .cn-label {
+  font-family: var(--font-display);
+  font-size: var(--t-small);
+  font-weight: 600;
+  font-style: italic;
+  margin-top: 6px;
+}
+.cycle-node.n1 { top: 0; left: 50%; transform: translateX(-50%); }
+.cycle-node.n2 { right: 0; top: 50%; transform: translateY(-50%); }
+.cycle-node.n3 { bottom: 0; left: 50%; transform: translateX(-50%); }
+.cycle-node.n4 { left: 0; top: 50%; transform: translateY(-50%); }
+.cycle svg.arrows {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+.s-imp2 .imp2-body {
+  margin-top: 24px;
+  display: grid; grid-template-columns: 1fr 480px; gap: 56px;
+  align-items: center;
+}
+
+/* Slide 22, third implication, broad */
+.s-imp3 .imp3-grid {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  flex: 1;
+}
+.imp3-col {
+  border-top: 2px solid var(--brand-text);
+  padding-top: 24px;
+  display: flex; flex-direction: column;
+}
+.imp3-col.accent { border-top-color: var(--brand-accent); }
+.imp3-col .ic-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-bottom: 18px;
+}
+.imp3-col h3 {
+  font-size: 44px;
+  line-height: 1.1;
+  font-style: italic;
+  margin-bottom: 18px;
+}
+.imp3-col p {
+  font-size: var(--t-body);
+  line-height: 1.5;
+  color: var(--brand-muted);
+}
+
+/* Slide 23, upside */
+.s-upside {
+  background: var(--brand-text);
+  color: var(--brand-bg);
+}
+.s-upside .brand-mark, .s-upside .slide-meta { color: var(--brand-bg); }
+.s-upside .slide-meta { color: rgba(255, 252, 247, 0.55); }
+.s-upside .eyebrow { color: var(--brand-accent); }
+.s-upside .upside-line {
+  font-family: var(--font-display);
+  font-size: 156px;
+  line-height: 1.0;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  font-style: italic;
+  color: var(--brand-bg);
+  max-width: 1200px;
+  margin-top: 32px;
+}
+.s-upside .upside-line .accent-word { color: var(--brand-accent); font-style: italic; }
+.s-upside .upside-foot {
+  margin-top: auto;
+  font-family: var(--font-body);
+  font-size: var(--t-lead);
+  font-style: italic;
+  color: rgba(255, 252, 247, 0.7);
+  max-width: 720px;
+  line-height: 1.45;
+}
+
+/* Slide 24, objection */
+.s-objection .obj-grid {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 40px;
+  flex: 1;
+  align-items: start;
+}
+.obj-mark {
+  font-family: var(--font-display);
+  font-size: 160px;
+  line-height: 0.9;
+  color: var(--brand-accent);
+  font-weight: 700;
+}
+.obj-text .obj-quote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 88px;
+  line-height: 1.05;
+  font-weight: 500;
+  max-width: 980px;
+  letter-spacing: -0.02em;
+}
+.obj-text .obj-from {
+  margin-top: 36px;
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+}
+
+/* Slide 25, rebuttal, evidence row */
+.s-rebut .rebut-head { display: flex; align-items: flex-end; justify-content: space-between; }
+.s-rebut h2 { font-size: var(--t-h2); max-width: 760px; }
+.s-rebut .rebut-stamp {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-accent);
+  padding: 8px 14px;
+  border: 1.5px solid var(--brand-accent);
+}
+.s-rebut .rebut-grid {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  flex: 1;
+}
+.evidence {
+  padding: 32px 28px;
+  background: var(--brand-surface);
+  border-top: 3px solid var(--brand-accent);
+  display: flex; flex-direction: column;
+}
+.evidence .e-stat {
+  font-family: var(--font-display);
+  font-size: 84px;
+  font-weight: 600;
+  color: var(--brand-text);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+.evidence .e-stat .pct { color: var(--brand-accent); }
+.evidence p {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.45;
+  color: var(--brand-muted);
+  margin-top: 20px;
+  font-style: italic;
+}
+.evidence .e-source {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-top: 20px;
+}
+
+/* Slide 26, trade-off */
+.s-tradeoff .trade-grid {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  flex: 1;
+  border-top: 2px solid var(--brand-border);
+  border-bottom: 2px solid var(--brand-border);
+}
+.trade-col {
+  padding: 40px 36px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.trade-col.cost {
+  background: var(--brand-surface);
+  border-right: 1px solid var(--brand-border);
+}
+.trade-col .tc-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-accent);
+  margin-bottom: 28px;
+}
+.trade-col h3 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 60px;
+  line-height: 1.05;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+.trade-col p {
+  font-size: var(--t-body);
+  line-height: 1.55;
+  color: var(--brand-muted);
+}
+.trade-col .tc-stat {
+  margin-top: 32px;
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: 600;
+  color: var(--brand-accent);
+  letter-spacing: -0.025em;
+}
+.trade-col .tc-stat-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-top: 6px;
+}
+
+/* Slide 27, CTA */
+.s-cta .cta-grid {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 64px;
+  align-items: center;
+  flex: 1;
+}
+.cta-text h2 {
+  font-size: 120px;
+  line-height: 0.98;
+  font-style: italic;
+  font-weight: 600;
+  max-width: 760px;
+}
+.cta-text .cta-line {
+  margin-top: 32px;
+  font-family: var(--font-body);
+  font-size: var(--t-lead);
+  line-height: 1.45;
+  color: var(--brand-muted);
+  max-width: 620px;
+  font-style: italic;
+}
+.cta-text .cta-url {
+  display: inline-block;
+  margin-top: 36px;
+  padding: 16px 28px;
+  background: var(--brand-accent);
+  color: var(--brand-bg);
+  font-family: var(--font-mono);
+  font-size: var(--t-body);
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+.qr-block {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px;
+}
+.qr {
+  width: 240px; height: 240px;
+  background:
+    linear-gradient(90deg, var(--brand-text) 0% 8%, transparent 8% 16%, var(--brand-text) 16% 24%, transparent 24% 32%, var(--brand-text) 32% 40%, transparent 40% 48%, var(--brand-text) 48% 56%, transparent 56% 64%, var(--brand-text) 64% 72%, transparent 72% 80%, var(--brand-text) 80% 88%, transparent 88% 100%),
+    linear-gradient(0deg, var(--brand-text) 0% 8%, transparent 8% 16%, var(--brand-text) 16% 24%, transparent 24% 32%, var(--brand-text) 32% 40%, transparent 40% 48%, var(--brand-text) 48% 56%, transparent 56% 64%, var(--brand-text) 64% 72%, transparent 72% 80%, var(--brand-text) 80% 88%, transparent 88% 100%),
+    var(--brand-bg);
+  background-blend-mode: screen;
+  border: 8px solid var(--brand-bg);
+  outline: 1px solid var(--brand-border);
+  position: relative;
+}
+.qr::before, .qr::after, .qr > span {
+  content: ''; position: absolute;
+  width: 56px; height: 56px;
+  background: var(--brand-bg);
+  border: 8px solid var(--brand-text);
+}
+.qr::before { top: 8px; left: 8px; }
+.qr::after { top: 8px; right: 8px; }
+.qr > span { bottom: 8px; left: 8px; }
+.qr-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+}
+
+/* Slide 28, closing */
+.s-close { justify-content: center; align-items: flex-start; padding: 96px 120px; }
+.s-close .close-rule {
+  width: 96px; height: 2px;
+  background: var(--brand-accent);
+  margin-bottom: 40px;
+}
+.s-close .close-line {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 104px;
+  line-height: 1.0;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  max-width: 1100px;
+  color: var(--brand-text);
+}
+.s-close .close-grid {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+  border-top: 1px solid var(--brand-border);
+  padding-top: 28px;
+  width: 100%;
+  max-width: 1100px;
+}
+.close-col .cc-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin-bottom: 10px;
+}
+.close-col .cc-value {
+  font-family: var(--font-display);
+  font-size: var(--t-h4);
+  font-weight: 600;
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+
+<div class="edit-hotzone" aria-hidden="true"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)" aria-label="Toggle edit mode">Edit</button>
+
+<div class="deck-outer">
+  <div class="deck">
+
+    <!-- Slide 1, Cover -->
+    <section class="slide s-cover active">
+      <div class="cover-eyebrow">Spring Editorial Forum · Lisbon</div>
+      <h1>The Discipline of <span class="serif-italic" style="color:var(--brand-accent)">Small Decisions</span></h1>
+      <div class="cover-rule"></div>
+      <div class="cover-author">Elena Marchetti</div>
+      <div class="cover-meta">Author, The Quiet Compound · Talk No. 14</div>
+    </section>
+
+    <!-- Slide 2, Hook -->
+    <section class="slide s-hook">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Hook · 02 / 28</div>
+      <div class="hook-stat">96<sup>%</sup></div>
+      <div class="hook-line">Ninety-six percent of the choices a leader makes in any given week will never appear on a board agenda. They will, however, decide the company.</div>
+    </section>
+
+    <!-- Slide 3, Thesis -->
+    <section class="slide s-thesis">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Thesis · 03 / 28</div>
+      <div class="thesis-rule"></div>
+      <h2>Strategy is the residue of a thousand small judgments. The big bets only ratify what the small ones already decided.</h2>
+      <div class="thesis-foot">Argued across the next twenty-five slides</div>
+    </section>
+
+    <!-- Slide 4, Why Now -->
+    <section class="slide s-why">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Why now · 04 / 28</div>
+      <div class="eyebrow">A short history of how decisions got faster</div>
+      <h2 style="max-width:980px">The cadence of decision-making has compressed three times in twenty years. Most leaders are still organized around the second compression.</h2>
+      <div class="why-grid">
+        <div class="why-quote">"The art of leadership has shifted from choosing the right room to choosing the right minute. Most of us are still booking conference rooms."</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="ti-year">2005</div>
+            <div class="ti-body">Quarterly cycle. Decisions clustered around the board meeting, the offsite, the annual plan.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="ti-year">2015</div>
+            <div class="ti-body">Weekly cycle. Tools made async standard. Hundreds of micro-decisions per leader per week.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="ti-year">2025</div>
+            <div class="ti-body">Hourly cycle. Models, copilots, and live dashboards turn every leader into a real-time editor.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5, Argument 1, big chart -->
+    <section class="slide s-arg">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Argument 01 · 05 / 28</div>
+      <div class="eyebrow">Argument 1</div>
+      <h2>Most "strategic" wins were won earlier, in operational drift.</h2>
+      <div class="arg-grid">
+        <div>
+          <p class="lead">Across two hundred mid-market companies studied between 2018 and 2024, the outcome of a stated "big bet" correlated with the prior eighteen months of small operating choices, not with the bet itself.</p>
+          <p class="lead" style="margin-top:18px">The bet only made visible what the floor had already chosen.</p>
+        </div>
+        <div class="bar-chart">
+          <div class="bc-title">Predictors of bet outcome (R, multi-firm sample)</div>
+          <div class="bar-row">
+            <div class="bar-label">Prior ops drift</div>
+            <div class="bar-track"><div class="bar-fill" style="width:84%"></div></div>
+            <div class="bar-val">0.84</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Hiring quality</div>
+            <div class="bar-track"><div class="bar-fill" style="width:71%"></div></div>
+            <div class="bar-val">0.71</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Bet sizing</div>
+            <div class="bar-track"><div class="bar-fill muted-fill" style="width:38%"></div></div>
+            <div class="bar-val">0.38</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Market timing</div>
+            <div class="bar-track"><div class="bar-fill muted-fill" style="width:29%"></div></div>
+            <div class="bar-val">0.29</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Board narrative</div>
+            <div class="bar-track"><div class="bar-fill muted-fill" style="width:11%"></div></div>
+            <div class="bar-val">0.11</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 6, Argument 2, side-by-side comparison -->
+    <section class="slide s-compare">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Argument 02 · 06 / 28</div>
+      <div class="eyebrow">Argument 2</div>
+      <h2>The leader's actual job has changed. The org chart has not.</h2>
+      <div class="compare-grid">
+        <div class="compare-col left">
+          <div class="label">What the chart shows</div>
+          <h3>The escalation leader</h3>
+          <ul>
+            <li>Sits at the top of a triangle of escalations.</li>
+            <li>Decides the things no one else can decide.</li>
+            <li>Reviews work after it is finished.</li>
+            <li>Calendar built around weekly forums.</li>
+            <li>Authority concentrated, attention scarce.</li>
+          </ul>
+        </div>
+        <div class="compare-col right">
+          <div class="label">What the day actually is</div>
+          <h3>The judgment editor</h3>
+          <ul>
+            <li>Sits inside dozens of low-stakes drafts a day.</li>
+            <li>Shapes things before they cost much to change.</li>
+            <li>Edits in motion, not at the end.</li>
+            <li>Calendar built around fifteen-minute checks.</li>
+            <li>Authority distributed, taste centralized.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 7, Argument 3, icon + argument -->
+    <section class="slide s-icon-arg">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Argument 03 · 07 / 28</div>
+      <div class="eyebrow">Argument 3</div>
+      <h2>The cost of a poor decision is no longer measured in dollars. It is measured in compounding direction.</h2>
+      <div class="ia-grid">
+        <div class="ia-icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 3 v 18"></path>
+            <path d="M3 12 h 18"></path>
+            <path d="M5.5 5.5 L 12 12"></path>
+            <circle cx="12" cy="12" r="2.2" fill="currentColor"></circle>
+          </svg>
+        </div>
+        <div class="ia-text">
+          <h2>One degree off, traveled long enough, lands the ship in the wrong country.</h2>
+          <p>A weekly cadence of one-degree drifts adds up to four hundred and ninety degrees of unintended rotation over a year. No quarterly review catches that.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 8, Argument 4, three principles -->
+    <section class="slide s-three">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Argument 04 · 08 / 28</div>
+      <div class="eyebrow">Argument 4</div>
+      <h2>Three habits separate teams that compound from teams that just stay busy.</h2>
+      <div class="three-grid">
+        <div class="principle">
+          <div class="p-num">Habit 01</div>
+          <h4>Decide at the source</h4>
+          <p>The person closest to the artifact makes the call. Escalation is a sign the artifact was unclear, not that the person was unqualified.</p>
+        </div>
+        <div class="principle">
+          <div class="p-num">Habit 02</div>
+          <h4>Edit in the open</h4>
+          <p>Decisions live in the document, not in the inbox. The next reader can trace the why without a follow-up meeting.</p>
+        </div>
+        <div class="principle">
+          <div class="p-num">Habit 03</div>
+          <h4>Keep one taste line</h4>
+          <p>Speed is cheap, taste is not. One named editor holds the final read on the shape of the work, the way an editor holds a magazine.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 9, Argument 5, scatter plot -->
+    <section class="slide s-scatter">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Argument 05 · 09 / 28</div>
+      <div class="eyebrow">Argument 5</div>
+      <h2>The fastest teams are not the busiest. They are the most edited.</h2>
+      <div class="scatter-grid">
+        <div>
+          <p class="lead">Plotting four hundred product teams across "decisions per week" and "shipped quality" reveals a clear asymmetry. Volume of judgment matters less than the quality of the editing pass.</p>
+          <p class="lead" style="margin-top:18px">The outliers are not faster. They edit sooner, and earlier, and with fewer rounds.</p>
+        </div>
+        <div class="scatter-plot">
+          <span class="axis-x">Decisions / week</span>
+          <span class="axis-y">Quality score</span>
+          <span class="dot" style="left:18%; top:78%"></span>
+          <span class="dot" style="left:24%; top:64%"></span>
+          <span class="dot" style="left:30%; top:72%"></span>
+          <span class="dot" style="left:38%; top:55%"></span>
+          <span class="dot" style="left:44%; top:42%"></span>
+          <span class="dot" style="left:48%; top:60%"></span>
+          <span class="dot" style="left:55%; top:35%"></span>
+          <span class="dot" style="left:62%; top:48%"></span>
+          <span class="dot high" style="left:30%; top:22%"></span>
+          <span class="dot high" style="left:42%; top:18%"></span>
+          <span class="dot high" style="left:55%; top:14%"></span>
+          <span class="dot" style="left:72%; top:38%"></span>
+          <span class="dot" style="left:80%; top:52%"></span>
+          <span class="dot" style="left:88%; top:68%"></span>
+          <svg class="trend" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M 5 80 Q 35 30, 95 22" stroke="#A0344B" stroke-width="0.6" fill="none" stroke-dasharray="2 2"></path>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 10, Synthesis pull-quote -->
+    <section class="slide s-synth">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Synthesis · 10 / 28</div>
+      <div class="synth-quote">The companies that win the next decade are not the ones who placed the loudest bets. They are the ones who edited the quietest hours.</div>
+      <div class="synth-attr">Closing argument, before the stories begin</div>
+    </section>
+
+    <!-- Slide 11, Story 1 setup -->
+    <section class="slide s-story-setup">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Story 01 · 11 / 28</div>
+      <div class="eyebrow">First story</div>
+      <h2 style="max-width:880px">Meet the operator who never made a single famous decision.</h2>
+      <div class="story-grid">
+        <div class="portrait">
+          <div class="silhouette">
+            <svg viewBox="0 0 100 140" fill="currentColor">
+              <circle cx="50" cy="36" r="22"></circle>
+              <path d="M 12 140 C 12 92, 88 92, 88 140 Z"></path>
+            </svg>
+          </div>
+          <div class="frame-label">Portrait · composite</div>
+        </div>
+        <div class="story-text">
+          <div class="role">Operator · Six years in seat</div>
+          <h2>Marta R.</h2>
+          <p>Took over a regional logistics arm with no famous strategy slide and no transformation plan. Just a notebook, a weekly two-hour walk through the warehouse, and a habit of editing before the day ended.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 12, Story 1 problem -->
+    <section class="slide s-story-problem">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Story 01 · 12 / 28</div>
+      <div class="eyebrow">The setting she inherited</div>
+      <h2>Three years of "transformation" had moved the wrong things.</h2>
+      <div class="sp-grid">
+        <div class="sp-narrative">"They had a strategy deck three hundred and twelve slides long. They had a software rollout that ate four quarters. They had a culture initiative with its own logo. What they did not have was the right person editing the daily routes."</div>
+        <div class="sp-stats">
+          <div class="stat-card">
+            <div class="stat-value">312</div>
+            <div class="stat-label">Slides in the strategy deck</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">4 qtrs</div>
+            <div class="stat-label">Software rollout, behind plan</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">0</div>
+            <div class="stat-label">People editing daily routes</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 13, Story 1 the shift -->
+    <section class="slide s-shift">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Story 01 · 13 / 28</div>
+      <div class="eyebrow shift-eyebrow">What she changed</div>
+      <div class="shift-line">She moved her chair from the corner office onto the floor, and she edited the routing sheet every morning for one hundred days.</div>
+      <div class="shift-foot">
+        <div>
+          <div class="sf-num">100</div>
+          <div class="sf-label">Mornings, one chair, one routing sheet</div>
+        </div>
+        <div>
+          <div class="sf-num">7 min</div>
+          <div class="sf-label">Average edit per morning</div>
+        </div>
+        <div>
+          <div class="sf-num">0</div>
+          <div class="sf-label">New software bought during this period</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 14, Story 1 outcome -->
+    <section class="slide s-outcome">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Story 01 · 14 / 28</div>
+      <div class="outcome-row">
+        <div class="outcome-big">
+          +38<span class="sub">Margin points, three years</span>
+        </div>
+        <div class="outcome-text">
+          <h2>No headline acquisition. No transformation announcement. Just thirty-eight points.</h2>
+          <p>The board, asked to explain the turnaround, eventually retired the word "turnaround" and replaced it with "discipline."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 15, Story 2 setup -->
+    <section class="slide s-story-setup-2">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Story 02 · 15 / 28</div>
+      <div class="eyebrow">Second story · A different shape, same principle</div>
+      <h2 style="max-width:920px">Now meet the team that had every big decision right, and lost anyway.</h2>
+      <div class="ss2-grid">
+        <div class="org-mark">
+          <div class="om-letter">N</div>
+          <div class="om-name">Northwind, anonymized</div>
+        </div>
+        <div>
+          <p class="lead" style="font-size:var(--t-h4); font-style:italic; color:var(--brand-text); line-height:1.3; max-width:520px">A category leader at the start of the decade, with the right market read, the right capital, the right cofounders, and the wrong daily cadence.</p>
+          <p style="margin-top:24px; font-size:var(--t-body); color:var(--brand-muted); line-height:1.5; max-width:520px">Their thesis is now in three textbooks. Their company is not.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 16, Story 2 problem -->
+    <section class="slide s-story-problem-2">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Story 02 · 16 / 28</div>
+      <div class="eyebrow">What the failure mode looked like</div>
+      <h2>Quarterly bets, perfectly placed. Daily editing, absent.</h2>
+      <div class="sp2-grid">
+        <div class="sp2-decline">
+          <div class="dc-title">NPS, twenty-four-month trend</div>
+          <div class="line-chart">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+              <line x1="0" y1="100" x2="100" y2="100" stroke="#D8D1C3" stroke-width="0.5"></line>
+              <line x1="0" y1="0" x2="0" y2="100" stroke="#D8D1C3" stroke-width="0.5"></line>
+              <polyline points="0,18 8,22 18,26 28,30 38,38 48,48 58,58 68,66 78,74 88,82 100,90" fill="none" stroke="#A0344B" stroke-width="1.6"></polyline>
+              <circle cx="0" cy="18" r="1.4" fill="#A0344B"></circle>
+              <circle cx="100" cy="90" r="1.4" fill="#A0344B"></circle>
+              <text x="2" y="14" font-family="JetBrains Mono" font-size="4" fill="#5C5C5C">+72</text>
+              <text x="84" y="86" font-family="JetBrains Mono" font-size="4" fill="#5C5C5C">+14</text>
+            </svg>
+          </div>
+        </div>
+        <div class="sp2-list">
+          <h3>Five quietly bad daily habits</h3>
+          <ol>
+            <li>Pull requests reviewed by whoever was free, not whoever owned taste.</li>
+            <li>Customer responses copy-pasted from a single template for ten months straight.</li>
+            <li>Sales discounts approved by exception with no log of the exception.</li>
+            <li>Roadmap meetings rescheduled four times in a quarter without renegotiation.</li>
+            <li>Postmortems written, never re-read, never compared across quarters.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 17, Story 2 action + outcome -->
+    <section class="slide s-action-outcome">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Story 02 · 17 / 28</div>
+      <div class="eyebrow">What they tried, what it produced</div>
+      <h2>Three relaunches. One last attempt to outrun the floor.</h2>
+      <div class="ao-grid">
+        <div class="ao-col action">
+          <div class="ao-label">Action</div>
+          <h3>Three brand relaunches in eighteen months.</h3>
+          <p>Each one was professionally produced, executive-sponsored, and beautifully announced. None of them changed who was approving the discount, reviewing the pull request, or rewriting the support reply.</p>
+          <div class="ao-metric" style="color:var(--brand-text)">3x</div>
+        </div>
+        <div class="ao-col outcome">
+          <div class="ao-label" style="color:var(--brand-accent)">Outcome</div>
+          <h3>Acquired at one-fifth of peak valuation, the following year.</h3>
+          <p>The press release used the word "consolidation." Inside the company, the operators used a different word.</p>
+          <div class="ao-metric">-80%</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 18, Proof -->
+    <section class="slide s-proof">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Proof · 18 / 28</div>
+      <div class="eyebrow">Patterns we have seen, named honestly</div>
+      <div class="proof-lead">Across ten sectors, the pattern repeats. The companies that compound name the floor. The companies that drift name the bet.</div>
+      <div class="proof-grid">
+        <div class="proof-cell">Logistics</div>
+        <div class="proof-cell">Asset management</div>
+        <div class="proof-cell">Independent media</div>
+        <div class="proof-cell">Vertical SaaS</div>
+        <div class="proof-cell">Hospitality</div>
+        <div class="proof-cell">Speciality retail</div>
+        <div class="proof-cell">Clinical research</div>
+        <div class="proof-cell">Public broadcasting</div>
+        <div class="proof-cell">Manufacturing</div>
+        <div class="proof-cell italic">Studied, 2018 to 2024</div>
+      </div>
+      <div class="proof-foot">Sample · 412 firms · drawn from twelve regional research datasets</div>
+    </section>
+
+    <!-- Slide 19, Mindset shift -->
+    <section class="slide s-mindset">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Reframe · 19 / 28</div>
+      <div class="eyebrow">The reframe the talk is asking for</div>
+      <h2 style="font-size:var(--t-h2); max-width:860px; margin-bottom:8px">Stop asking what big move to make. Start asking what small move to edit.</h2>
+      <div class="mind-arrow">
+        <div class="mind-side from">
+          <div class="ms-label">From</div>
+          <div class="ms-text">What is the bet?</div>
+        </div>
+        <div class="arrow-mark">
+          <svg viewBox="0 0 96 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M 4 32 L 88 32"></path>
+            <path d="M 70 14 L 88 32 L 70 50"></path>
+          </svg>
+        </div>
+        <div class="mind-side to">
+          <div class="ms-label">To</div>
+          <div class="ms-text">What did we edit today?</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 20, Implication 1 -->
+    <section class="slide s-imp1">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Implication 01 · 20 / 28</div>
+      <div class="eyebrow">First implication</div>
+      <div class="imp1-grid">
+        <div class="imp-action">
+          <span class="audience-tag">For Founders</span>
+          <h2>Treat the calendar as the strategy document. Nothing else outranks it.</h2>
+          <p>The week is the smallest unit of culture. The artifacts you edit on a Monday are the ones the company will copy on a Thursday.</p>
+        </div>
+        <div class="imp-detail">
+          <h4>One-week experiment</h4>
+          <ul class="checks">
+            <li>Cancel two recurring forums. Replace with two thirty-minute edit windows.</li>
+            <li>Pick one artifact you have been "reviewing" and make a visible edit, in the doc, with your name on it.</li>
+            <li>End each day by writing a single sentence in a public channel: what you edited, and why.</li>
+            <li>At the end of the week, ask the team which of those three changes mattered most.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 21, Implication 2, cycle diagram -->
+    <section class="slide s-imp2">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Implication 02 · 21 / 28</div>
+      <div class="eyebrow">Second implication</div>
+      <h2 style="max-width:1000px">For investors. Stop scoring the deck. Score the edit cycle.</h2>
+      <div class="imp2-body">
+        <div>
+          <p class="lead">A founder's editing cadence is a stronger signal than any market-size slide. The four-step cycle below is what the strongest operators run, weekly, often without naming it.</p>
+          <p class="lead" style="margin-top:18px">Ask to see the artifacts. The deck shows what they pitched. The artifacts show what they actually believe.</p>
+        </div>
+        <div class="cycle">
+          <svg class="arrows" viewBox="0 0 520 360" preserveAspectRatio="none">
+            <defs>
+              <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#A0344B"></path>
+              </marker>
+            </defs>
+            <path d="M 310 50 Q 410 90, 420 160" stroke="#A0344B" stroke-width="1.6" fill="none" stroke-dasharray="4 4" marker-end="url(#arrowhead)"></path>
+            <path d="M 420 220 Q 410 280, 310 300" stroke="#A0344B" stroke-width="1.6" fill="none" stroke-dasharray="4 4" marker-end="url(#arrowhead)"></path>
+            <path d="M 210 300 Q 110 280, 100 220" stroke="#A0344B" stroke-width="1.6" fill="none" stroke-dasharray="4 4" marker-end="url(#arrowhead)"></path>
+            <path d="M 100 160 Q 110 90, 210 50" stroke="#A0344B" stroke-width="1.6" fill="none" stroke-dasharray="4 4" marker-end="url(#arrowhead)"></path>
+          </svg>
+          <div class="cycle-node n1">
+            <div class="cn-num">01</div>
+            <div class="cn-label">Surface the draft</div>
+          </div>
+          <div class="cycle-node n2">
+            <div class="cn-num">02</div>
+            <div class="cn-label">Edit in the open</div>
+          </div>
+          <div class="cycle-node n3">
+            <div class="cn-num">03</div>
+            <div class="cn-label">Name the taste call</div>
+          </div>
+          <div class="cycle-node n4">
+            <div class="cn-num">04</div>
+            <div class="cn-label">Ship and log it</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 22, Implication 3, broad -->
+    <section class="slide s-imp3">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Implication 03 · 22 / 28</div>
+      <div class="eyebrow">Third implication</div>
+      <h2>This reframe scales. The principle is the same at three altitudes.</h2>
+      <div class="imp3-grid">
+        <div class="imp3-col">
+          <div class="ic-label">Individual</div>
+          <h3>Edit one draft a day with your name on it.</h3>
+          <p>Pick one piece of work you would normally only comment on. Make a real edit, leave the byline, send it back to the author.</p>
+        </div>
+        <div class="imp3-col accent">
+          <div class="ic-label">Team</div>
+          <h3>Move the weekly forum from review to revision.</h3>
+          <p>Stop reporting status. Start rewriting the artifact in front of each other. The room becomes a workshop, not a theatre.</p>
+        </div>
+        <div class="imp3-col">
+          <div class="ic-label">Company</div>
+          <h3>Publish what you edited, not what you announced.</h3>
+          <p>The strongest cultural signal is a public log of small revisions. The announcements take care of themselves.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 23, Upside -->
+    <section class="slide s-upside">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Upside · 23 / 28</div>
+      <div class="eyebrow">If we got this right</div>
+      <div class="upside-line">A generation of companies that compound <span class="accent-word">quietly</span>, and a press cycle that finally stops rewarding the loudest bet.</div>
+      <div class="upside-foot">The story of business in the twenty-tens was the founder as auteur. The story of business in the twenty-thirties can be the company as editor.</div>
+    </section>
+
+    <!-- Slide 24, Objection -->
+    <section class="slide s-objection">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Objection · 24 / 28</div>
+      <div class="eyebrow">The hardest version of the counter-argument</div>
+      <div class="obj-grid">
+        <div class="obj-mark">"</div>
+        <div class="obj-text">
+          <div class="obj-quote">"This is just rebranded micromanagement. Great leaders set direction and step back. The work of editing belongs to the operators, not to me."</div>
+          <div class="obj-from">Voiced privately by every senior leader who has read the manuscript</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 25, Rebuttal -->
+    <section class="slide s-rebut">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Rebuttal · 25 / 28</div>
+      <div class="rebut-head">
+        <h2>Editing is not micromanagement. It is the work of taste.</h2>
+        <div class="rebut-stamp">Three data points</div>
+      </div>
+      <div class="rebut-grid">
+        <div class="evidence">
+          <div class="e-stat">3.4<span class="pct">x</span></div>
+          <p>"Editing leaders" produce decisions that downstream teams reproduce without escalation, versus "approval leaders."</p>
+          <div class="e-source">Source · longitudinal interview set, 2021 to 2024</div>
+        </div>
+        <div class="evidence">
+          <div class="e-stat">62<span class="pct">%</span></div>
+          <p>Of operators in those same teams describe the relationship as "collaborative," not "controlling."</p>
+          <div class="e-source">Source · independent culture survey, n=2,140</div>
+        </div>
+        <div class="evidence">
+          <div class="e-stat">11<span class="pct">m</span></div>
+          <p>Average editing time per decision. Eleven minutes is not micromanagement. It is presence.</p>
+          <div class="e-source">Source · time-tracking pilot, 36 companies</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 26, Trade-off -->
+    <section class="slide s-tradeoff">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Trade-off · 26 / 28</div>
+      <div class="eyebrow">What this costs, honestly</div>
+      <h2>There is no version of this that does not cost something. The honest leader names what.</h2>
+      <div class="trade-grid">
+        <div class="trade-col cost">
+          <div>
+            <div class="tc-label">The cost</div>
+            <h3>You will appear less strategic, more involved, less heroic.</h3>
+            <p>The artifacts you edit will not be the artifacts you announce. Your reputation will lag your impact, sometimes by years. Some leaders never recover the patience this requires.</p>
+          </div>
+          <div>
+            <div class="tc-stat">~2 yrs</div>
+            <div class="tc-stat-label">Typical lag between practice and visible reputation</div>
+          </div>
+        </div>
+        <div class="trade-col benefit">
+          <div>
+            <div class="tc-label">The return</div>
+            <h3>You will build a company that does not need you in the room to make the right call.</h3>
+            <p>That is the rarest thing in modern leadership. It is also the only definition of scale that holds when the founder leaves the building.</p>
+          </div>
+          <div>
+            <div class="tc-stat">Forever</div>
+            <div class="tc-stat-label">Duration of compounding, properly designed</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 27, Call To Action -->
+    <section class="slide s-cta">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Call to action · 27 / 28</div>
+      <div class="eyebrow">One thing, this week</div>
+      <div class="cta-grid">
+        <div class="cta-text">
+          <h2>Pick one artifact you have been reviewing. Edit it today, with your name on it.</h2>
+          <div class="cta-line">Then write one sentence in the team channel about what you changed and why. Do that five times this week. Tell me what shifted.</div>
+          <a class="cta-url" href="#">elenamarchetti.work / small</a>
+        </div>
+        <div class="qr-block">
+          <div class="qr"><span></span></div>
+          <div class="qr-label">One-week worksheet</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 28, Closing -->
+    <section class="slide s-close">
+      <div class="brand-mark"><span class="dot"></span><span>The Discipline of Small Decisions</span></div>
+      <div class="slide-meta">Closing · 28 / 28</div>
+      <div class="close-rule"></div>
+      <div class="close-line">The discipline of small decisions is, in the end, the discipline of staying close to the work long after you have earned the right to leave it.</div>
+      <div class="close-grid">
+        <div class="close-col">
+          <div class="cc-label">Speaker</div>
+          <div class="cc-value">Elena Marchetti</div>
+        </div>
+        <div class="close-col">
+          <div class="cc-label">Book</div>
+          <div class="cc-value">The Quiet Compound</div>
+        </div>
+        <div class="close-col">
+          <div class="cc-label">Find me</div>
+          <div class="cc-value">elenamarchetti.work</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Floating nav -->
+    <div class="progress-line"></div>
+    <div class="nav-counter"><span class="cur">01</span> / <span class="total">28</span></div>
+    <div class="nav-arrows">
+      <button class="nav-btn prev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="nav-btn next" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  const deck = document.querySelector('.deck');
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const progress = document.querySelector('.progress-line');
+  const counter = document.querySelector('.nav-counter .cur');
+  const totalEl = document.querySelector('.nav-counter .total');
+  const prevBtn = document.querySelector('.nav-btn.prev');
+  const nextBtn = document.querySelector('.nav-btn.next');
+
+  totalEl.textContent = String(total).padStart(2, '0');
+
+  function setScale() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const scale = Math.min(w / 1440, h / 810);
+    deck.style.transform = 'scale(' + scale + ')';
+  }
+  setScale();
+  window.addEventListener('resize', setScale);
+  window.addEventListener('orientationchange', setScale);
+
+  function go(to) {
+    if (to < 0 || to >= total) return;
+    slides[current].classList.remove('active');
+    current = to;
+    slides[current].classList.add('active');
+    progress.style.width = (((current + 1) / total) * 100) + '%';
+    counter.textContent = String(current + 1).padStart(2, '0');
+  }
+  const next = function() { go(current + 1); };
+  const prev = function() { go(current - 1); };
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', function(e) {
+    const editingText = e.target && e.target.getAttribute &&
+                        e.target.getAttribute('contenteditable') === 'true';
+    if (editingText) return;
+    if (['ArrowRight', ' ', 'PageDown'].indexOf(e.key) > -1) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'PageUp'].indexOf(e.key) > -1) { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', function(e) {
+    tx = e.changedTouches[0].clientX;
+  }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 60) { if (dx < 0) next(); else prev(); }
+  }, { passive: true });
+})();
+
+/* === INLINE-EDIT MODULE · press E to toggle edit mode, Ctrl/S downloads, localStorage autosaves === */
+(function() {
+  const STORAGE_KEY = 'deck-edits:' + location.pathname;
+  const SAVE_DEBOUNCE_MS = 500;
+  const HOVER_GRACE_MS = 400;
+
+  const editor = {
+    isActive: false,
+    saveTimer: null,
+    hideTimer: null
+  };
+
+  const EDITABLE_SELECTORS = [
+    '.slide h1', '.slide h2', '.slide h3', '.slide h4',
+    '.slide p', '.slide li', '.slide blockquote',
+    '.slide .eyebrow', '.slide .lead', '.slide .fact',
+    '.slide .stat-label', '.slide .stat-value',
+    '.slide .quote', '.slide .attribution',
+    '.brand-mark', '.slide-meta'
+  ];
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(saved, 'text/html');
+      const restoredDeck = doc.querySelector('.deck');
+      const liveDeck = document.querySelector('.deck');
+      if (restoredDeck && liveDeck) liveDeck.innerHTML = restoredDeck.innerHTML;
+    }
+  } catch (e) {
+    console.warn('Inline-edit restore failed:', e);
+  }
+
+  const hotzone = document.querySelector('.edit-hotzone');
+  const toggle = document.getElementById('editToggle');
+
+  function showToggle() {
+    clearTimeout(editor.hideTimer);
+    toggle.classList.add('show');
+  }
+  function scheduleHideToggle() {
+    clearTimeout(editor.hideTimer);
+    editor.hideTimer = setTimeout(function() {
+      if (!editor.isActive) toggle.classList.remove('show');
+    }, HOVER_GRACE_MS);
+  }
+
+  hotzone.addEventListener('mouseenter', showToggle);
+  hotzone.addEventListener('mouseleave', scheduleHideToggle);
+  toggle.addEventListener('mouseenter', showToggle);
+  toggle.addEventListener('mouseleave', scheduleHideToggle);
+
+  hotzone.addEventListener('click', function() { toggleEditMode(); });
+  toggle.addEventListener('click', function() { toggleEditMode(); });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'e' && e.key !== 'E') return;
+    const inEditable = e.target && e.target.getAttribute &&
+                       e.target.getAttribute('contenteditable') === 'true';
+    if (inEditable) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    e.preventDefault();
+    toggleEditMode();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      downloadHtml();
+    }
+  });
+
+  function toggleEditMode() {
+    editor.isActive = !editor.isActive;
+    document.body.classList.toggle('edit-mode', editor.isActive);
+    toggle.classList.toggle('active', editor.isActive);
+    toggle.classList.add('show');
+
+    const targets = document.querySelectorAll(EDITABLE_SELECTORS.join(','));
+    targets.forEach(function(el) {
+      if (editor.isActive) {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'true');
+      } else {
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('spellcheck');
+      }
+    });
+
+    if (!editor.isActive) scheduleHideToggle();
+  }
+
+  document.addEventListener('input', function(e) {
+    if (!e.target || !e.target.getAttribute) return;
+    if (e.target.getAttribute('contenteditable') !== 'true') return;
+    clearTimeout(editor.saveTimer);
+    editor.saveTimer = setTimeout(function() {
+      try {
+        const deckNode = document.querySelector('.deck');
+        const wrapper = document.createElement('div');
+        const clonedDeck = deckNode.cloneNode(true);
+        wrapper.appendChild(clonedDeck);
+        const html = '<!doctype html><html><body>' + wrapper.innerHTML + '</body></html>';
+        localStorage.setItem(STORAGE_KEY, html);
+      } catch (err) {
+        console.warn('Inline-edit autosave failed:', err);
+      }
+    }, SAVE_DEBOUNCE_MS);
+  });
+
+  function downloadHtml() {
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(function(el) { el.removeAttribute('contenteditable'); });
+    clone.querySelectorAll('[spellcheck]').forEach(function(el) { el.removeAttribute('spellcheck'); });
+    const hotzoneEl = clone.querySelector('.edit-hotzone');
+    const toggleEl = clone.querySelector('.edit-toggle');
+    if (hotzoneEl) hotzoneEl.remove();
+    if (toggleEl) toggleEl.remove();
+    clone.querySelector('body').classList.remove('edit-mode');
+
+    const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const title = (document.title || 'deck').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = title + '.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+  }
+})();
+</script>
+</body>
+</html>

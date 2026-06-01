@@ -1,0 +1,63 @@
+{
+  "name": "fluiddocs-deck-builder",
+  "version": "1.0.0",
+  "description": "Open-source deck builder. Drop in a PDF or PPTX, get back a polished interactive HTML deck. 5 type-correct deck types (pitch, sales, launch, keynote, all-hands), 8 templates, PDF and PPTX import, inline editing, multi-reviewer quality pipeline.",
+  "homepage": "https://github.com/FluidForm-ai/fluiddocs-deck-builder",
+  "license": "MIT",
+  "author": {
+    "name": "FluidDocs",
+    "url": "https://fluiddocs.ai"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FluidForm-ai/fluiddocs-deck-builder.git"
+  },
+  "skills": [
+    {
+      "name": "deck-builder",
+      "path": "skills/deck-builder",
+      "description": "Core pipeline. Handles canvas, shell, reviewer specs, brand methodology. Invoked by every type pack."
+    },
+    {
+      "name": "deck-pitch",
+      "path": "skills/deck-pitch",
+      "description": "14-slide pitch deck builder with 4 brand-mirror templates (Airbnb, Stripe, Anthropic, Sequoia Classic)."
+    },
+    {
+      "name": "deck-sales",
+      "path": "skills/deck-sales",
+      "description": "11-slide B2B sales deck builder."
+    },
+    {
+      "name": "deck-launch",
+      "path": "skills/deck-launch",
+      "description": "12-slide product launch deck builder."
+    },
+    {
+      "name": "deck-keynote",
+      "path": "skills/deck-keynote",
+      "description": "20 to 35-slide conference keynote builder (default 28)."
+    },
+    {
+      "name": "deck-all-hands",
+      "path": "skills/deck-all-hands",
+      "description": "15-slide all-hands or town-hall deck builder."
+    },
+    {
+      "name": "deck-import",
+      "path": "skills/deck-import",
+      "description": "Convert any PDF or PPTX deck into a clean, branded, interactive HTML deck."
+    },
+    {
+      "name": "deck-critique-lite",
+      "path": "skills/deck-critique-lite",
+      "description": "5 to 7 plain-language observations on a pitch deck. No numerical score."
+    }
+  ],
+  "commands": [
+    {
+      "name": "deck-builder",
+      "description": "Start building any deck (pitch, sales, launch, keynote, all-hands)."
+    }
+  ]
+}

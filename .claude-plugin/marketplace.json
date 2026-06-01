@@ -1,0 +1,18 @@
+{
+  "name": "fluiddocs-deck-builder",
+  "owner": {
+    "name": "FluidDocs",
+    "url": "https://fluiddocs.ai"
+  },
+  "metadata": {
+    "description": "Type-correct, brand-aware HTML deck builder for Claude Code. Pitch, sales, launch, keynote, all-hands. PDF and PPTX import.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "fluiddocs-deck-builder",
+      "source": "./",
+      "description": "Open-source deck builder. Drop in a PDF or PPTX, get back a polished interactive HTML deck. 5 type-correct deck types (pitch, sales, launch, keynote, all-hands), 8 templates, PDF and PPTX import, inline editing, multi-reviewer quality pipeline."
+    }
+  ]
+}

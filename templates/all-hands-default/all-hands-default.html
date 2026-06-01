@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acme Corp · May All-Hands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* === BRAND TOKENS · edit these CSS custom properties to rebrand the deck === */
+:root {
+  /* Warm Brand preset tokens */
+  --brand-primary: #C84E2C;
+  --brand-accent:  #F5C26B;
+  --brand-text:    #2A1F1A;
+  --brand-muted:   #6E5A50;
+  --brand-bg:      #FFF6EC;
+  --brand-surface: #FFEDD9;
+  --brand-border:  #F0D7B4;
+  --font-display:  'Manrope', 'Inter', system-ui, sans-serif;
+  --font-body:     'Manrope', 'Inter', system-ui, sans-serif;
+  --font-mono:     'JetBrains Mono', ui-monospace, monospace;
+
+  /* Shell tokens */
+  --primary: var(--brand-primary);
+  --ink: var(--brand-text);
+  --muted: var(--brand-muted);
+  --surface: var(--brand-bg);
+  --paper: var(--brand-surface);
+  --border: var(--brand-border);
+  --letterbox: #1A120D;
+
+  /* Typographic scale (locked) */
+  --fs-display: 96px;
+  --fs-h1: 64px;
+  --fs-h2: 44px;
+  --fs-h3: 32px;
+  --fs-h4: 24px;
+  --fs-lead: 20px;
+  --fs-body: 16px;
+  --fs-meta: 13px;
+  --fs-mono: 12px;
+
+  /* Soft shadows tuned for the Warm Brand palette */
+  --shadow-card: 0 1px 2px rgba(42, 31, 26, 0.04), 0 4px 12px rgba(200, 78, 44, 0.06);
+  --shadow-card-hover: 0 2px 4px rgba(42, 31, 26, 0.06), 0 8px 20px rgba(200, 78, 44, 0.10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--letterbox);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* === Inline-edit hotzone + toggle === */
+.edit-hotzone {
+  position: fixed; top: 0; left: 0;
+  width: 40px; height: 40px;
+  z-index: 10000; cursor: pointer; background: transparent;
+}
+.edit-toggle {
+  position: fixed; top: 12px; left: 12px;
+  z-index: 10001;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  background: var(--brand-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease, background 0.15s ease, color 0.15s ease;
+}
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle.active {
+  background: var(--primary); color: white; border-color: var(--primary);
+}
+body.edit-mode [contenteditable="true"] {
+  outline: 1px dashed var(--primary);
+  outline-offset: 2px; cursor: text;
+}
+body.edit-mode [contenteditable="true"]:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* === Deck shell === */
+.deck-outer {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--letterbox); overflow: hidden;
+}
+.deck {
+  position: relative;
+  width: 1440px; height: 810px;
+  background: var(--brand-bg);
+  transform-origin: center center;
+  overflow: hidden; flex-shrink: 0;
+}
+.slide {
+  position: absolute; inset: 0;
+  padding: 104px 96px 96px;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  background: var(--brand-bg);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.slide.active { display: flex; opacity: 1; }
+
+/* Cover is centered */
+.s-cover { justify-content: center; padding: 96px 120px; }
+
+/* Nav */
+.progress-line {
+  position: absolute; top: 0; left: 0;
+  height: 3px;
+  background: var(--primary);
+  width: 6.67%;
+  transition: width 300ms ease;
+  z-index: 100;
+}
+.nav-counter {
+  position: absolute; bottom: 24px; left: 32px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono); letter-spacing: 0.08em;
+  color: var(--muted);
+  z-index: 100;
+}
+.nav-arrows {
+  position: absolute; bottom: 20px; right: 32px;
+  display: flex; gap: 10px;
+  z-index: 100;
+}
+.nav-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 180ms ease;
+}
+.nav-btn:hover { border-color: var(--primary); background: var(--primary); color: white; }
+.nav-btn svg { width: 16px; height: 16px; }
+
+/* Brand-mark + meta */
+.brand-mark {
+  position: absolute; top: 32px; left: 48px;
+  display: flex; align-items: center; gap: 10px;
+  z-index: 5;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 800; font-size: var(--fs-body);
+  letter-spacing: -0.02em;
+}
+.brand-mark .mark {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--primary);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800; font-size: var(--fs-meta);
+  font-family: var(--font-display);
+}
+.slide-meta {
+  position: absolute; top: 32px; right: 48px;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono); color: var(--muted);
+  letter-spacing: 0.08em; font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* === Typography === */
+h1 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.025em; line-height: 1.05; }
+h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
+h4 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+p { line-height: 1.5; }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+.lead { font-size: var(--fs-lead); color: var(--muted); line-height: 1.55; max-width: 800px; }
+
+/* === Slide 1 · Cover === */
+.s-cover .cover-wrap {
+  display: flex; flex-direction: column; gap: 40px;
+  max-width: 1100px;
+}
+.s-cover .cover-mark {
+  display: flex; align-items: center; gap: 14px;
+  font-family: var(--font-display); font-weight: 800;
+  font-size: var(--fs-h4); letter-spacing: -0.02em;
+}
+.s-cover .cover-mark .mark {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--primary);
+  color: white; display: inline-flex;
+  align-items: center; justify-content: center;
+  font-size: var(--fs-h4); font-weight: 800;
+}
+.s-cover h1 {
+  font-size: var(--fs-display);
+  color: var(--ink);
+  max-width: 1000px;
+}
+.s-cover .cover-meta {
+  display: flex; gap: 28px; align-items: center;
+  font-family: var(--font-mono); font-size: var(--fs-meta);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted);
+}
+.s-cover .cover-meta .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--primary);
+}
+.s-cover .cover-anchor {
+  margin-top: 28px;
+  padding: 28px 32px;
+  background: var(--brand-surface);
+  border-radius: 16px;
+  border-left: 4px solid var(--primary);
+  font-size: var(--fs-lead);
+  color: var(--ink);
+  max-width: 900px;
+  font-weight: 500;
+}
+
+/* === Slide 2 · Agenda === */
+.agenda-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px 48px;
+  margin-top: 32px;
+  max-width: 1200px;
+}
+.agenda-item {
+  display: flex; align-items: flex-start; gap: 18px;
+  padding: 18px 20px;
+  background: var(--brand-surface);
+  border-radius: 12px;
+}
+.agenda-num {
+  font-family: var(--font-mono);
+  font-size: var(--fs-h4);
+  font-weight: 600;
+  color: var(--primary);
+  min-width: 36px;
+}
+.agenda-text {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.agenda-text .title { font-size: var(--fs-h4); font-weight: 600; color: var(--ink); }
+.agenda-text .desc { font-size: var(--fs-meta); color: var(--muted); }
+
+/* === Slide 3 · Big Wins === */
+.win-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 36px;
+}
+.win-card {
+  background: var(--brand-surface);
+  border-radius: 16px;
+  padding: 28px 24px;
+  display: flex; flex-direction: column; gap: 12px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+.win-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+.win-card .win-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--primary);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: white;
+}
+.win-card .win-metric {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2); font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+.win-card .win-title { font-size: var(--fs-body); font-weight: 600; color: var(--ink); }
+.win-card .win-sub { font-size: var(--fs-meta); color: var(--muted); line-height: 1.4; }
+
+/* === Slide 4 · Product Highlights === */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 36px;
+}
+.feature-tile {
+  background: var(--brand-surface);
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+.feature-tile:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+.feature-mock {
+  background: linear-gradient(135deg, #FFE3C0 0%, #FFD09A 100%);
+  height: 180px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+}
+.feature-mock svg { color: var(--primary); }
+.feature-body { padding: 22px 24px; display: flex; flex-direction: column; gap: 8px; }
+.feature-body .ship-tag {
+  font-family: var(--font-mono); font-size: var(--fs-mono);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--primary); font-weight: 500;
+}
+.feature-body h4 { font-size: var(--fs-h4); color: var(--ink); }
+.feature-body p { font-size: var(--fs-meta); color: var(--muted); line-height: 1.5; }
+
+/* === Slide 5 · Customer Stories === */
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 36px;
+}
+.story-card {
+  background: var(--brand-surface);
+  border-radius: 16px;
+  padding: 32px 32px;
+  border: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 18px;
+  box-shadow: var(--shadow-card);
+}
+.fin-card { box-shadow: var(--shadow-card); }
+.event-card { box-shadow: var(--shadow-card); transition: box-shadow 200ms ease; }
+.event-card:hover { box-shadow: var(--shadow-card-hover); }
+.spot-card { box-shadow: var(--shadow-card); }
+.learn-card { box-shadow: var(--shadow-card); }
+.hire-card { box-shadow: var(--shadow-card); transition: transform 200ms ease; }
+.hire-card:hover { transform: translateY(-2px); }
+.pri-row { box-shadow: var(--shadow-card); transition: box-shadow 200ms ease; }
+.pri-row:hover { box-shadow: var(--shadow-card-hover); }
+.shout-row { box-shadow: var(--shadow-card); transition: transform 200ms ease; }
+.shout-row:hover { transform: translateX(4px); }
+.story-head {
+  display: flex; align-items: center; gap: 14px;
+}
+.story-logo {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: var(--primary);
+  color: white; display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 800; font-size: var(--fs-body);
+}
+.story-name { font-size: var(--fs-body); font-weight: 600; color: var(--ink); }
+.story-meta { font-size: var(--fs-meta); color: var(--muted); }
+.story-quote {
+  font-size: var(--fs-lead);
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.5;
+  padding-left: 16px;
+  border-left: 3px solid var(--primary);
+}
+.story-result {
+  display: flex; align-items: baseline; gap: 12px;
+  margin-top: 4px;
+}
+.story-result .num {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2); font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+.story-result .what { font-size: var(--fs-body); color: var(--muted); }
+
+/* === Slide 6 · Financial === */
+.fin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-top: 36px;
+}
+.fin-card {
+  background: var(--brand-surface);
+  border-radius: 16px;
+  padding: 36px 36px;
+  border: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.fin-card .fin-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); font-weight: 500;
+}
+.fin-card .fin-value {
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.fin-trend {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: var(--fs-body);
+  color: #2E7D5B; font-weight: 600;
+  padding: 6px 12px;
+  background: rgba(46, 125, 91, 0.1);
+  border-radius: 20px;
+  width: fit-content;
+}
+.fin-context { font-size: var(--fs-body); color: var(--muted); line-height: 1.5; }
+.fin-note {
+  margin-top: 28px;
+  padding: 20px 24px;
+  background: var(--brand-surface);
+  border-radius: 12px;
+  font-size: var(--fs-body);
+  color: var(--ink);
+  font-weight: 500;
+  border-left: 3px solid var(--accent, var(--brand-accent));
+}
+
+/* === Slide 7 · Hiring === */
+.hire-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 32px;
+}
+.hire-card {
+  background: var(--brand-surface);
+  border-radius: 16px;
+  padding: 24px 20px;
+  border: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  text-align: center;
+}
+.hire-avatar {
+  width: 88px; height: 88px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--brand-accent) 100%);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: white;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.hire-name { font-size: var(--fs-body); font-weight: 700; color: var(--ink); }
+.hire-role { font-size: var(--fs-mono); font-family: var(--font-mono); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.hire-fact { font-size: var(--fs-mono); color: var(--muted); font-style: italic; line-height: 1.4; }
+
+.open-roles {
+  margin-top: 28px;
+  padding: 24px 28px;
+  background: var(--brand-surface);
+  border-radius: 14px;
+  display: flex; align-items: center; gap: 20px;
+  flex-wrap: wrap;
+}
+.open-roles .or-label {
+  font-family: var(--font-display);
+  font-size: var(--fs-body); font-weight: 700; color: var(--ink);
+}
+.open-roles .or-tag {
+  font-family: var(--font-mono); font-size: var(--fs-mono);
+  padding: 6px 12px;
+  background: var(--brand-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* === Slide 8 · Spotlights === */
+.spot-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 36px;
+}
+.spot-card {
+  background: var(--brand-surface);
+  border-radius: 16px;
+  padding: 32px 28px;
+  border: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 18px;
+}
+.spot-head { display: flex; align-items: center; gap: 14px; }
+.spot-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--brand-accent) 100%);
+  color: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 800; font-size: var(--fs-lead);
+}
+.spot-name { font-size: var(--fs-body); font-weight: 700; color: var(--ink); }
+.spot-team { font-size: var(--fs-meta); color: var(--muted); font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.spot-quote {
+  font-size: var(--fs-body);
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.55;
+  padding-left: 14px;
+  border-left: 3px solid var(--primary);
+}
+.spot-attribution {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+  margin-top: 4px;
+  font-family: var(--font-mono);
+}
+
+/* === Slide 9 · Values === */
+.value-split {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 60px;
+  margin-top: 32px;
+  align-items: center;
+}
+.value-name {
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 24px;
+}
+.value-story {
+  font-size: var(--fs-lead);
+  color: var(--ink);
+  line-height: 1.6;
+  max-width: 600px;
+}
+.value-story strong { color: var(--primary); font-weight: 700; }
+.value-illustration {
+  background: var(--brand-surface);
+  border-radius: 24px;
+  padding: 48px;
+  height: 440px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border);
+  position: relative;
+}
+.value-illustration svg {
+  width: 260px; height: 260px;
+  color: var(--primary);
+}
+.value-attribution {
+  margin-top: 24px;
+  font-size: var(--fs-meta);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+
+/* === Slide 10 · Upcoming Events === */
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 36px;
+}
+.event-card {
+  background: var(--brand-surface);
+  border-radius: 16px;
+  padding: 24px 28px;
+  border: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 24px;
+}
+.event-date {
+  flex-shrink: 0;
+  background: var(--primary);
+  color: white;
+  padding: 14px 16px;
+  border-radius: 12px;
+  text-align: center;
+  min-width: 88px;
+}
+.event-date .day {
+  font-family: var(--font-display); font-size: var(--fs-h3); font-weight: 800;
+  line-height: 1; letter-spacing: -0.02em;
+}
+.event-date .mon {
+  font-family: var(--font-mono); font-size: var(--fs-mono);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-top: 4px; font-weight: 500;
+}
+.event-body { display: flex; flex-direction: column; gap: 6px; }
+.event-body h4 { font-size: var(--fs-h4); color: var(--ink); }
+.event-body p { font-size: var(--fs-meta); color: var(--muted); line-height: 1.5; }
+.event-tag {
+  display: inline-block; margin-top: 8px;
+  font-family: var(--font-mono); font-size: var(--fs-mono);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--primary); font-weight: 500;
+}
+
+/* === Slide 11 · Priorities === */
+.pri-list {
+  display: flex; flex-direction: column; gap: 16px;
+  margin-top: 32px;
+  max-width: 1100px;
+}
+.pri-row {
+  display: flex; align-items: center; gap: 28px;
+  padding: 22px 28px;
+  background: var(--brand-surface);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+.pri-num {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -0.03em;
+  min-width: 56px;
+  line-height: 1;
+}
+.pri-body { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.pri-title { font-size: var(--fs-h4); font-weight: 700; color: var(--ink); }
+.pri-out { font-size: var(--fs-body); color: var(--muted); font-style: italic; }
+.pri-owner {
+  font-family: var(--font-mono); font-size: var(--fs-mono);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--primary); font-weight: 500;
+  padding: 6px 12px;
+  background: var(--brand-bg);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+/* === Slide 12 · Learnings === */
+.learn-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 36px;
+}
+.learn-card {
+  background: var(--brand-surface);
+  border-radius: 16px;
+  padding: 36px 36px;
+  border: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 18px;
+}
+.learn-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: var(--brand-bg);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+.learn-title { font-size: var(--fs-h3); font-weight: 700; color: var(--ink); letter-spacing: -0.015em; }
+.learn-what {
+  font-size: var(--fs-body); color: var(--ink); line-height: 1.55;
+}
+.learn-what strong { color: var(--primary); }
+.learn-next {
+  margin-top: 8px;
+  padding: 16px 18px;
+  background: var(--brand-bg);
+  border-radius: 10px;
+  border-left: 3px solid var(--primary);
+  font-size: var(--fs-meta);
+  color: var(--ink);
+  line-height: 1.5;
+}
+.learn-next .next-label {
+  display: block;
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--primary); font-weight: 500;
+  margin-bottom: 4px;
+}
+
+/* === Slide 13 · Shout-outs === */
+.shout-list {
+  display: flex; flex-direction: column; gap: 14px;
+  margin-top: 32px;
+  max-width: 1100px;
+}
+.shout-row {
+  display: flex; align-items: center; gap: 20px;
+  padding: 20px 24px;
+  background: var(--brand-surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.shout-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--primary);
+  color: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.shout-body { flex: 1; }
+.shout-body .who { font-size: var(--fs-h4); font-weight: 700; color: var(--ink); }
+.shout-body .what { font-size: var(--fs-body); color: var(--muted); line-height: 1.5; margin-top: 2px; }
+
+/* === Slide 14 · Q&A === */
+.qa-wrap {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%;
+  text-align: center;
+  gap: 36px;
+}
+.qa-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.qa-sub {
+  font-size: var(--fs-lead);
+  color: var(--muted);
+  max-width: 600px;
+  line-height: 1.5;
+}
+.qa-prompts {
+  display: flex; flex-direction: column; gap: 14px;
+  margin-top: 16px;
+  max-width: 720px;
+  text-align: left;
+}
+.qa-prompt {
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 22px;
+  background: var(--brand-surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-size: var(--fs-h4);
+  color: var(--ink);
+  font-weight: 500;
+}
+.qa-prompt .qmark {
+  font-family: var(--font-display); font-weight: 800;
+  color: var(--primary);
+  font-size: var(--fs-h3);
+}
+
+/* === Slide 15 · Open Floor === */
+.close-wrap {
+  display: flex; flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  max-width: 1100px;
+  gap: 28px;
+}
+.close-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--primary);
+  font-weight: 500;
+}
+.close-statement {
+  font-family: var(--font-display);
+  font-size: 80px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  max-width: 1100px;
+}
+.close-statement strong { color: var(--primary); }
+.close-actions {
+  display: flex; gap: 20px; margin-top: 24px;
+  flex-wrap: wrap;
+}
+.close-action {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 24px;
+  background: var(--brand-surface);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  min-width: 280px;
+}
+.close-action .ca-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--primary);
+  color: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.close-action .ca-body { display: flex; flex-direction: column; }
+.close-action .ca-label {
+  font-family: var(--font-mono); font-size: var(--fs-mono);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); font-weight: 500;
+}
+.close-action .ca-text { font-size: var(--fs-body); color: var(--ink); font-weight: 600; }
+
+</style>
+</head>
+<body>
+
+<div class="edit-hotzone" aria-hidden="true"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)" aria-label="Toggle edit mode">Edit</button>
+
+<div class="deck-outer">
+  <div class="deck">
+
+    <!-- ====== Slide 1 · Cover ====== -->
+    <section class="slide s-cover active">
+      <div class="cover-wrap">
+        <div class="cover-mark">
+          <span class="mark">A</span>
+          <span>Acme Corp</span>
+        </div>
+        <h1>May All-Hands. Building together, shipping faster.</h1>
+        <div class="cover-meta">
+          <span>May 2026</span>
+          <span class="dot"></span>
+          <span>Company-wide</span>
+          <span class="dot"></span>
+          <span>60 minutes</span>
+        </div>
+        <div class="cover-anchor">
+          The month we crossed 1,000 paying teams, welcomed seven new humans, and shipped the v3 dashboard customers have been asking us for.
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 2 · Agenda ====== -->
+    <section class="slide s-agenda">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Agenda · 02 / 15</div>
+      <span class="eyebrow">What we'll cover</span>
+      <h2>One hour. Eight stops.</h2>
+      <p class="lead">Wins and learnings, what shipped, what's next, plus space for your questions.</p>
+
+      <div class="agenda-grid">
+        <div class="agenda-item">
+          <span class="agenda-num">01</span>
+          <div class="agenda-text">
+            <span class="title">Wins this month</span>
+            <span class="desc">What we shipped and who it moved</span>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <span class="agenda-num">02</span>
+          <div class="agenda-text">
+            <span class="title">Product highlights</span>
+            <span class="desc">Three releases worth talking about</span>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <span class="agenda-num">03</span>
+          <div class="agenda-text">
+            <span class="title">Customer stories</span>
+            <span class="desc">Real teams, real outcomes</span>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <span class="agenda-num">04</span>
+          <div class="agenda-text">
+            <span class="title">Company health</span>
+            <span class="desc">ARR, headcount, runway</span>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <span class="agenda-num">05</span>
+          <div class="agenda-text">
+            <span class="title">New faces and spotlights</span>
+            <span class="desc">Welcome, and well done</span>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <span class="agenda-num">06</span>
+          <div class="agenda-text">
+            <span class="title">What's coming</span>
+            <span class="desc">Events, priorities, and learnings</span>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <span class="agenda-num">07</span>
+          <div class="agenda-text">
+            <span class="title">Shout-outs</span>
+            <span class="desc">The quiet wins we don't want to miss</span>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <span class="agenda-num">08</span>
+          <div class="agenda-text">
+            <span class="title">Open floor</span>
+            <span class="desc">Your questions, our answers</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 3 · Big Wins ====== -->
+    <section class="slide s-wins">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Wins · 03 / 15</div>
+      <span class="eyebrow">May 2026 · The scoreboard</span>
+      <h2>Four wins worth celebrating.</h2>
+      <p class="lead">Specific, shipped, and customer-facing. The kind we want more of next month.</p>
+
+      <div class="win-grid">
+        <div class="win-card">
+          <span class="win-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>
+          </span>
+          <span class="win-metric">1,047</span>
+          <span class="win-title">Paying teams</span>
+          <span class="win-sub">Crossed the 1K milestone three weeks early.</span>
+        </div>
+        <div class="win-card">
+          <span class="win-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
+          </span>
+          <span class="win-metric">v3.0</span>
+          <span class="win-title">Dashboard shipped</span>
+          <span class="win-sub">Six months of work. Now live for every customer.</span>
+        </div>
+        <div class="win-card">
+          <span class="win-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          </span>
+          <span class="win-metric">NPS 64</span>
+          <span class="win-title">Customer love</span>
+          <span class="win-sub">Up from 51 last quarter. Highest score on record.</span>
+        </div>
+        <div class="win-card">
+          <span class="win-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7L12 15l-4-4-6 6"/><path d="M14 7h6v6"/></svg>
+          </span>
+          <span class="win-metric">+38%</span>
+          <span class="win-title">New ARR added</span>
+          <span class="win-sub">Best month since the company started. Pipeline still healthy.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 4 · Product Highlights ====== -->
+    <section class="slide s-product">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Product · 04 / 15</div>
+      <span class="eyebrow">What shipped</span>
+      <h2>Three releases, one consistent theme.</h2>
+      <p class="lead">Less time setting up Acme. More time getting work done inside it.</p>
+
+      <div class="feature-grid">
+        <div class="feature-tile">
+          <div class="feature-mock">
+            <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <div class="feature-body">
+            <span class="ship-tag">Shipped May 6</span>
+            <h4>Dashboard v3</h4>
+            <p>Rebuilt from scratch. 4x faster load, customizable widgets, one-click report exports.</p>
+          </div>
+        </div>
+        <div class="feature-tile">
+          <div class="feature-mock">
+            <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 7l8 5 8-5-8-5z"/><path d="M4 17l8 5 8-5"/><path d="M4 12l8 5 8-5"/></svg>
+          </div>
+          <div class="feature-body">
+            <span class="ship-tag">Shipped May 14</span>
+            <h4>Bulk import</h4>
+            <p>CSV uploads up to 50,000 rows. Onboarding teams in minutes instead of days.</p>
+          </div>
+        </div>
+        <div class="feature-tile">
+          <div class="feature-mock">
+            <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div class="feature-body">
+            <span class="ship-tag">Shipped May 22</span>
+            <h4>SSO + SCIM</h4>
+            <p>Okta, Google Workspace, Azure AD. Three enterprise deals unblocked already.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 5 · Customer Stories ====== -->
+    <section class="slide s-customers">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Customers · 05 / 15</div>
+      <span class="eyebrow">Why the work matters</span>
+      <h2>Two customers. Two outcomes we'd take all day.</h2>
+
+      <div class="story-grid">
+        <div class="story-card">
+          <div class="story-head">
+            <span class="story-logo">N</span>
+            <div>
+              <div class="story-name">Northwind Logistics</div>
+              <div class="story-meta">180 employees · Operations</div>
+            </div>
+          </div>
+          <div class="story-quote">
+            "We replaced four tools with Acme. Our ops team got 12 hours per week back, and the data is finally in one place."
+          </div>
+          <div class="story-result">
+            <span class="num">12 hrs</span>
+            <span class="what">saved per ops lead, every week</span>
+          </div>
+        </div>
+
+        <div class="story-card">
+          <div class="story-head">
+            <span class="story-logo">B</span>
+            <div>
+              <div class="story-name">BrightPath Health</div>
+              <div class="story-meta">42 employees · Healthcare SaaS</div>
+            </div>
+          </div>
+          <div class="story-quote">
+            "Onboarding used to take a week. With bulk import, we got our entire clinical team live in one afternoon."
+          </div>
+          <div class="story-result">
+            <span class="num">5 days</span>
+            <span class="what">cut from new-customer onboarding</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 6 · Financial ====== -->
+    <section class="slide s-finance">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Health · 06 / 15</div>
+      <span class="eyebrow">Where we stand</span>
+      <h2>Company health, in plain language.</h2>
+      <p class="lead">Two numbers that matter most for the full team this month.</p>
+
+      <div class="fin-grid">
+        <div class="fin-card">
+          <span class="fin-label">Annual recurring revenue</span>
+          <span class="fin-value">$8.4M</span>
+          <span class="fin-trend">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"/></svg>
+            Up 9.2% vs April
+          </span>
+          <span class="fin-context">On pace to clear $11M by end of year. The dashboard release is already pulling more upgrades than we modeled.</span>
+        </div>
+        <div class="fin-card">
+          <span class="fin-label">Runway at current burn</span>
+          <span class="fin-value">22 mo</span>
+          <span class="fin-trend">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"/></svg>
+            Up 2 months vs April
+          </span>
+          <span class="fin-context">New ARR offsetting hiring spend. We are comfortable, not complacent. Hiring stays paced through Q3.</span>
+        </div>
+      </div>
+
+      <div class="fin-note">
+        Headcount today: <strong>62 humans</strong>. Plan for end of Q3: <strong>74</strong>. Detailed cohort and unit economics live in the board pack, not here.
+      </div>
+    </section>
+
+    <!-- ====== Slide 7 · Hiring ====== -->
+    <section class="slide s-hiring">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Hiring · 07 / 15</div>
+      <span class="eyebrow">New faces</span>
+      <h2>Seven humans joined in May. Say hi this week.</h2>
+
+      <div class="hire-grid">
+        <div class="hire-card">
+          <div class="hire-avatar">SC</div>
+          <div class="hire-name">Sarah Chen</div>
+          <div class="hire-role">VP Sales</div>
+          <div class="hire-fact">From Stripe. Lives in Brooklyn, climbs everywhere.</div>
+        </div>
+        <div class="hire-card">
+          <div class="hire-avatar">MR</div>
+          <div class="hire-name">Marcus Rivera</div>
+          <div class="hire-role">Staff Engineer</div>
+          <div class="hire-fact">Built infra at Datadog. Vinyl collector.</div>
+        </div>
+        <div class="hire-card">
+          <div class="hire-avatar">PK</div>
+          <div class="hire-name">Priya Kapoor</div>
+          <div class="hire-role">Product Designer</div>
+          <div class="hire-fact">Ex Notion. Bakes serious sourdough.</div>
+        </div>
+        <div class="hire-card">
+          <div class="hire-avatar">JO</div>
+          <div class="hire-name">Jamal Okafor</div>
+          <div class="hire-role">Customer Success</div>
+          <div class="hire-fact">From Intercom. Half marathon next month.</div>
+        </div>
+      </div>
+
+      <div class="open-roles">
+        <span class="or-label">Still hiring for</span>
+        <span class="or-tag">Senior PM, Platform</span>
+        <span class="or-tag">Engineering Manager</span>
+        <span class="or-tag">Solutions Engineer</span>
+        <span class="or-tag">Brand Designer</span>
+        <span class="or-tag">Recruiter</span>
+      </div>
+    </section>
+
+    <!-- ====== Slide 8 · Spotlights ====== -->
+    <section class="slide s-spotlights">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Spotlights · 08 / 15</div>
+      <span class="eyebrow">Quiet brilliance</span>
+      <h2>Three people who moved the month.</h2>
+
+      <div class="spot-grid">
+        <div class="spot-card">
+          <div class="spot-head">
+            <div class="spot-avatar">MT</div>
+            <div>
+              <div class="spot-name">Mike Tanaka</div>
+              <div class="spot-team">Engineering</div>
+            </div>
+          </div>
+          <div class="spot-quote">
+            "Led the dashboard launch sprint with zero downtime and shipped two days ahead of schedule. The bar moved."
+          </div>
+          <div class="spot-attribution">via the platform team</div>
+        </div>
+        <div class="spot-card">
+          <div class="spot-head">
+            <div class="spot-avatar">EV</div>
+            <div>
+              <div class="spot-name">Elena Volkov</div>
+              <div class="spot-team">Customer Success</div>
+            </div>
+          </div>
+          <div class="spot-quote">
+            "Saved the Northwind renewal in 48 hours when no one else thought we could. Calm under pressure."
+          </div>
+          <div class="spot-attribution">via the revenue team</div>
+        </div>
+        <div class="spot-card">
+          <div class="spot-head">
+            <div class="spot-avatar">DA</div>
+            <div>
+              <div class="spot-name">David Aluko</div>
+              <div class="spot-team">Design</div>
+            </div>
+          </div>
+          <div class="spot-quote">
+            "Drove the design system refactor we'd been putting off for a year. Every team is faster now."
+          </div>
+          <div class="spot-attribution">via the design team</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 9 · Values ====== -->
+    <section class="slide s-values">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Values · 09 / 15</div>
+      <span class="eyebrow">Culture moment</span>
+      <h2>One value, lived this month.</h2>
+
+      <div class="value-split">
+        <div>
+          <div class="value-name">Default to ship.</div>
+          <p class="value-story">
+            When the dashboard rebuild hit a database edge case the Tuesday before launch, the team didn't push the date. They pulled together, scoped down the riskiest piece, and shipped on time with a clean follow-up plan. <strong>That's the bar.</strong> Honest about what's hard, ruthless about what matters, biased to act.
+          </p>
+          <div class="value-attribution">Witnessed during the v3 launch · May 6</div>
+        </div>
+        <div class="value-illustration">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 16.5L12 4l7.5 12.5"/>
+            <path d="M4.5 16.5L12 14l7.5 2.5"/>
+            <path d="M12 14V4"/>
+            <circle cx="12" cy="20" r="1.5" fill="currentColor"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 10 · Upcoming Events ====== -->
+    <section class="slide s-events">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">What's next · 10 / 15</div>
+      <span class="eyebrow">Mark your calendars</span>
+      <h2>Four things on the horizon.</h2>
+
+      <div class="event-grid">
+        <div class="event-card">
+          <div class="event-date">
+            <div class="day">12</div>
+            <div class="mon">Jun</div>
+          </div>
+          <div class="event-body">
+            <h4>Summer off-site, Hudson Valley</h4>
+            <p>Three days, full company. Travel kits go out next week.</p>
+            <span class="event-tag">Culture</span>
+          </div>
+        </div>
+        <div class="event-card">
+          <div class="event-date">
+            <div class="day">18</div>
+            <div class="mon">Jun</div>
+          </div>
+          <div class="event-body">
+            <h4>Customer Connect, San Francisco</h4>
+            <p>Top 30 customers, on-stage demos, dinner at the Ferry Building.</p>
+            <span class="event-tag">Revenue</span>
+          </div>
+        </div>
+        <div class="event-card">
+          <div class="event-date">
+            <div class="day">26</div>
+            <div class="mon">Jun</div>
+          </div>
+          <div class="event-body">
+            <h4>v3.1 release, public</h4>
+            <p>Audit log, API rate-limit dashboards, and the team-roles work.</p>
+            <span class="event-tag">Product</span>
+          </div>
+        </div>
+        <div class="event-card">
+          <div class="event-date">
+            <div class="day">02</div>
+            <div class="mon">Jul</div>
+          </div>
+          <div class="event-body">
+            <h4>Q3 kickoff, all-hands</h4>
+            <p>Reset on goals, share the Q3 plan, celebrate H1 close.</p>
+            <span class="event-tag">Planning</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 11 · Priorities ====== -->
+    <section class="slide s-priorities">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Priorities · 11 / 15</div>
+      <span class="eyebrow">Next 30 days</span>
+      <h2>Five priorities. One outcome each.</h2>
+
+      <div class="pri-list">
+        <div class="pri-row">
+          <div class="pri-num">01</div>
+          <div class="pri-body">
+            <div class="pri-title">Ship v3.1 on June 26</div>
+            <div class="pri-out">Audit log + rate-limit dashboard + roles, in one cut.</div>
+          </div>
+          <div class="pri-owner">Platform</div>
+        </div>
+        <div class="pri-row">
+          <div class="pri-num">02</div>
+          <div class="pri-body">
+            <div class="pri-title">Close $1.5M in new ARR</div>
+            <div class="pri-out">Enterprise pipeline is the lever; SSO unlocks three deals.</div>
+          </div>
+          <div class="pri-owner">Sales</div>
+        </div>
+        <div class="pri-row">
+          <div class="pri-num">03</div>
+          <div class="pri-body">
+            <div class="pri-title">Cut onboarding to under 1 hour</div>
+            <div class="pri-out">From signup to first value, measured per team.</div>
+          </div>
+          <div class="pri-owner">Product · CS</div>
+        </div>
+        <div class="pri-row">
+          <div class="pri-num">04</div>
+          <div class="pri-body">
+            <div class="pri-title">Hire the 4 open senior roles</div>
+            <div class="pri-out">Signed offers, not just stage-2 pipelines.</div>
+          </div>
+          <div class="pri-owner">People</div>
+        </div>
+        <div class="pri-row">
+          <div class="pri-num">05</div>
+          <div class="pri-body">
+            <div class="pri-title">Land 2 design partners for AI agents</div>
+            <div class="pri-out">Names confirmed, scope tight, weekly cadence.</div>
+          </div>
+          <div class="pri-owner">Research</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 12 · Learnings ====== -->
+    <section class="slide s-learnings">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Retro · 12 / 15</div>
+      <span class="eyebrow">Honest reflection</span>
+      <h2>Two things that didn't go to plan.</h2>
+      <p class="lead">Because a slide of only wins is a slide that's hiding something.</p>
+
+      <div class="learn-split">
+        <div class="learn-card">
+          <span class="learn-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          <div class="learn-title">SMB churn ticked up to 4.1%</div>
+          <div class="learn-what">
+            We saw <strong>3 percentage points of churn drift</strong> in the under-50-seat segment. Root cause: onboarding friction we knew about but hadn't prioritized. The bulk import release helps, but not enough on its own.
+          </div>
+          <div class="learn-next">
+            <span class="next-label">What we'll do</span>
+            New onboarding flow is priority #3 above. Owner is shared between Product and CS, weekly cadence starting June 3.
+          </div>
+        </div>
+
+        <div class="learn-card">
+          <span class="learn-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c-2.4 0-4.4-4-4.4-9s2-9 4.4-9m0 18c2.4 0 4.4-4 4.4-9s-2-9-4.4-9"/></svg>
+          </span>
+          <div class="learn-title">EMEA launch delayed to Q3</div>
+          <div class="learn-what">
+            We told customers May. We're now looking at <strong>August at the earliest</strong>. Data residency requirements were heavier than we modeled, and we don't want to ship half-ready.
+          </div>
+          <div class="learn-next">
+            <span class="next-label">What we'll do</span>
+            Direct email to the 47 EMEA prospects this week. New date locked, no slippage past August 31. Updates in #launch-emea.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 13 · Shout-outs ====== -->
+    <section class="slide s-shoutouts">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Shout-outs · 13 / 15</div>
+      <span class="eyebrow">The unsung wins</span>
+      <h2>Quiet contributions that made the month work.</h2>
+
+      <div class="shout-list">
+        <div class="shout-row">
+          <span class="shout-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </span>
+          <div class="shout-body">
+            <div class="who">Anita Desai · IT</div>
+            <div class="what">Migrated the entire company to passkeys in two weeks with one ticket filed. Quiet, fast, perfect.</div>
+          </div>
+        </div>
+        <div class="shout-row">
+          <span class="shout-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </span>
+          <div class="shout-body">
+            <div class="who">Carlos Mendes · Finance</div>
+            <div class="what">Closed the books in 5 days instead of 10. The fastest month-end we've ever had.</div>
+          </div>
+        </div>
+        <div class="shout-row">
+          <span class="shout-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </span>
+          <div class="shout-body">
+            <div class="who">Maya Chen · Marketing</div>
+            <div class="what">Wrote and published 11 launch assets for the dashboard release on a 3-day turnaround. Every one shipped on time.</div>
+          </div>
+        </div>
+        <div class="shout-row">
+          <span class="shout-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </span>
+          <div class="shout-body">
+            <div class="who">The on-call rotation</div>
+            <div class="what">Zero customer-facing incidents this month. 14 paged events resolved before they became anything. Thank you.</div>
+          </div>
+        </div>
+        <div class="shout-row">
+          <span class="shout-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </span>
+          <div class="shout-body">
+            <div class="who">Tom Bauer · Legal</div>
+            <div class="what">Turned the SCIM contract redlines around in 24 hours, three times in a row. Sales told us; we're telling everyone.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 14 · Q&A ====== -->
+    <section class="slide s-qa">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Q&amp;A · 14 / 15</div>
+
+      <div class="qa-wrap">
+        <div class="qa-title">Your turn.</div>
+        <div class="qa-sub">Anything on your mind. Wins, worries, what's confusing, what's missing. Raise a hand, drop it in chat, ask anonymously after.</div>
+        <div class="qa-prompts">
+          <div class="qa-prompt">
+            <span class="qmark">?</span>
+            <span>What should we prioritize next quarter that's not on the list?</span>
+          </div>
+          <div class="qa-prompt">
+            <span class="qmark">?</span>
+            <span>Where do we feel fragile right now?</span>
+          </div>
+          <div class="qa-prompt">
+            <span class="qmark">?</span>
+            <span>What's the one change that would make your week easier?</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slide 15 · Open Floor ====== -->
+    <section class="slide s-close">
+      <div class="brand-mark"><span class="mark">A</span><span>Acme Corp</span></div>
+      <div class="slide-meta">Close · 15 / 15</div>
+
+      <div class="close-wrap">
+        <span class="close-eyebrow">Thank you</span>
+        <div class="close-statement">
+          This is our month. <strong>Let's keep building.</strong>
+        </div>
+        <div class="close-actions">
+          <div class="close-action">
+            <span class="ca-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </span>
+            <div class="ca-body">
+              <span class="ca-label">Next all-hands</span>
+              <span class="ca-text">Friday, June 27 · 10am PT</span>
+            </div>
+          </div>
+          <div class="close-action">
+            <span class="ca-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </span>
+            <div class="ca-body">
+              <span class="ca-label">Anonymous feedback</span>
+              <span class="ca-text">#all-hands-feedback in Slack</span>
+            </div>
+          </div>
+          <div class="close-action">
+            <span class="ca-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </span>
+            <div class="ca-body">
+              <span class="ca-label">Recording + deck</span>
+              <span class="ca-text">In your inbox tomorrow morning</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Nav -->
+    <div class="progress-line"></div>
+    <div class="nav-counter"><span class="cur">01</span> / <span class="total">15</span></div>
+    <div class="nav-arrows">
+      <button class="nav-btn prev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="nav-btn next" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ============ Nav controller + setScale ============
+(function() {
+  const deck = document.querySelector('.deck');
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const progress = document.querySelector('.progress-line');
+  const counter = document.querySelector('.nav-counter .cur');
+  const totalEl = document.querySelector('.nav-counter .total');
+  const prevBtn = document.querySelector('.nav-btn.prev');
+  const nextBtn = document.querySelector('.nav-btn.next');
+
+  totalEl.textContent = String(total).padStart(2, '0');
+
+  function setScale() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const scale = Math.min(w / 1440, h / 810);
+    deck.style.transform = 'scale(' + scale + ')';
+  }
+  setScale();
+  window.addEventListener('resize', setScale);
+  window.addEventListener('orientationchange', setScale);
+
+  function go(to) {
+    if (to < 0 || to >= total) return;
+    slides[current].classList.remove('active');
+    current = to;
+    slides[current].classList.add('active');
+    progress.style.width = (((current + 1) / total) * 100) + '%';
+    counter.textContent = String(current + 1).padStart(2, '0');
+  }
+
+  const next = () => go(current + 1);
+  const prev = () => go(current - 1);
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', (e) => {
+    const editingText = e.target && e.target.getAttribute &&
+                        e.target.getAttribute('contenteditable') === 'true';
+    if (editingText) return;
+    if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', (e) => { tx = e.changedTouches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 60) dx < 0 ? next() : prev();
+  }, { passive: true });
+})();
+
+/* === INLINE-EDIT MODULE · press E to toggle edit mode, Ctrl/S downloads, localStorage autosaves === */
+// ============ Inline-edit module ============
+(function() {
+  const STORAGE_KEY = 'deck-edits:' + location.pathname;
+  const SAVE_DEBOUNCE_MS = 500;
+  const HOVER_GRACE_MS = 400;
+
+  const editor = {
+    isActive: false,
+    saveTimer: null,
+    hideTimer: null,
+  };
+
+  const EDITABLE_SELECTORS = [
+    '.slide h1', '.slide h2', '.slide h3', '.slide h4',
+    '.slide p', '.slide li', '.slide blockquote',
+    '.slide .eyebrow', '.slide .lead', '.slide .fact',
+    '.slide .stat-label', '.slide .stat-value',
+    '.slide .quote', '.slide .attribution',
+    '.slide span', '.slide div',
+    '.brand-mark', '.slide-meta'
+  ];
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(saved, 'text/html');
+      const restoredDeck = doc.querySelector('.deck');
+      const liveDeck = document.querySelector('.deck');
+      if (restoredDeck && liveDeck) liveDeck.innerHTML = restoredDeck.innerHTML;
+    }
+  } catch (e) {
+    console.warn('Inline-edit restore failed:', e);
+  }
+
+  const hotzone = document.querySelector('.edit-hotzone');
+  const toggle = document.getElementById('editToggle');
+
+  function showToggle() {
+    clearTimeout(editor.hideTimer);
+    toggle.classList.add('show');
+  }
+  function scheduleHideToggle() {
+    clearTimeout(editor.hideTimer);
+    editor.hideTimer = setTimeout(() => {
+      if (!editor.isActive) toggle.classList.remove('show');
+    }, HOVER_GRACE_MS);
+  }
+
+  hotzone.addEventListener('mouseenter', showToggle);
+  hotzone.addEventListener('mouseleave', scheduleHideToggle);
+  toggle.addEventListener('mouseenter', showToggle);
+  toggle.addEventListener('mouseleave', scheduleHideToggle);
+
+  hotzone.addEventListener('click', () => toggleEditMode());
+  toggle.addEventListener('click', () => toggleEditMode());
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'e' && e.key !== 'E') return;
+    const inEditable = e.target && e.target.getAttribute &&
+                       e.target.getAttribute('contenteditable') === 'true';
+    if (inEditable) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    e.preventDefault();
+    toggleEditMode();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      downloadHtml();
+    }
+  });
+
+  function toggleEditMode() {
+    editor.isActive = !editor.isActive;
+    document.body.classList.toggle('edit-mode', editor.isActive);
+    toggle.classList.toggle('active', editor.isActive);
+    toggle.classList.add('show');
+
+    const targets = document.querySelectorAll(EDITABLE_SELECTORS.join(','));
+    targets.forEach(el => {
+      if (editor.isActive) {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'true');
+      } else {
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('spellcheck');
+      }
+    });
+
+    if (!editor.isActive) scheduleHideToggle();
+  }
+
+  document.addEventListener('input', (e) => {
+    if (!e.target || !e.target.getAttribute) return;
+    if (e.target.getAttribute('contenteditable') !== 'true') return;
+    clearTimeout(editor.saveTimer);
+    editor.saveTimer = setTimeout(() => {
+      try {
+        const deck = document.querySelector('.deck');
+        const wrapper = document.createElement('div');
+        const clonedDeck = deck.cloneNode(true);
+        wrapper.appendChild(clonedDeck);
+        const html = '<!doctype html><html><body>' + wrapper.innerHTML + '</body></html>';
+        localStorage.setItem(STORAGE_KEY, html);
+      } catch (err) {
+        console.warn('Inline-edit autosave failed:', err);
+      }
+    }, SAVE_DEBOUNCE_MS);
+  });
+
+  function downloadHtml() {
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+    clone.querySelectorAll('[spellcheck]').forEach(el => el.removeAttribute('spellcheck'));
+    const hotzoneEl = clone.querySelector('.edit-hotzone');
+    const toggleEl = clone.querySelector('.edit-toggle');
+    if (hotzoneEl) hotzoneEl.remove();
+    if (toggleEl) toggleEl.remove();
+    clone.querySelector('body').classList.remove('edit-mode');
+
+    const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const title = (document.title || 'deck').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = title + '.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+})();
+</script>
+</body>
+</html>

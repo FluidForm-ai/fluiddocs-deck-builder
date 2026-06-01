@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FluidDocs Templates · Open-source deck templates</title>
+<meta name="description" content="Open-source HTML deck templates from FluidDocs. Pitch, sales, launch, keynote, all-hands. Open directly in your browser. No install needed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Poppins:wght@600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Playfair+Display:wght@600;700&family=Lora:wght@600;700&family=Manrope:wght@600;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Founder Default preset */
+    --brand-primary: #111111;
+    --brand-accent:  #FF5722;
+    --brand-text:    #1A1A1A;
+    --brand-muted:   #6B6B6B;
+    --brand-bg:      #FFFFFF;
+    --brand-surface: #FAFAFA;
+    --brand-border:  #E5E5E5;
+    --brand-border-strong: #D4D4D4;
+    --font-display:  'Inter', system-ui, -apple-system, sans-serif;
+    --font-body:     'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono:     'JetBrains Mono', 'SF Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--brand-bg);
+    color: var(--brand-text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- Layout shell ---------- */
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 48px 96px;
+  }
+
+  /* ---------- Shared nav ---------- */
+  .fd-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--brand-border);
+    margin-bottom: 56px;
+  }
+  .fd-nav-logo { display: inline-flex; align-items: center; }
+  .fd-nav-links {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 14px;
+  }
+  .fd-nav-links a {
+    color: var(--brand-muted);
+    font-weight: 500;
+    padding: 7px 12px;
+    border-radius: 7px;
+    transition: color .15s ease, background .15s ease;
+  }
+  .fd-nav-links a:hover { color: var(--brand-primary); background: var(--brand-surface); }
+  .fd-nav-links a.is-active {
+    color: #EA580C;
+    background: #FFF7ED;
+  }
+  .fd-nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px !important;
+    background: #0F172A !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background .15s ease;
+  }
+  .fd-nav-cta:hover { background: #1E293B !important; color: #fff !important; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    margin-bottom: 64px;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--brand-accent);
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .hero-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background: var(--brand-accent);
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 6vw, 64px);
+    line-height: 1.04;
+    letter-spacing: -.035em;
+    font-weight: 700;
+    color: var(--brand-primary);
+    margin-bottom: 20px;
+    max-width: 880px;
+  }
+  .hero p.lede {
+    font-size: clamp(18px, 2vw, 22px);
+    line-height: 1.5;
+    color: var(--brand-muted);
+    max-width: 680px;
+    font-weight: 400;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--brand-muted);
+    letter-spacing: .04em;
+  }
+  .hero-meta strong {
+    color: var(--brand-text);
+    font-weight: 600;
+  }
+
+  /* ---------- Filter pills ---------- */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--brand-border);
+  }
+  .filter-pill {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--brand-border);
+    background: var(--brand-bg);
+    color: var(--brand-muted);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s ease;
+    letter-spacing: .01em;
+  }
+  .filter-pill:hover {
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+  }
+  .filter-pill.active {
+    background: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: #fff;
+  }
+  .filter-pill .count {
+    margin-left: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    opacity: .7;
+  }
+
+  /* ---------- Grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  @media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 24px; } }
+  @media (max-width: 640px)  { .grid { grid-template-columns: 1fr; gap: 24px; } }
+
+  /* ---------- Card ---------- */
+  .card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--brand-border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--brand-bg);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: var(--brand-border-strong);
+    box-shadow: 0 12px 32px -16px rgba(0,0,0,.12), 0 2px 6px -2px rgba(0,0,0,.05);
+  }
+
+  /* ---------- Thumbnail (4:3 swatch + type sample) ---------- */
+  .thumb {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .thumb-accent-stripe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+  }
+  .thumb-corner-mark {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    opacity: .55;
+    font-weight: 500;
+  }
+  .thumb-sample {
+    text-align: left;
+    width: 100%;
+  }
+  .thumb-wordmark {
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.05;
+    letter-spacing: -.03em;
+    font-weight: 700;
+    margin-bottom: 10px;
+    word-break: break-word;
+  }
+  .thumb-oneliner {
+    font-size: 13px;
+    line-height: 1.45;
+    opacity: .72;
+    font-weight: 500;
+    max-width: 90%;
+  }
+  .thumb-rule {
+    width: 36px;
+    height: 2px;
+    margin-top: 14px;
+  }
+
+  /* ---------- Card body ---------- */
+  .card-body {
+    padding: 22px 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+  .card-row-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--brand-surface);
+    border: 1px solid var(--brand-border);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--brand-muted);
+    font-weight: 600;
+  }
+  .badge-slides {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--brand-muted);
+    letter-spacing: .04em;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    line-height: 1.25;
+    letter-spacing: -.015em;
+    font-weight: 600;
+    color: var(--brand-primary);
+  }
+  .card-desc {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--brand-muted);
+    flex: 1;
+  }
+  .card-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 4px;
+    padding-top: 14px;
+    border-top: 1px solid var(--brand-border);
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    background: var(--brand-primary);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background .15s ease;
+  }
+  .btn-primary:hover { background: #000; }
+  .btn-primary svg { width: 12px; height: 12px; }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--brand-muted);
+    font-size: 13px;
+    font-weight: 500;
+    transition: color .15s ease;
+  }
+  .btn-secondary:hover { color: var(--brand-primary); }
+  .btn-secondary svg { width: 12px; height: 12px; }
+
+  /* ---------- Footer ---------- */
+  .footer {
+    margin-top: 96px;
+    padding-top: 40px;
+    border-top: 1px solid var(--brand-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 13px;
+    color: var(--brand-muted);
+  }
+  .footer-left a {
+    display: inline-flex;
+    align-items: center;
+  }
+  .footer-right {
+    display: flex;
+    gap: 24px;
+    font-size: 13px;
+    color: var(--brand-muted);
+  }
+  .footer-right a {
+    transition: color .15s ease;
+  }
+  .footer-right a:hover { color: var(--brand-primary); }
+
+  /* ---------- Hidden state for filtering ---------- */
+  .card.is-hidden { display: none; }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 768px) {
+    .page { padding: 16px 20px 64px; }
+    .fd-nav { margin-bottom: 32px; }
+    .fd-nav-links a.hide-sm { display: none; }
+    .hero { margin-bottom: 40px; }
+    .hero-meta { gap: 20px; margin-top: 24px; }
+    .filter-bar { margin-bottom: 28px; padding-bottom: 18px; }
+    .footer { margin-top: 56px; flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Shared nav -->
+  <nav class="fd-nav" aria-label="Primary">
+    <a href="../quick-start.html" class="fd-nav-logo" aria-label="FluidDocs Deck Builder home">
+      <svg viewBox="0 0 260 38" height="22" role="img" aria-label="Fluid docs logo">
+        <path d="M0 2 Q0 0 2 0 L16 0 Q17.5 0 17.5 1.5 Q17.5 3 16 3 L5 3 L5 12 L14 12 Q15.5 12 15.5 13.5 Q15.5 15 14 15 L5 15 L5 26 Q5 28 2.5 28 Q0 28 0 26 Z" fill="#4B5563"/>
+        <path d="M22 2 Q22 0 24.5 0 Q27 0 27 2 L27 24.5 L38 24.5 Q39.5 24.5 39.5 26 Q39.5 28 38 28 L24.5 28 Q22 28 22 25.5 Z" fill="#4B5563"/>
+        <path d="M44 2 Q44 0 46.5 0 Q49 0 49 2 L49 22 Q49 33 56.5 33 Q64 33 64 22 L64 2 Q64 0 66.5 0 Q69 0 69 2 L69 22.5 Q69 38 56.5 38 Q44 38 44 22.5 Z" fill="#4B5563"/>
+        <path d="M75 2 Q75 0 77.5 0 Q80 0 80 2 L80 26 Q80 28 77.5 28 Q75 28 75 26 Z" fill="#4B5563"/>
+        <path d="M86 2 Q86 0 88 0 L97 0 Q108 0 108 14 Q108 28 97 28 L88 28 Q86 28 86 26 Z M91 3.5 L91 24.5 L96.5 24.5 Q103 24.5 103 14 Q103 3.5 96.5 3.5 Z" fill="#4B5563"/>
+        <rect x="118" y="0" width="3" height="28" rx="1.5" fill="#F97316"/>
+        <text x="132" y="22" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-weight="500" font-size="22" letter-spacing="2" fill="#6B7280">docs</text>
+      </svg>
+    </a>
+    <div class="fd-nav-links">
+      <a href="./index.html" class="is-active" aria-current="page">Templates</a>
+      <a href="../style-presets/index.html" class="hide-sm">Presets</a>
+      <a href="../quick-start.html" class="hide-sm">Quick Start</a>
+      <a href="../quick-start.html#install" class="hide-sm">Install</a>
+      <a href="https://github.com/FluidForm-ai/fluiddocs-deck-builder" class="fd-nav-cta">GitHub</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-eyebrow">Templates Gallery</div>
+    <h1>FluidDocs Templates</h1>
+    <p class="lede">Open these directly in your browser. No install needed.</p>
+    <div class="hero-meta">
+      <div><strong>8 templates</strong> ready to use</div>
+      <div><strong>5 deck types</strong> covered</div>
+      <div><strong>MIT licensed</strong>, fork freely</div>
+    </div>
+  </header>
+
+  <!-- Filter -->
+  <div class="filter-bar" role="tablist" aria-label="Filter templates by type">
+    <button class="filter-pill active" data-filter="all" aria-pressed="true">All<span class="count">8</span></button>
+    <button class="filter-pill" data-filter="pitch" aria-pressed="false">Pitch<span class="count">4</span></button>
+    <button class="filter-pill" data-filter="sales" aria-pressed="false">Sales<span class="count">1</span></button>
+    <button class="filter-pill" data-filter="launch" aria-pressed="false">Launch<span class="count">1</span></button>
+    <button class="filter-pill" data-filter="keynote" aria-pressed="false">Keynote<span class="count">1</span></button>
+    <button class="filter-pill" data-filter="all-hands" aria-pressed="false">All-hands<span class="count">1</span></button>
+  </div>
+
+  <!-- Grid -->
+  <div class="grid" id="grid">
+
+    <!-- Airbnb -->
+    <article class="card" data-type="pitch">
+      <div class="thumb" style="background:#FFFFFF;color:#222222;">
+        <div class="thumb-accent-stripe" style="background:#FF5A5F;"></div>
+        <div class="thumb-corner-mark" style="color:#767676;">Brand mirror</div>
+        <div class="thumb-sample">
+          <div class="thumb-wordmark" style="font-family:'Poppins',sans-serif;color:#222222;">AirBed &amp; Breakfast</div>
+          <div class="thumb-oneliner" style="font-family:'Inter',sans-serif;color:#767676;">Book rooms with locals, rather than hotels.</div>
+          <div class="thumb-rule" style="background:#FF5A5F;"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-row-top">
+          <span class="tag">Pitch</span>
+          <span class="badge-slides">14 slides</span>
+        </div>
+        <h3 class="card-title">Airbnb, 2008-era pitch</h3>
+        <p class="card-desc">The original 10-slide Airbnb seed deck, expanded to a 14-slide canonical structure. Rausch red on white, Poppins display.</p>
+        <div class="card-actions">
+          <a class="btn-primary" href="airbnb/airbnb-pitch.html">
+            Open
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+          <a class="btn-secondary" href="airbnb/airbnb-pitch.html">
+            View source
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8L1 6 4 4M8 4L11 6 8 8M7 2L5 10"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Stripe -->
+    <article class="card" data-type="pitch">
+      <div class="thumb" style="background:#F6F9FC;color:#0A2540;">
+        <div class="thumb-accent-stripe" style="background:linear-gradient(90deg,#635BFF,#7A73FF);"></div>
+        <div class="thumb-corner-mark" style="color:#425466;">Brand mirror</div>
+        <div class="thumb-sample">
+          <div class="thumb-wordmark" style="font-family:'Inter',sans-serif;color:#635BFF;">Stripe</div>
+          <div class="thumb-oneliner" style="font-family:'Inter',sans-serif;color:#425466;">Payments infrastructure for the internet.</div>
+          <div class="thumb-rule" style="background:#635BFF;"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-row-top">
+          <span class="tag">Pitch</span>
+          <span class="badge-slides">14 slides</span>
+        </div>
+        <h3 class="card-title">Stripe, developer-first pitch</h3>
+        <p class="card-desc">Indigo violet on Stripe paper. Clean Inter hierarchy, code-snippet demo, API-first energy. Built for dev tools and infra.</p>
+        <div class="card-actions">
+          <a class="btn-primary" href="stripe/stripe-pitch.html">
+            Open
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+          <a class="btn-secondary" href="stripe/stripe-pitch.html">
+            View source
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8L1 6 4 4M8 4L11 6 8 8M7 2L5 10"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Anthropic -->
+    <article class="card" data-type="pitch">
+      <div class="thumb" style="background:#FAF7F2;color:#191919;">
+        <div class="thumb-accent-stripe" style="background:#CC785C;"></div>
+        <div class="thumb-corner-mark" style="color:#787068;">Brand mirror</div>
+        <div class="thumb-sample">
+          <div class="thumb-wordmark" style="font-family:'Fraunces',serif;color:#191919;font-weight:600;">Anthropic</div>
+          <div class="thumb-oneliner" style="font-family:'Inter',sans-serif;color:#787068;">AI research and products that put safety at the frontier.</div>
+          <div class="thumb-rule" style="background:#CC785C;"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-row-top">
+          <span class="tag">Pitch</span>
+          <span class="badge-slides">14 slides</span>
+        </div>
+        <h3 class="card-title">Anthropic, research-led pitch</h3>
+        <p class="card-desc">Saddle brown on warm cream, Fraunces serif headlines. Calm, considered, defensible. Built for safety- and research-led pitches.</p>
+        <div class="card-actions">
+          <a class="btn-primary" href="anthropic/anthropic-pitch.html">
+            Open
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+          <a class="btn-secondary" href="anthropic/anthropic-pitch.html">
+            View source
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8L1 6 4 4M8 4L11 6 8 8M7 2L5 10"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Sequoia Classic -->
+    <article class="card" data-type="pitch">
+      <div class="thumb" style="background:#FFFFFF;color:#000000;">
+        <div class="thumb-accent-stripe" style="background:#B91C1C;"></div>
+        <div class="thumb-corner-mark" style="color:#57534E;">Brand mirror</div>
+        <div class="thumb-sample">
+          <div class="thumb-wordmark" style="font-family:'Fraunces',serif;color:#000000;font-weight:700;">Sequoia Classic</div>
+          <div class="thumb-oneliner" style="font-family:'Inter',sans-serif;color:#57534E;">The institutional pitch memo. One idea per page, defended in full.</div>
+          <div class="thumb-rule" style="background:#B91C1C;"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-row-top">
+          <span class="tag">Pitch</span>
+          <span class="badge-slides">10 slides</span>
+        </div>
+        <h3 class="card-title">Sequoia Classic, pitch memo</h3>
+        <p class="card-desc">The institutional memo format. Black ink, single red accent, Fraunces serif. For founders who want to defend their thesis at length.</p>
+        <div class="card-actions">
+          <a class="btn-primary" href="sequoia-classic/sequoia-classic.html">
+            Open
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+          <a class="btn-secondary" href="sequoia-classic/sequoia-classic.html">
+            View source
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8L1 6 4 4M8 4L11 6 8 8M7 2L5 10"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Sales Default (Quiet Confident) -->
+    <article class="card" data-type="sales">
+      <div class="thumb" style="background:#FAF8F3;color:#2D3A2F;">
+        <div class="thumb-accent-stripe" style="background:#4A5D4F;"></div>
+        <div class="thumb-corner-mark" style="color:#6E7B70;">Quiet Confident</div>
+        <div class="thumb-sample">
+          <div class="thumb-wordmark" style="font-family:'Source Serif Pro',serif;color:#2D3A2F;font-weight:700;">Sales Deck</div>
+          <div class="thumb-oneliner" style="font-family:'Inter',sans-serif;color:#6E7B70;">B2B pitch-to-close, customer-led. ROI sourced, pricing visible.</div>
+          <div class="thumb-rule" style="background:#8B6F47;"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-row-top">
+          <span class="tag">Sales</span>
+          <span class="badge-slides">11 slides</span>
+        </div>
+        <h3 class="card-title">Sales default deck</h3>
+        <p class="card-desc">Quiet Confident preset. Sage green plus warm slate, Source Serif Pro headlines. Mature, established, customer-trust energy.</p>
+        <div class="card-actions">
+          <a class="btn-primary" href="sales-default/sales-default.html">
+            Open
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+          <a class="btn-secondary" href="sales-default/sales-default.html">
+            View source
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8L1 6 4 4M8 4L11 6 8 8M7 2L5 10"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Launch Default (Studio Bold) -->
+    <article class="card" data-type="launch">
+      <div class="thumb" style="background:#FBF7EE;color:#0B0B0B;">
+        <div class="thumb-accent-stripe" style="background:#0B3D91;"></div>
+        <div class="thumb-corner-mark" style="color:#4A4A4A;">Studio Bold</div>
+        <div class="thumb-sample">
+          <div class="thumb-wordmark" style="font-family:'Playfair Display',serif;color:#0B3D91;font-weight:700;">Launch Deck</div>
+          <div class="thumb-oneliner" style="font-family:'Inter',sans-serif;color:#4A4A4A;">Product announcement, go-to-market moment. Premium, editorial.</div>
+          <div class="thumb-rule" style="background:#F2B705;"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-row-top">
+          <span class="tag">Launch</span>
+          <span class="badge-slides">12 slides</span>
+        </div>
+        <h3 class="card-title">Launch default deck</h3>
+        <p class="card-desc">Studio Bold preset. Cobalt blue on warm cream, Playfair Display headlines, mustard accent. Magazine-cover product launch energy.</p>
+        <div class="card-actions">
+          <a class="btn-primary" href="launch-default/launch-default.html">
+            Open
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+          <a class="btn-secondary" href="launch-default/launch-default.html">
+            View source
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8L1 6 4 4M8 4L11 6 8 8M7 2L5 10"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Keynote Default (Editorial Serif) -->
+    <article class="card" data-type="keynote">
+      <div class="thumb" style="background:#FFFCF7;color:#1F1F1F;">
+        <div class="thumb-accent-stripe" style="background:#A0344B;"></div>
+        <div class="thumb-corner-mark" style="color:#5C5C5C;">Editorial Serif</div>
+        <div class="thumb-sample">
+          <div class="thumb-wordmark" style="font-family:'Lora',serif;color:#1F1F1F;font-weight:700;">Keynote Deck</div>
+          <div class="thumb-oneliner" style="font-family:'Source Serif Pro',serif;color:#5C5C5C;">Conference talk, TED-style. One idea per slide, mandatory hook.</div>
+          <div class="thumb-rule" style="background:#A0344B;"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-row-top">
+          <span class="tag">Keynote</span>
+          <span class="badge-slides">28 slides</span>
+        </div>
+        <h3 class="card-title">Keynote default deck</h3>
+        <p class="card-desc">Editorial Serif preset. Charcoal plus deep red, Lora display. Thoughtful, opinion-led. The longest spine, built for conference stages.</p>
+        <div class="card-actions">
+          <a class="btn-primary" href="keynote-default/keynote-default.html">
+            Open
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+          <a class="btn-secondary" href="keynote-default/keynote-default.html">
+            View source
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8L1 6 4 4M8 4L11 6 8 8M7 2L5 10"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- All-hands Default (Warm Brand) -->
+    <article class="card" data-type="all-hands">
+      <div class="thumb" style="background:#FFF6EC;color:#2A1F1A;">
+        <div class="thumb-accent-stripe" style="background:#C84E2C;"></div>
+        <div class="thumb-corner-mark" style="color:#6E5A50;">Warm Brand</div>
+        <div class="thumb-sample">
+          <div class="thumb-wordmark" style="font-family:'Manrope',sans-serif;color:#C84E2C;font-weight:700;">All-hands</div>
+          <div class="thumb-oneliner" style="font-family:'Manrope',sans-serif;color:#6E5A50;">Town hall. Wins, candor, Q&amp;A. Built for company-wide meetings.</div>
+          <div class="thumb-rule" style="background:#F5C26B;"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-row-top">
+          <span class="tag">All-hands</span>
+          <span class="badge-slides">15 slides</span>
+        </div>
+        <h3 class="card-title">All-hands default deck</h3>
+        <p class="card-desc">Warm Brand preset. Terracotta plus peach plus cream, Manrope rounded sans. Friendly, human, built for monthly town halls.</p>
+        <div class="card-actions">
+          <a class="btn-primary" href="all-hands-default/all-hands-default.html">
+            Open
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+          <a class="btn-secondary" href="all-hands-default/all-hands-default.html">
+            View source
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8L1 6 4 4M8 4L11 6 8 8M7 2L5 10"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-left">
+      <span>Powered by</span>
+      <a href="https://fluiddocs.ai" aria-label="FluidDocs">
+        <svg viewBox="0 0 260 38" height="22" role="img" aria-label="Fluid docs logo">
+          <path d="M0 2 Q0 0 2 0 L16 0 Q17.5 0 17.5 1.5 Q17.5 3 16 3 L5 3 L5 12 L14 12 Q15.5 12 15.5 13.5 Q15.5 15 14 15 L5 15 L5 26 Q5 28 2.5 28 Q0 28 0 26 Z" fill="#4B5563"/>
+          <path d="M22 2 Q22 0 24.5 0 Q27 0 27 2 L27 24.5 L38 24.5 Q39.5 24.5 39.5 26 Q39.5 28 38 28 L24.5 28 Q22 28 22 25.5 Z" fill="#4B5563"/>
+          <path d="M44 2 Q44 0 46.5 0 Q49 0 49 2 L49 22 Q49 33 56.5 33 Q64 33 64 22 L64 2 Q64 0 66.5 0 Q69 0 69 2 L69 22.5 Q69 38 56.5 38 Q44 38 44 22.5 Z" fill="#4B5563"/>
+          <path d="M75 2 Q75 0 77.5 0 Q80 0 80 2 L80 26 Q80 28 77.5 28 Q75 28 75 26 Z" fill="#4B5563"/>
+          <path d="M86 2 Q86 0 88 0 L97 0 Q108 0 108 14 Q108 28 97 28 L88 28 Q86 28 86 26 Z M91 3.5 L91 24.5 L96.5 24.5 Q103 24.5 103 14 Q103 3.5 96.5 3.5 Z" fill="#4B5563"/>
+          <rect x="118" y="0" width="3" height="28" rx="1.5" fill="#F97316"/>
+          <text x="132" y="22" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-weight="500" font-size="22" letter-spacing="2" fill="#6B7280">docs</text>
+        </svg>
+      </a>
+    </div>
+    <div class="footer-right">
+      <a href="https://fluiddocs.ai">fluiddocs.ai</a>
+      <a href="https://github.com/FluidForm-ai/fluiddocs-deck-builder">GitHub</a>
+      <a href="https://github.com/FluidForm-ai/fluiddocs-deck-builder/blob/main/LICENSE">MIT License</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Filter pills
+  (function () {
+    var pills = document.querySelectorAll('.filter-pill');
+    var cards = document.querySelectorAll('.card');
+
+    pills.forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        var filter = pill.getAttribute('data-filter');
+
+        pills.forEach(function (p) {
+          p.classList.remove('active');
+          p.setAttribute('aria-pressed', 'false');
+        });
+        pill.classList.add('active');
+        pill.setAttribute('aria-pressed', 'true');
+
+        cards.forEach(function (card) {
+          var type = card.getAttribute('data-type');
+          if (filter === 'all' || type === filter) {
+            card.classList.remove('is-hidden');
+          } else {
+            card.classList.add('is-hidden');
+          }
+        });
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

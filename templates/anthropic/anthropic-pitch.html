@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anthropic, Pitch Deck Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* === BRAND TOKENS · edit these CSS custom properties to rebrand the deck === */
+  :root {
+    --primary: #CC785C;
+    --primary-soft: #D4A27F;
+    --primary-deep: #A35640;
+    --ink: #191919;
+    --muted: #787068;
+    --muted-soft: #B5AFA6;
+    --surface: #FAF7F2;
+    --cream: #F5F1EB;
+    --cream-deep: #ECE4D6;
+    --paper: #FFFFFF;
+    --border: #E4DDD0;
+    --border-soft: #F0EADD;
+    --ink-soft: #2C2520;
+    --letterbox: #1A1714;
+    --success: #6B8E5A;
+    --warn: #C49A4A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--letterbox);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+
+  .deck-outer {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--letterbox);
+    overflow: hidden;
+  }
+
+  .deck {
+    position: relative;
+    width: 1440px;
+    height: 810px;
+    background: var(--surface);
+    transform-origin: center center;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 104px 96px 96px;
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: hidden;
+    background: var(--surface);
+    opacity: 0;
+    transition: opacity 320ms ease;
+  }
+  .slide.active { display: flex; opacity: 1; }
+
+  .s-cover {
+    justify-content: center;
+    padding: 96px 120px;
+    background: var(--cream);
+  }
+
+  /* ===== Floating nav ===== */
+  .progress-line {
+    position: absolute; top: 0; left: 0;
+    height: 3px;
+    background: var(--primary);
+    width: 7.14%;
+    transition: width 320ms ease;
+    z-index: 100;
+  }
+
+  .nav-counter {
+    position: absolute; bottom: 24px; left: 32px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.12em;
+    color: var(--muted);
+    z-index: 100;
+    text-transform: uppercase;
+  }
+
+  .nav-arrows {
+    position: absolute; bottom: 20px; right: 32px;
+    display: flex; gap: 10px;
+    z-index: 100;
+  }
+
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 180ms ease;
+  }
+  .nav-btn:hover { border-color: var(--primary); background: var(--primary); color: white; }
+  .nav-btn svg { width: 16px; height: 16px; }
+
+  /* ===== Brand mark ===== */
+  .brand-mark {
+    position: absolute; top: 32px; left: 48px;
+    display: flex; align-items: center; gap: 10px;
+    z-index: 5;
+    color: var(--ink);
+    font-family: 'Fraunces', 'Times New Roman', serif;
+    font-weight: 600; font-size: 17px;
+    letter-spacing: -0.02em;
+  }
+  .brand-mark .a-star {
+    width: 22px; height: 22px;
+    color: var(--primary);
+  }
+
+  .slide-meta {
+    position: absolute; top: 32px; right: 48px;
+    z-index: 5;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.12em; font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  /* ===== Typography ===== */
+  .eyebrow {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--primary);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  h1.display {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 92px;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+
+  h2.section {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 56px;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 18px;
+    max-width: 1100px;
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+
+  h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+
+  p.lead {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    max-width: 980px;
+  }
+
+  p, li {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  .mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ===== Cover slide ===== */
+  .cover-wrap {
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .cover-mark {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .cover-mark .a-star { width: 56px; height: 56px; color: var(--primary); }
+  .cover-mark .wordmark {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 52px;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .cover-positioning {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 72px;
+    line-height: 1.04;
+    letter-spacing: -0.028em;
+    color: var(--ink);
+    max-width: 1080px;
+  }
+  .cover-positioning em {
+    font-style: italic;
+    color: var(--primary);
+  }
+  .cover-meta {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(4, max-content);
+    gap: 56px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+  .cover-meta .item .label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .cover-meta .item .value {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ===== Problem cards ===== */
+  .problem-narrative {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 72px;
+    align-items: start;
+    margin-top: 12px;
+  }
+  .problem-prose p {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+  }
+  .problem-prose p .pull {
+    color: var(--primary);
+    font-weight: 500;
+  }
+  .pull-quote {
+    background: var(--cream);
+    border-left: 3px solid var(--primary);
+    padding: 28px 32px;
+    border-radius: 2px;
+  }
+  .pull-quote .pq-stat {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+  .pull-quote .pq-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .pull-quote .pq-source {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 16px;
+    text-transform: uppercase;
+  }
+
+  /* ===== Why Now timeline ===== */
+  .shifts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-top: 24px;
+  }
+  .shift {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .shift .shift-num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--primary);
+    letter-spacing: 0.14em;
+  }
+  .shift h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  .shift .from-to {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .shift .ft-from { color: var(--muted); font-size: 13px; }
+  .shift .ft-arrow { color: var(--primary); }
+  .shift .ft-arrow svg { width: 14px; height: 14px; }
+  .shift .ft-to { color: var(--ink); font-size: 13px; font-weight: 500; }
+  .shift p { font-size: 14px; color: var(--ink-soft); }
+
+  /* ===== Solution ===== */
+  .solution-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+    margin-top: 12px;
+  }
+  .solution-left p.lead {
+    font-size: 22px;
+  }
+  .solution-pillars {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .pillar {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 20px;
+    padding: 20px 22px;
+    background: var(--cream);
+    border-radius: 4px;
+  }
+  .pillar-icon {
+    width: 44px; height: 44px;
+    background: var(--paper);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary);
+    border: 1px solid var(--border);
+  }
+  .pillar-icon svg { width: 22px; height: 22px; }
+  .pillar h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 19px;
+    margin-bottom: 4px;
+    letter-spacing: -0.015em;
+  }
+  .pillar p { font-size: 14px; line-height: 1.5; }
+
+  /* ===== Product (slide 5) ===== */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-top: 18px;
+  }
+  .product-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 26px 26px 24px;
+  }
+  .product-card .pc-icon {
+    width: 38px; height: 38px;
+    color: var(--primary);
+    margin-bottom: 16px;
+  }
+  .product-card .pc-icon svg { width: 100%; height: 100%; }
+  .product-card h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 21px;
+    letter-spacing: -0.015em;
+    margin-bottom: 8px;
+  }
+  .product-card p { font-size: 14px; }
+  .product-card .pc-list {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-soft);
+    list-style: none;
+  }
+  .product-card .pc-list li {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    padding: 4px 0;
+  }
+
+  /* ===== Demo slide (static screenshot) ===== */
+  .demo-frame {
+    margin: 18px auto 0;
+    width: 100%;
+    max-width: 1180px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 12px 36px rgba(25, 25, 25, 0.06);
+  }
+  .demo-browser {
+    background: var(--cream-deep);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .demo-browser .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .demo-browser .dot.r { background: #E0816C; }
+  .demo-browser .dot.y { background: #D4B36A; }
+  .demo-browser .dot.g { background: #8FAB7F; }
+  .demo-browser .url {
+    margin-left: 14px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--paper);
+    padding: 4px 12px;
+    border-radius: 12px;
+    flex: 1;
+    max-width: 420px;
+  }
+
+  .demo-body {
+    display: grid;
+    grid-template-columns: 200px 1fr 220px;
+    height: 420px;
+  }
+  .demo-side {
+    background: var(--cream);
+    border-right: 1px solid var(--border);
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .demo-side .ds-new {
+    background: var(--primary);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .demo-side .ds-new svg { width: 13px; height: 13px; }
+  .demo-side .ds-item {
+    font-size: 12px;
+    color: var(--ink-soft);
+    padding: 7px 10px;
+    border-radius: 3px;
+    cursor: default;
+  }
+  .demo-side .ds-item.active {
+    background: var(--cream-deep);
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .demo-side .ds-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 12px 0 4px 10px;
+  }
+  .demo-main {
+    padding: 24px 28px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .demo-msg {
+    margin-bottom: 18px;
+  }
+  .demo-msg.user .avatar { background: var(--ink); color: var(--paper); }
+  .demo-msg.asst .avatar { background: var(--primary); color: var(--paper); }
+  .demo-msg .header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .demo-msg .avatar {
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .demo-msg .who {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .demo-msg .body {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+    padding-left: 32px;
+  }
+  .demo-msg .body em {
+    color: var(--primary);
+    font-style: normal;
+    font-weight: 500;
+  }
+  .demo-panel {
+    background: var(--cream);
+    border-left: 1px solid var(--border);
+    padding: 18px 16px;
+  }
+  .demo-panel .dp-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .demo-panel .dp-think {
+    background: var(--paper);
+    border: 1px solid var(--border-soft);
+    border-radius: 3px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .demo-panel .dp-think .dp-step {
+    color: var(--primary);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    margin-right: 6px;
+  }
+  .demo-footnote {
+    margin-top: 14px;
+    text-align: right;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .demo-caption {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  /* ===== Market (single big number) ===== */
+  .market-wrap {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    margin-top: 24px;
+    align-items: center;
+  }
+  .market-figure {
+    text-align: left;
+  }
+  .market-figure .mf-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 240px;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+  }
+  .market-figure .mf-unit {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 56px;
+    color: var(--primary);
+    margin-left: 8px;
+  }
+  .market-figure .mf-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin-top: 14px;
+    max-width: 380px;
+    line-height: 1.4;
+  }
+  .market-figure .mf-source {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+  .market-credibility {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .mc-row {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .mc-row:last-child { border-bottom: none; }
+  .mc-row .mc-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 36px;
+    color: var(--primary);
+    line-height: 1;
+  }
+  .mc-row .mc-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+    line-height: 1.45;
+  }
+
+  /* ===== Business Model ===== */
+  .bm-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    margin-top: 16px;
+  }
+  .bm-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .bm-tier {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px 24px;
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    gap: 16px;
+    align-items: center;
+  }
+  .bm-tier.featured {
+    border-color: var(--primary);
+    border-width: 1.5px;
+    background: var(--cream);
+  }
+  .bm-tier .bt-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: -0.015em;
+    margin-bottom: 4px;
+  }
+  .bm-tier .bt-desc {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .bm-tier .bt-price {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 28px;
+    color: var(--ink);
+    text-align: right;
+  }
+  .bm-tier .bt-price .bp-unit {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    display: block;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .bm-economics {
+    background: var(--cream);
+    border-radius: 4px;
+    padding: 28px 28px;
+  }
+  .bm-economics h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+  .bm-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 14px;
+  }
+  .bm-row:last-child { border-bottom: none; }
+  .bm-row .bm-key { color: var(--muted); }
+  .bm-row .bm-val {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .bm-foot {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+    font-style: italic;
+  }
+
+  /* ===== Traction quiet-confidence ===== */
+  .traction-wrap {
+    margin-top: 20px;
+  }
+  .traction-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+  }
+  .tg-stat {
+    border-top: 2px solid var(--primary);
+    padding-top: 20px;
+  }
+  .tg-stat .ts-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 104px;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+  }
+  .tg-stat .ts-num .ts-unit {
+    font-size: 44px;
+    color: var(--primary);
+  }
+  .tg-stat .ts-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    line-height: 1.4;
+    max-width: 320px;
+  }
+  .tg-stat .ts-source {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 8px;
+    text-transform: uppercase;
+  }
+  .traction-quote {
+    margin-top: 36px;
+    padding: 24px 28px;
+    background: var(--cream);
+    border-left: 3px solid var(--primary);
+    border-radius: 2px;
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-style: italic;
+    color: var(--ink-soft);
+    line-height: 1.45;
+  }
+  .traction-quote .tq-author {
+    display: block;
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    font-style: normal;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* ===== Competition (narrative card stack) ===== */
+  .comp-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 18px;
+  }
+  .comp-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px 24px;
+  }
+  .comp-card .cc-tag {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .comp-card h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.015em;
+    margin-bottom: 10px;
+  }
+  .comp-card p {
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .comp-card.us {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--cream);
+  }
+  .comp-card.us .cc-tag {
+    color: var(--primary-soft);
+  }
+  .comp-card.us h4 {
+    color: var(--cream);
+  }
+  .comp-card.us p {
+    color: var(--cream);
+    opacity: 0.85;
+  }
+
+  /* ===== Moat (capabilities ladder) ===== */
+  .ladder-wrap {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .ladder-prose p {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  .ladder-prose p strong {
+    color: var(--primary);
+    font-weight: 500;
+  }
+  .ladder {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .rung {
+    display: grid;
+    grid-template-columns: 32px 1fr max-content;
+    gap: 16px;
+    padding: 14px 18px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    align-items: center;
+  }
+  .rung.ours {
+    background: var(--cream);
+    border-color: var(--primary);
+    border-left-width: 3px;
+  }
+  .rung.future {
+    border-style: dashed;
+    opacity: 0.7;
+  }
+  .rung .rn {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--primary);
+    letter-spacing: 0.08em;
+  }
+  .rung .rl {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .rung .rd {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .rung .rb {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .rung.ours .rb { color: var(--primary); font-weight: 600; }
+
+  /* ===== GTM (wedge narrative) ===== */
+  .wedge-wrap {
+    margin-top: 20px;
+  }
+  .wedge-flow {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr 60px 1fr;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .wedge-stage {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px 24px;
+  }
+  .wedge-stage.now {
+    background: var(--cream);
+    border-color: var(--primary);
+  }
+  .wedge-stage .ws-tag {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--primary);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .wedge-stage h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 21px;
+    letter-spacing: -0.015em;
+    margin-bottom: 8px;
+  }
+  .wedge-stage p { font-size: 13.5px; line-height: 1.5; }
+  .wedge-stage .ws-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 32px;
+    color: var(--ink);
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .wedge-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+  }
+  .wedge-arrow svg { width: 36px; height: 36px; }
+  .wedge-foot {
+    margin-top: 24px;
+    padding: 20px 24px;
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 18px;
+    align-items: center;
+  }
+  .wedge-foot .wf-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--primary-soft);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .wedge-foot .wf-text {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    color: var(--cream);
+    line-height: 1.45;
+    font-style: italic;
+  }
+
+  /* ===== Team ===== */
+  .team-wrap {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 36px;
+    margin-top: 20px;
+  }
+  .team-card {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .team-avatar {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 36px;
+    color: var(--primary);
+    border: 1px solid var(--border);
+  }
+  .team-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 26px;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .team-role {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--primary);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .team-bio {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+  .team-bio strong { color: var(--ink); font-weight: 600; }
+  .team-fit {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--primary-deep);
+    line-height: 1.45;
+  }
+  .team-strip {
+    margin-top: 30px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  .team-strip .ts-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .team-strip .ts-roster {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .team-strip .ts-roster span {
+    color: var(--ink-soft);
+  }
+  .team-strip .ts-roster b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ===== Ask ===== */
+  .ask-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    margin-top: 24px;
+    align-items: start;
+  }
+  .ask-figure .af-amount {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 180px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+  }
+  .ask-figure .af-amount .af-unit {
+    font-size: 56px;
+    color: var(--primary);
+  }
+  .ask-figure .af-sub {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    line-height: 1.4;
+    font-style: italic;
+  }
+  .ask-figure .af-meta {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 36px;
+  }
+  .ask-figure .af-meta .am-k {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .ask-figure .af-meta .am-v {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  .ask-uses {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .use-row {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 22px;
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    gap: 16px;
+    align-items: center;
+  }
+  .use-row h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 19px;
+    margin-bottom: 4px;
+  }
+  .use-row p { font-size: 13px; color: var(--muted); }
+  .use-row .ur-pct {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 36px;
+    color: var(--primary);
+  }
+  .ask-contact {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .ask-contact b { color: var(--ink); font-weight: 600; }
+
+  /* ===== Inline-edit module ===== */
+  .edit-hotzone {
+    position: fixed;
+    top: 0; left: 0;
+    width: 40px; height: 40px;
+    z-index: 10000;
+    cursor: pointer;
+    background: transparent;
+  }
+  .edit-toggle {
+    position: fixed;
+    top: 12px; left: 12px;
+    z-index: 10001;
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, background 0.15s ease, color 0.15s ease;
+  }
+  .edit-toggle.show,
+  .edit-toggle.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .edit-toggle.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  body.edit-mode [contenteditable="true"] {
+    outline: 1px dashed var(--primary);
+    outline-offset: 2px;
+    cursor: text;
+  }
+  body.edit-mode [contenteditable="true"]:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="edit-hotzone" aria-hidden="true"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)" aria-label="Toggle edit mode">Edit</button>
+
+<div class="deck-outer">
+  <div class="deck">
+
+    <!-- ============== 1. COVER ============== -->
+    <section class="slide s-cover active">
+      <div class="cover-wrap">
+        <div class="cover-mark">
+          <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+            <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+          </svg>
+          <span class="wordmark">Anthropic</span>
+        </div>
+
+        <div class="cover-positioning">
+          A research company building <em>reliable, interpretable, steerable</em> AI systems.
+        </div>
+
+        <div class="cover-meta">
+          <div class="item">
+            <div class="label">Stage</div>
+            <div class="value">Series A</div>
+          </div>
+          <div class="item">
+            <div class="label">Raising</div>
+            <div class="value">$124M</div>
+          </div>
+          <div class="item">
+            <div class="label">Founded</div>
+            <div class="value">San Francisco, 2021</div>
+          </div>
+          <div class="item">
+            <div class="label">Contact</div>
+            <div class="value">founders@anthropic.com</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 2. PROBLEM ============== -->
+    <section class="slide s-problem">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">02 · Problem</div>
+
+      <div class="eyebrow">The problem</div>
+      <h2 class="section">AI systems are getting more capable faster than they are getting more honest.</h2>
+
+      <div class="problem-narrative">
+        <div class="problem-prose">
+          <p>Large language models can now write code, summarize legal contracts, and answer medical questions. They will be deployed in places where being <span class="pull">wrong with confidence</span> has real consequences.</p>
+          <p>The same models still hallucinate citations, follow harmful instructions when asked nicely, and produce outputs no one inside the lab can fully explain.</p>
+          <p>Capability research has a five-year head start on safety research. Without a deliberate push, the gap widens with every new training run.</p>
+        </div>
+
+        <aside class="pull-quote">
+          <div class="pq-stat">73%</div>
+          <div class="pq-label">of frontier-model errors in our safety evaluations come from confident, plausible, factually wrong outputs, not from refusals or obvious failures.</div>
+          <div class="pq-source">Internal red-team study, Q3 2021</div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============== 3. WHY NOW ============== -->
+    <section class="slide s-whynow">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">03 · Why Now</div>
+
+      <div class="eyebrow">Why now</div>
+      <h2 class="section">Foundation models stopped being a research curiosity. Safety has to catch up before the next training cycle.</h2>
+
+      <div class="shifts">
+        <div class="shift">
+          <span class="shift-num">01</span>
+          <h4>Capability scaling laws are predictable</h4>
+          <p>Scaling exponents from 2020 to 2021 held within 5% across three independent labs. We can forecast the next jump. We cannot yet forecast its failure modes.</p>
+          <div class="from-to">
+            <span class="ft-from">Research curiosity</span>
+            <span class="ft-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="ft-to">Industrial primitive</span>
+          </div>
+        </div>
+
+        <div class="shift">
+          <span class="shift-num">02</span>
+          <h4>Deployment is outpacing alignment</h4>
+          <p>GPT-3 sits behind millions of API calls per day. The number of researchers working on its interpretability fits in a single conference room.</p>
+          <div class="from-to">
+            <span class="ft-from">Theoretical concern</span>
+            <span class="ft-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="ft-to">Shipping requirement</span>
+          </div>
+        </div>
+
+        <div class="shift">
+          <span class="shift-num">03</span>
+          <h4>Constitutional methods now beat RLHF on key axes</h4>
+          <p>Self-critique with a written set of principles reduces harmful outputs by 40% over standard human-feedback training, and explains its choices.</p>
+          <div class="from-to">
+            <span class="ft-from">Opaque preferences</span>
+            <span class="ft-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="ft-to">Written principles</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 4. SOLUTION ============== -->
+    <section class="slide s-solution">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">04 · Solution</div>
+
+      <div class="eyebrow">Our approach</div>
+      <h2 class="section">We build frontier models and the safety techniques to deploy them, in the same building, by the same team.</h2>
+
+      <div class="solution-wrap">
+        <div class="solution-left">
+          <p class="lead">Most labs treat safety as a downstream filter. We treat it as a design constraint on the model itself, written into training, interpretability tooling, and the assistant we ship to customers.</p>
+        </div>
+
+        <div class="solution-pillars">
+          <div class="pillar">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L14 9 L21 11 L14 13 L12 20 L10 13 L3 11 L10 9 Z"/></svg>
+            </div>
+            <div>
+              <h4>Constitutional AI</h4>
+              <p>Train assistants against a written set of principles instead of opaque human preferences. The model can explain why it refused.</p>
+            </div>
+          </div>
+
+          <div class="pillar">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7 v5 l3 2"/></svg>
+            </div>
+            <div>
+              <h4>Mechanistic interpretability</h4>
+              <p>Reverse-engineer the circuits inside a transformer the way a chip designer reads a die shot. Understand the model, not just its outputs.</p>
+            </div>
+          </div>
+
+          <div class="pillar">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11 V7 a5 5 0 0 1 10 0 v4"/></svg>
+            </div>
+            <div>
+              <h4>Responsible scaling</h4>
+              <p>Capability thresholds trigger pre-committed safety evaluations. We do not ship the next model until the previous tier's evals pass.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 5. PRODUCT ============== -->
+    <section class="slide s-product">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">05 · Product</div>
+
+      <div class="eyebrow">Product</div>
+      <h2 class="section">Claude, a safety-trained assistant, plus an API research labs and enterprises build on.</h2>
+
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="pc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h4>Claude Assistant</h4>
+          <p>A conversational interface tuned for long-form reasoning, refusal transparency, and citation discipline.</p>
+          <ul class="pc-list">
+            <li>· 100K-token context</li>
+            <li>· Constitutional refusals</li>
+            <li>· Cited sources, where known</li>
+          </ul>
+        </div>
+
+        <div class="product-card">
+          <div class="pc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <h4>Claude API</h4>
+          <p>One endpoint. Same safety stack. Used today by legal, research, and customer-support teams in production.</p>
+          <ul class="pc-list">
+            <li>· Streaming responses</li>
+            <li>· System prompts</li>
+            <li>· Tier pricing by token volume</li>
+          </ul>
+        </div>
+
+        <div class="product-card">
+          <div class="pc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <h4>Safety toolchain</h4>
+          <p>Open-sourced interpretability libraries plus model evaluations the broader research community uses on their own systems.</p>
+          <ul class="pc-list">
+            <li>· Circuit tracing</li>
+            <li>· Sycophancy evals</li>
+            <li>· Red-team playbooks</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 6. DEMO (static screenshot) ============== -->
+    <section class="slide s-demo">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">06 · Demo</div>
+
+      <div class="eyebrow">Inside the product</div>
+      <div class="demo-caption">A representative conversation in Claude.</div>
+
+      <div class="demo-frame">
+        <div class="demo-browser">
+          <span class="dot r"></span>
+          <span class="dot y"></span>
+          <span class="dot g"></span>
+          <span class="url">claude.ai / chat / a-research-question</span>
+        </div>
+
+        <div class="demo-body">
+          <aside class="demo-side">
+            <div class="ds-new">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              New chat
+            </div>
+            <div class="ds-label">Today</div>
+            <div class="ds-item active">Constitutional methods, summary</div>
+            <div class="ds-item">Review of policy memo</div>
+            <div class="ds-item">Edit my abstract</div>
+            <div class="ds-label">Yesterday</div>
+            <div class="ds-item">Draft response to reviewer 2</div>
+            <div class="ds-item">Code refactor, transformer block</div>
+          </aside>
+
+          <main class="demo-main">
+            <div class="demo-msg user">
+              <div class="header">
+                <div class="avatar">JD</div>
+                <div class="who">You</div>
+              </div>
+              <div class="body">Walk me through how Constitutional AI differs from standard RLHF, in two paragraphs, for a reader who has trained models but not read the paper.</div>
+            </div>
+
+            <div class="demo-msg asst">
+              <div class="header">
+                <div class="avatar">C</div>
+                <div class="who">Claude</div>
+              </div>
+              <div class="body">Standard RLHF asks human labelers to rank model outputs, then trains a reward model on those rankings, then fine-tunes the policy against that reward. The signal is dense but <em>opaque</em>, the model learns "this kind of output gets high reward," not "this kind of output is honest."<br><br>Constitutional AI replaces the human ranker with the model itself, evaluating its own draft against a written list of principles. The model produces a critique, then revises. The signal is sparser but the rule it learned is now <em>legible</em>, you can read the constitution and predict the refusal.</div>
+            </div>
+          </main>
+
+          <aside class="demo-panel">
+            <div class="dp-label">Thinking</div>
+            <div class="dp-think"><span class="dp-step">01</span>Reader is technical, skip prerequisites.</div>
+            <div class="dp-think"><span class="dp-step">02</span>Anchor in RLHF mechanics first.</div>
+            <div class="dp-think"><span class="dp-step">03</span>Highlight legibility, the actual contrast.</div>
+            <div class="dp-think"><span class="dp-step">04</span>Two paragraphs, no jargon dump.</div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="demo-footnote"><a href="https://fluiddocs.ai" target="_blank" rel="noopener" style="display:inline-block;opacity:.7;text-decoration:none"><svg viewBox="0 0 260 38" height="20" role="img" aria-label="Powered by FluidDocs" style="display:inline-block;vertical-align:middle"><path d="M0 2 Q0 0 2 0 L16 0 Q17.5 0 17.5 1.5 Q17.5 3 16 3 L5 3 L5 12 L14 12 Q15.5 12 15.5 13.5 Q15.5 15 14 15 L5 15 L5 26 Q5 28 2.5 28 Q0 28 0 26 Z" fill="#9CA3AF"/><path d="M22 2 Q22 0 24.5 0 Q27 0 27 2 L27 24.5 L38 24.5 Q39.5 24.5 39.5 26 Q39.5 28 38 28 L24.5 28 Q22 28 22 25.5 Z" fill="#9CA3AF"/><path d="M44 2 Q44 0 46.5 0 Q49 0 49 2 L49 22 Q49 33 56.5 33 Q64 33 64 22 L64 2 Q64 0 66.5 0 Q69 0 69 2 L69 22.5 Q69 38 56.5 38 Q44 38 44 22.5 Z" fill="#9CA3AF"/><path d="M75 2 Q75 0 77.5 0 Q80 0 80 2 L80 26 Q80 28 77.5 28 Q75 28 75 26 Z" fill="#9CA3AF"/><path d="M86 2 Q86 0 88 0 L97 0 Q108 0 108 14 Q108 28 97 28 L88 28 Q86 28 86 26 Z M91 3.5 L91 24.5 L96.5 24.5 Q103 24.5 103 14 Q103 3.5 96.5 3.5 Z" fill="#9CA3AF"/><rect x="118" y="0" width="3" height="28" rx="1.5" fill="#F97316"/><text x="132" y="22" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-weight="500" font-size="22" letter-spacing="2" fill="#9CA3AF">docs</text></svg></a></div>
+    </section>
+
+    <!-- ============== 7. MARKET ============== -->
+    <section class="slide s-market">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">07 · Market</div>
+
+      <div class="eyebrow">Market</div>
+      <h2 class="section">Foundation-model inference is becoming an operating cost line for every software company.</h2>
+
+      <div class="market-wrap">
+        <div class="market-figure">
+          <span class="mf-num">$1.3T<span class="mf-unit">+</span></span>
+          <div class="mf-label">Total addressable spend on labor categories foundation models can credibly assist by 2030.</div>
+          <div class="mf-source">McKinsey Global Institute, generative AI productivity report, 2023</div>
+        </div>
+
+        <div class="market-credibility">
+          <div class="mc-row">
+            <div class="mc-num">$200B</div>
+            <div class="mc-text">Annual enterprise spend on software categories where natural-language interfaces will replace point-and-click UI.</div>
+          </div>
+          <div class="mc-row">
+            <div class="mc-num">$95B</div>
+            <div class="mc-text">Annual outsourced knowledge-work spend (BPO, contact centers, research support) directly addressable by a safety-trained assistant.</div>
+          </div>
+          <div class="mc-row">
+            <div class="mc-num">3.4x</div>
+            <div class="mc-text">Foundation-model API revenue growth, 2020 to 2022, across the three largest providers.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 8. BUSINESS MODEL ============== -->
+    <section class="slide s-model">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">08 · Business Model</div>
+
+      <div class="eyebrow">How we make money</div>
+      <h2 class="section">Usage-based API pricing for developers, seat-based enterprise plans for teams.</h2>
+
+      <div class="bm-wrap">
+        <div class="bm-tiers">
+          <div class="bm-tier">
+            <div>
+              <div class="bt-name">Free tier</div>
+              <div class="bt-desc">Research access, rate-limited. On-ramp for academic users and individual builders.</div>
+            </div>
+            <div class="bt-price">$0<span class="bp-unit">per month</span></div>
+          </div>
+
+          <div class="bm-tier featured">
+            <div>
+              <div class="bt-name">Pro, API</div>
+              <div class="bt-desc">Pay-as-you-go inference. The bulk of revenue today and the path to $100M ARR.</div>
+            </div>
+            <div class="bt-price">$8<span class="bp-unit">per M tokens</span></div>
+          </div>
+
+          <div class="bm-tier">
+            <div>
+              <div class="bt-name">Enterprise</div>
+              <div class="bt-desc">Seat licenses, dedicated capacity, SOC2, custom safety policies, named SRE support.</div>
+            </div>
+            <div class="bt-price">$60<span class="bp-unit">per seat month</span></div>
+          </div>
+        </div>
+
+        <div class="bm-economics">
+          <h4>Unit economics, directional</h4>
+          <div class="bm-row"><span class="bm-key">Gross margin, API tier</span><span class="bm-val">62%</span></div>
+          <div class="bm-row"><span class="bm-key">Gross margin, Enterprise tier</span><span class="bm-val">78%</span></div>
+          <div class="bm-row"><span class="bm-key">Payback period, enterprise</span><span class="bm-val">8 months</span></div>
+          <div class="bm-row"><span class="bm-key">Net revenue retention, charter customers</span><span class="bm-val">141%</span></div>
+          <div class="bm-foot">Margin improves as we move inference onto our own training infrastructure. Today we still rent the majority of our compute.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 9. TRACTION ============== -->
+    <section class="slide s-traction">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">09 · Traction</div>
+
+      <div class="eyebrow">Traction</div>
+      <h2 class="section">Quiet but compounding. The customers we already have keep buying more.</h2>
+
+      <div class="traction-wrap">
+        <div class="traction-grid">
+          <div class="tg-stat">
+            <div class="ts-num">11<span class="ts-unit">x</span></div>
+            <div class="ts-label">Year-over-year growth in monthly API token volume, second half of 2022.</div>
+            <div class="ts-source">Anthropic infrastructure logs</div>
+          </div>
+          <div class="tg-stat">
+            <div class="ts-num">141<span class="ts-unit">%</span></div>
+            <div class="ts-label">Net revenue retention across our 22 charter enterprise customers, trailing six months.</div>
+            <div class="ts-source">Customer billing system</div>
+          </div>
+          <div class="tg-stat">
+            <div class="ts-num">38</div>
+            <div class="ts-label">Research papers published or accepted at top-tier venues by the team since founding.</div>
+            <div class="ts-source">Anthropic publications page</div>
+          </div>
+        </div>
+
+        <div class="traction-quote">
+          "Claude is the only assistant we have been comfortable putting in front of a medical-records workflow. The refusals are predictable, and we can read why."
+          <span class="tq-author">VP Engineering, Series C health-tech customer</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 10. COMPETITION ============== -->
+    <section class="slide s-comp">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">10 · Competition</div>
+
+      <div class="eyebrow">Competition</div>
+      <h2 class="section">Three labs ship frontier models. One is shipping a research program for using them safely.</h2>
+
+      <div class="comp-wrap">
+        <div class="comp-card">
+          <div class="cc-tag">OpenAI</div>
+          <h4>Capability-first, safety as filter</h4>
+          <p>Significant talent, fast model cadence. Safety work happens, but it is positioned downstream of training. Their organizational incentive is to maximize capability lead time.</p>
+        </div>
+
+        <div class="comp-card">
+          <div class="cc-tag">Google DeepMind</div>
+          <h4>Research depth, deployment caution</h4>
+          <p>Strong interpretability publications. Product velocity is constrained by Alphabet's brand exposure, which means many of their best safety ideas reach users on someone else's product first.</p>
+        </div>
+
+        <div class="comp-card">
+          <div class="cc-tag">Open-source labs</div>
+          <h4>Distribution, no safety stack</h4>
+          <p>Weight releases accelerate research and remove guardrails simultaneously. Open-source models are part of the ecosystem. They are not building the assistant an enterprise can deploy without a separate safety team.</p>
+        </div>
+
+        <div class="comp-card us">
+          <div class="cc-tag">Anthropic</div>
+          <h4>Frontier model, plus a safety research program, plus the assistant that proves it</h4>
+          <p>We are the only lab where the same researchers train the model, publish the interpretability paper, and ship the customer-facing product. That feedback loop is the moat. It also dictates what we will and will not build.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 11. MOAT (Capabilities Ladder) ============== -->
+    <section class="slide s-moat">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">11 · Moat</div>
+
+      <div class="eyebrow">Defensibility</div>
+      <h2 class="section">A safety research program compounds. A capability lead does not.</h2>
+
+      <div class="ladder-wrap">
+        <div class="ladder-prose">
+          <p>Any large lab can match a single capability benchmark within twelve months. <strong>Replicating a research program takes years</strong>, the people, the publications, the trust with customers who have already deployed it.</p>
+          <p>Our moat is the <strong>ladder</strong>, each rung opens the next one, and each one is something a competitor would have to rebuild from scratch.</p>
+          <p>It is also why we attract the researchers we attract. Safety-motivated engineers will not work on a product where their work is positioned downstream.</p>
+        </div>
+
+        <div class="ladder">
+          <div class="rung future">
+            <span class="rn">06</span>
+            <div><div class="rl">Autonomous research assistants</div><div class="rd">Models that conduct their own alignment experiments</div></div>
+            <span class="rb">2024+</span>
+          </div>
+          <div class="rung ours">
+            <span class="rn">05</span>
+            <div><div class="rl">Mechanistic interpretability at scale</div><div class="rd">Circuit-level explanations for production models</div></div>
+            <span class="rb">Ours</span>
+          </div>
+          <div class="rung ours">
+            <span class="rn">04</span>
+            <div><div class="rl">Constitutional training pipelines</div><div class="rd">Written-principle training in production</div></div>
+            <span class="rb">Ours</span>
+          </div>
+          <div class="rung ours">
+            <span class="rn">03</span>
+            <div><div class="rl">Safety-trained assistant in market</div><div class="rd">Claude API, with refusal transparency</div></div>
+            <span class="rb">Ours</span>
+          </div>
+          <div class="rung">
+            <span class="rn">02</span>
+            <div><div class="rl">RLHF deployment</div><div class="rd">Standard preference-trained models</div></div>
+            <span class="rb">Industry</span>
+          </div>
+          <div class="rung">
+            <span class="rn">01</span>
+            <div><div class="rl">Foundation-model training</div><div class="rd">Large transformer pre-training</div></div>
+            <span class="rb">Industry</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 12. GTM (Wedge narrative) ============== -->
+    <section class="slide s-gtm">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">12 · GTM</div>
+
+      <div class="eyebrow">Go to market</div>
+      <h2 class="section">Start with the customers who get fired for being wrong. Expand from there.</h2>
+
+      <div class="wedge-wrap">
+        <div class="wedge-flow">
+          <div class="wedge-stage now">
+            <div class="ws-tag">Wedge · 2022 to 2023</div>
+            <h4>Regulated knowledge work</h4>
+            <p>Legal, healthcare, financial services. Buyers who already pay a premium for predictable, auditable behavior and have someone to escalate to when it fails.</p>
+            <div class="ws-num">22 customers</div>
+          </div>
+
+          <div class="wedge-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+
+          <div class="wedge-stage">
+            <div class="ws-tag">Beachhead · 2024</div>
+            <h4>Mid-market platforms</h4>
+            <p>Software companies embedding an assistant inside an existing workflow. They ship through us, our safety reputation becomes part of their product story.</p>
+            <div class="ws-num">+200 expected</div>
+          </div>
+
+          <div class="wedge-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+
+          <div class="wedge-stage">
+            <div class="ws-tag">Expansion · 2025+</div>
+            <h4>General developer API</h4>
+            <p>By the time Claude is the safety-default, the long tail of API developers comes for the same reason every enterprise did, the model that refuses correctly.</p>
+            <div class="ws-num">10k+ developers</div>
+          </div>
+        </div>
+
+        <div class="wedge-foot">
+          <div class="wf-label">Channel insight</div>
+          <div class="wf-text">We do not need a sales-led motion to win. The enterprises buying us today are the ones our beachhead customers want to sell to next.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 13. TEAM ============== -->
+    <section class="slide s-team">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">13 · Team</div>
+
+      <div class="eyebrow">The team</div>
+      <h2 class="section">A founding team built inside the labs whose work made foundation models work in the first place.</h2>
+
+      <div class="team-wrap">
+        <div class="team-card">
+          <div class="team-avatar">DA</div>
+          <div>
+            <div class="team-name">Dario Amodei</div>
+            <div class="team-role">Co-founder, CEO</div>
+            <div class="team-bio">Former <strong>VP of Research at OpenAI</strong>, where he led the team that produced GPT-2 and GPT-3 and authored the scaling laws paper. Earlier, principal scientist at Baidu's deep learning lab. Physics PhD from Princeton.</div>
+            <div class="team-fit">If anyone has the receipts on what frontier models will do next, it is the person who wrote the math for it.</div>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">DA</div>
+          <div>
+            <div class="team-name">Daniela Amodei</div>
+            <div class="team-role">Co-founder, President</div>
+            <div class="team-bio">Former <strong>VP of Safety and Policy at OpenAI</strong>. Built and ran the team that wrote the deployment guidelines for GPT-3. Earlier, Stripe and Skype on global operations. Political science from UCSC.</div>
+            <div class="team-fit">The person who has actually written the rulebook a frontier lab ships against.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-strip">
+        <div class="ts-label">Founding researchers</div>
+        <div class="ts-roster">
+          <span><b>Tom Brown</b> · GPT-3 lead author</span>
+          <span><b>Sam McCandlish</b> · scaling laws co-author</span>
+          <span><b>Jared Kaplan</b> · Johns Hopkins, scaling laws</span>
+          <span><b>Chris Olah</b> · circuits at Distill, OpenAI</span>
+          <span><b>Jack Clark</b> · OpenAI policy, AI Index co-founder</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 14. ASK ============== -->
+    <section class="slide s-ask">
+      <div class="brand-mark">
+        <svg class="a-star" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 0 L18.5 13.5 L32 16 L18.5 18.5 L16 32 L13.5 18.5 L0 16 L13.5 13.5 Z"/>
+        </svg>
+        Anthropic
+      </div>
+      <div class="slide-meta">14 · Ask</div>
+
+      <div class="eyebrow">The ask</div>
+      <h2 class="section">Capital to train the next generation of safety-first models and the people to evaluate them.</h2>
+
+      <div class="ask-wrap">
+        <div class="ask-figure">
+          <div class="af-amount">$124<span class="af-unit">M</span></div>
+          <div class="af-sub">Series A. Capital that takes us through the next two training generations and the safety program built around them.</div>
+          <div class="af-meta">
+            <div>
+              <div class="am-k">Runway</div>
+              <div class="am-v">22 months</div>
+            </div>
+            <div>
+              <div class="am-k">Lead</div>
+              <div class="am-v">In discussion</div>
+            </div>
+            <div>
+              <div class="am-k">Closing</div>
+              <div class="am-v">Q2 2023</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ask-uses">
+          <div class="use-row">
+            <div>
+              <h4>Frontier model training</h4>
+              <p>The next two generations of pre-training, plus the compute to evaluate them at every checkpoint.</p>
+            </div>
+            <div class="ur-pct">62%</div>
+          </div>
+
+          <div class="use-row">
+            <div>
+              <h4>Safety research team</h4>
+              <p>Twenty more interpretability and alignment researchers. The bottleneck on the program is people, not compute.</p>
+            </div>
+            <div class="ur-pct">24%</div>
+          </div>
+
+          <div class="use-row">
+            <div>
+              <h4>Enterprise GTM</h4>
+              <p>A small, deliberate field team. We do not need many sellers. We need the right ten.</p>
+            </div>
+            <div class="ur-pct">14%</div>
+          </div>
+
+          <div class="ask-contact">
+            Next step · email <b>founders@anthropic.com</b> · responses within 48 hours
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== Floating nav ============== -->
+    <div class="progress-line"></div>
+    <div class="nav-counter"><span class="cur">01</span> / <span class="total">14</span></div>
+    <div class="nav-arrows">
+      <button class="nav-btn prev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="nav-btn next" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  const deck = document.querySelector('.deck');
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const progress = document.querySelector('.progress-line');
+  const counter = document.querySelector('.nav-counter .cur');
+  const totalEl = document.querySelector('.nav-counter .total');
+  const prevBtn = document.querySelector('.nav-btn.prev');
+  const nextBtn = document.querySelector('.nav-btn.next');
+
+  totalEl.textContent = String(total).padStart(2, '0');
+
+  function setScale() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const scale = Math.min(w / 1440, h / 810);
+    deck.style.transform = 'scale(' + scale + ')';
+  }
+  setScale();
+  window.addEventListener('resize', setScale);
+  window.addEventListener('orientationchange', setScale);
+
+  function go(to) {
+    if (to < 0 || to >= total) return;
+    slides[current].classList.remove('active');
+    current = to;
+    slides[current].classList.add('active');
+    progress.style.width = (((current + 1) / total) * 100) + '%';
+    counter.textContent = String(current + 1).padStart(2, '0');
+  }
+
+  const next = function() { go(current + 1); };
+  const prev = function() { go(current - 1); };
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', function(e) {
+    const editingText = e.target && e.target.getAttribute &&
+                        e.target.getAttribute('contenteditable') === 'true';
+    if (editingText) return;
+    if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', function(e) { tx = e.changedTouches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 60) { if (dx < 0) { next(); } else { prev(); } }
+  }, { passive: true });
+})();
+
+/* === INLINE-EDIT MODULE · press E to toggle edit mode, Ctrl/S downloads, localStorage autosaves === */
+(function() {
+  const STORAGE_KEY = 'deck-edits:' + location.pathname;
+  const SAVE_DEBOUNCE_MS = 500;
+  const HOVER_GRACE_MS = 400;
+
+  const editor = {
+    isActive: false,
+    saveTimer: null,
+    hideTimer: null
+  };
+
+  const EDITABLE_SELECTORS = [
+    '.slide h1', '.slide h2', '.slide h3', '.slide h4',
+    '.slide p', '.slide li', '.slide blockquote', '.slide span',
+    '.slide .eyebrow', '.slide .lead',
+    '.slide .cover-positioning', '.slide .wordmark',
+    '.slide .pq-stat', '.slide .pq-label', '.slide .pq-source',
+    '.slide .ts-num', '.slide .ts-label', '.slide .ts-source',
+    '.slide .mf-num', '.slide .mf-label', '.slide .mf-source',
+    '.slide .af-amount', '.slide .af-sub',
+    '.slide .ts-unit', '.slide .mf-unit', '.slide .af-unit',
+    '.slide .mc-num', '.slide .mc-text',
+    '.slide .bt-name', '.slide .bt-desc', '.slide .bt-price',
+    '.slide .bm-key', '.slide .bm-val', '.slide .bm-foot',
+    '.slide .am-k', '.slide .am-v',
+    '.slide .ur-pct', '.slide .ask-contact',
+    '.slide .ds-item', '.slide .ds-label',
+    '.slide .demo-msg .body', '.slide .demo-msg .who',
+    '.slide .dp-think', '.slide .demo-caption', '.slide .demo-footnote',
+    '.slide .team-name', '.slide .team-role', '.slide .team-bio', '.slide .team-fit',
+    '.slide .cc-tag', '.slide .rl', '.slide .rd', '.slide .rb', '.slide .rn',
+    '.slide .ws-tag', '.slide .ws-num', '.slide .wf-text', '.slide .wf-label',
+    '.slide .shift-num', '.slide .ft-from', '.slide .ft-to',
+    '.brand-mark', '.slide-meta'
+  ];
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(saved, 'text/html');
+      const restoredDeck = doc.querySelector('.deck');
+      const liveDeck = document.querySelector('.deck');
+      if (restoredDeck && liveDeck) liveDeck.innerHTML = restoredDeck.innerHTML;
+    }
+  } catch (e) {
+    console.warn('Inline-edit restore failed:', e);
+  }
+
+  const hotzone = document.querySelector('.edit-hotzone');
+  const toggle = document.getElementById('editToggle');
+
+  function showToggle() {
+    clearTimeout(editor.hideTimer);
+    toggle.classList.add('show');
+  }
+  function scheduleHideToggle() {
+    clearTimeout(editor.hideTimer);
+    editor.hideTimer = setTimeout(function() {
+      if (!editor.isActive) toggle.classList.remove('show');
+    }, HOVER_GRACE_MS);
+  }
+
+  hotzone.addEventListener('mouseenter', showToggle);
+  hotzone.addEventListener('mouseleave', scheduleHideToggle);
+  toggle.addEventListener('mouseenter', showToggle);
+  toggle.addEventListener('mouseleave', scheduleHideToggle);
+
+  hotzone.addEventListener('click', function() { toggleEditMode(); });
+  toggle.addEventListener('click', function() { toggleEditMode(); });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'e' && e.key !== 'E') return;
+    const inEditable = e.target && e.target.getAttribute &&
+                       e.target.getAttribute('contenteditable') === 'true';
+    if (inEditable) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    e.preventDefault();
+    toggleEditMode();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      downloadHtml();
+    }
+  });
+
+  function toggleEditMode() {
+    editor.isActive = !editor.isActive;
+    document.body.classList.toggle('edit-mode', editor.isActive);
+    toggle.classList.toggle('active', editor.isActive);
+    toggle.classList.add('show');
+
+    const targets = document.querySelectorAll(EDITABLE_SELECTORS.join(','));
+    targets.forEach(function(el) {
+      if (editor.isActive) {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'true');
+      } else {
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('spellcheck');
+      }
+    });
+
+    if (!editor.isActive) scheduleHideToggle();
+  }
+
+  document.addEventListener('input', function(e) {
+    if (!e.target || !e.target.getAttribute) return;
+    if (e.target.getAttribute('contenteditable') !== 'true') return;
+    clearTimeout(editor.saveTimer);
+    editor.saveTimer = setTimeout(function() {
+      try {
+        const deckEl = document.querySelector('.deck');
+        const wrapper = document.createElement('div');
+        const clonedDeck = deckEl.cloneNode(true);
+        wrapper.appendChild(clonedDeck);
+        const html = '<!doctype html><html><body>' + wrapper.innerHTML + '</body></html>';
+        localStorage.setItem(STORAGE_KEY, html);
+      } catch (err) {
+        console.warn('Inline-edit autosave failed:', err);
+      }
+    }, SAVE_DEBOUNCE_MS);
+  });
+
+  function downloadHtml() {
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(function(el) { el.removeAttribute('contenteditable'); });
+    clone.querySelectorAll('[spellcheck]').forEach(function(el) { el.removeAttribute('spellcheck'); });
+    const hotzoneEl = clone.querySelector('.edit-hotzone');
+    const toggleEl = clone.querySelector('.edit-toggle');
+    if (hotzoneEl) hotzoneEl.remove();
+    if (toggleEl) toggleEl.remove();
+    clone.querySelector('body').classList.remove('edit-mode');
+
+    const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const title = (document.title || 'deck').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = title + '.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+  }
+})();
+</script>
+</body>
+</html>

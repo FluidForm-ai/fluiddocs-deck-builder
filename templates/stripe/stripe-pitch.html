@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Stripe · Pitch Deck Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  /* === BRAND TOKENS · edit these CSS custom properties to rebrand the deck === */
+  /* ---------- tokens ---------- */
+  :root{
+    --primary:#635BFF;
+    --primary-deep:#4F46E5;
+    --violet:#7A73FF;
+    --ink:#0A2540;
+    --muted:#425466;
+    --border:#E3E8EE;
+    --paper:#F6F9FC;
+    --white:#FFFFFF;
+    --success:#00D924;
+    --code-bg:#0A2540;
+    --code-fg:#ADBDCC;
+    --code-key:#7A73FF;
+    --code-str:#00D924;
+    --code-num:#FF8C69;
+    --letterbox:#0A0A0A;
+    --font-display:'Inter',system-ui,sans-serif;
+    --font-body:'Inter',system-ui,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;width:100%;overflow:hidden;background:var(--letterbox);color:var(--ink);font-family:var(--font-body)}
+
+  /* ---------- scale-to-fit shell ---------- */
+  .deck-outer{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--letterbox);overflow:hidden}
+  .deck{position:relative;width:1440px;height:810px;transform-origin:center center;background:var(--white);overflow:hidden;flex-shrink:0}
+
+  /* ---------- progress + nav ---------- */
+  .progress-line{position:absolute;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--violet));width:0;z-index:50;transition:width .3s}
+  .nav-counter{position:absolute;top:24px;right:32px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--muted);z-index:40;text-transform:uppercase}
+  .nav-arrows{position:absolute;bottom:24px;right:32px;display:flex;gap:8px;z-index:40}
+  .nav-arrows button{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink);transition:all .15s}
+  .nav-arrows button:hover{background:var(--primary);color:var(--white);border-color:var(--primary)}
+
+  /* ---------- slide base ---------- */
+  .slide{position:absolute;inset:0;padding:104px 96px 96px;display:none;flex-direction:column;justify-content:flex-start;background:var(--white);overflow:hidden}
+  .slide.active{display:flex}
+  .slide.cover{justify-content:center;align-items:flex-start;background:linear-gradient(180deg,#F6F9FC 0%, #FFFFFF 100%)}
+
+  /* ---------- cover eyebrow ---------- */
+  .eyebrow{position:absolute;top:40px;left:96px;display:flex;align-items:center;gap:12px}
+  .eb-label{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+
+  /* ---------- cover content ---------- */
+  .cover-wordmark{font-family:var(--font-display);font-weight:700;font-size:72px;color:var(--primary);letter-spacing:-.035em;line-height:1}
+  .cover-wordmark-svg{display:block;margin-bottom:0}
+  .cover-one-liner{font-family:var(--font-display);font-size:44px;color:var(--ink);margin-top:28px;letter-spacing:-.02em;line-height:1.1;max-width:1040px;font-weight:500}
+  .cover-sub{font-family:var(--font-display);font-size:17px;color:var(--muted);margin-top:18px;max-width:780px;line-height:1.55;font-weight:400}
+  .raise-row{display:flex;gap:48px;margin-top:56px}
+  .raise-item .lbl{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+  .raise-item .val{font-family:var(--font-display);font-size:18px;color:var(--ink);font-weight:600}
+  .cover-bug{position:absolute;bottom:40px;right:96px;font-family:var(--font-display);font-size:18px;color:var(--primary);font-weight:700;letter-spacing:-.01em}
+
+  /* ---------- content slide header ---------- */
+  .kicker{font-family:var(--font-mono);font-size:11px;color:var(--primary);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+  h2{font-family:var(--font-display);font-size:28px;color:var(--ink);font-weight:700;letter-spacing:-.02em;line-height:1.15}
+  .subhead{font-family:var(--font-display);font-size:15px;color:var(--muted);margin-top:10px;max-width:920px;line-height:1.45;font-weight:400}
+
+  /* ---------- problem 3-card ---------- */
+  .problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:44px}
+  .pcard{padding:28px;border:1px solid var(--border);border-radius:12px;background:var(--paper);min-height:260px;display:flex;flex-direction:column}
+  .pcard .ic{width:36px;height:36px;border-radius:8px;background:var(--primary);color:var(--white);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+  .pcard h3{font-family:var(--font-display);font-size:18px;color:var(--ink);font-weight:600;margin-bottom:10px}
+  .pcard p{font-size:13px;color:var(--muted);line-height:1.55}
+
+  /* ---------- why-now shifts ---------- */
+  .shifts{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:44px}
+  .shift{padding:24px;border:1px solid var(--border);border-radius:12px;background:var(--white)}
+  .shift .from-to{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+  .shift .arrow{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+  .shift .x{padding:6px 10px;background:var(--paper);border:1px solid var(--border);border-radius:6px;font-size:13px;color:var(--muted);font-weight:500}
+  .shift .y{padding:6px 10px;background:var(--primary);color:var(--white);border-radius:6px;font-size:13px;font-weight:500}
+  .shift h3{font-family:var(--font-display);font-size:15px;color:var(--ink);font-weight:600;margin-bottom:8px}
+  .shift p{font-size:13px;color:var(--muted);line-height:1.5}
+
+  /* ---------- solution numbered ---------- */
+  .sol-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:44px;align-items:start}
+  .sol-steps{display:flex;flex-direction:column;gap:20px}
+  .sol-step{display:flex;gap:18px;align-items:flex-start}
+  .sol-step .n{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--primary);line-height:1;min-width:40px}
+  .sol-step .body h3{font-family:var(--font-display);font-size:18px;color:var(--ink);font-weight:600;margin-bottom:6px}
+  .sol-step .body p{font-size:13px;color:var(--muted);line-height:1.55}
+  .code-block{background:var(--code-bg);border-radius:12px;padding:24px;font-family:var(--font-mono);font-size:13px;line-height:1.7;color:var(--code-fg);overflow:hidden;position:relative;white-space:pre}
+  .code-block::before{content:'api.stripe.com';position:absolute;top:10px;right:16px;font-size:11px;color:#4A6070;letter-spacing:.1em}
+  .code-block .k{color:var(--code-key)}
+  .code-block .s{color:var(--code-str)}
+  .code-block .nm{color:var(--code-num)}
+  .code-block .cm{color:#4A6070}
+
+  /* ---------- product: annotated dashboard ---------- */
+  .prod-wrap{margin-top:32px;display:flex;gap:40px;align-items:flex-start}
+  .prod-svg{flex:1;background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:20px}
+  .prod-notes{width:280px;display:flex;flex-direction:column;gap:18px}
+  .prod-note{padding:14px 16px;background:var(--white);border-left:3px solid var(--primary);border-radius:4px}
+  .prod-note .num{font-family:var(--font-mono);font-size:11px;color:var(--primary);letter-spacing:.08em;margin-bottom:4px}
+  .prod-note p{font-size:13px;color:var(--ink);line-height:1.5}
+
+  /* ---------- demo (static screenshot) ---------- */
+  .demo-wrap{margin-top:24px;display:flex;flex-direction:column;align-items:stretch;gap:14px;flex:1;min-height:0}
+  .browser-frame{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--white);box-shadow:0 10px 32px rgba(10,37,64,.08);display:flex;flex-direction:column;flex:1;min-height:0}
+  .browser-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#EEF1F5;border-bottom:1px solid var(--border)}
+  .browser-dots{display:flex;gap:6px}
+  .browser-dots span{width:11px;height:11px;border-radius:50%;background:#D8DEE5}
+  .browser-url{flex:1;background:var(--white);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-family:var(--font-mono);font-size:11px;color:var(--muted);text-align:center}
+  .demo-body{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:0;background:var(--code-bg)}
+  .demo-code-pane{padding:18px 22px;color:var(--code-fg);font-family:var(--font-mono);font-size:12px;line-height:1.7;overflow:hidden;white-space:pre}
+  .demo-code-pane .tabs{display:flex;gap:0;margin:-18px -22px 14px;background:#0A1E36;border-bottom:1px solid #1A3556}
+  .demo-code-pane .tab{padding:10px 16px;font-family:var(--font-mono);font-size:12px;color:var(--code-fg)}
+  .demo-code-pane .tab.active{color:var(--white);border-bottom:2px solid var(--primary);background:var(--code-bg)}
+  .demo-response-pane{background:#0F2C49;padding:18px 22px;color:var(--code-fg);font-family:var(--font-mono);font-size:11px;line-height:1.65;overflow:hidden;white-space:pre;border-left:1px solid #1A3556}
+  .demo-response-pane .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .demo-response-pane .head h4{font-family:var(--font-display);font-size:12px;color:#B8C5D2;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin:0}
+  .demo-response-pane .head .badge{background:var(--success);color:#003D0A;font-family:var(--font-mono);font-size:10px;padding:3px 8px;border-radius:3px;font-weight:700}
+  .demo-footnote{font-size:11px;color:var(--muted);text-align:right;opacity:.8}
+
+  /* ---------- market bottom-up ---------- */
+  .market-wrap{margin-top:44px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+  .calc-stack{display:flex;flex-direction:column;gap:14px}
+  .calc-row{display:flex;align-items:baseline;gap:14px;padding:16px 20px;background:var(--paper);border:1px solid var(--border);border-radius:10px}
+  .calc-row .op{font-family:var(--font-mono);font-size:18px;color:var(--primary);font-weight:600;min-width:24px}
+  .calc-row .num{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--ink);letter-spacing:-.02em;min-width:150px}
+  .calc-row .lbl{font-size:13px;color:var(--muted);flex:1}
+  .calc-total{background:var(--primary);color:var(--white);border-color:var(--primary)}
+  .calc-total .num,.calc-total .op{color:var(--white)}
+  .calc-total .lbl{color:rgba(255,255,255,.85)}
+  .market-note{font-size:13px;color:var(--muted);line-height:1.6}
+  .market-note h3{font-family:var(--font-display);font-size:18px;color:var(--ink);font-weight:600;margin-bottom:14px}
+
+  /* ---------- business model ---------- */
+  .biz-grid{margin-top:44px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center}
+  .biz-eq{font-family:var(--font-display);font-size:44px;color:var(--ink);font-weight:500;letter-spacing:-.02em;line-height:1.25}
+  .biz-eq .pct{color:var(--primary);font-weight:700}
+  .biz-eq .flat{color:var(--violet);font-weight:700}
+  .biz-split{display:flex;flex-direction:column;gap:14px}
+  .biz-row{display:flex;justify-content:space-between;align-items:center;padding:16px;background:var(--paper);border:1px solid var(--border);border-radius:10px}
+  .biz-row .k{font-size:13px;color:var(--muted)}
+  .biz-row .v{font-family:var(--font-display);font-size:18px;color:var(--ink);font-weight:600}
+
+  /* ---------- traction ---------- */
+  .trac-wrap{margin-top:32px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px}
+  .bars-block{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:24px}
+  .bars-block h3{font-family:var(--font-display);font-size:15px;color:var(--muted);font-weight:500;margin-bottom:20px;letter-spacing:.04em;text-transform:uppercase}
+  .bars{display:flex;align-items:flex-end;gap:8px;height:180px;margin-bottom:30px}
+  .bar{flex:1;background:linear-gradient(180deg,var(--primary) 0%,var(--violet) 100%);border-radius:4px 4px 0 0;position:relative}
+  .bar-lbl{position:absolute;bottom:-22px;left:0;right:0;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--muted)}
+  .logo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+  .logo-cell{padding:18px 12px;background:var(--white);border:1px solid var(--border);border-radius:8px;text-align:center;font-family:var(--font-display);font-size:13px;color:var(--ink);font-weight:600}
+  .nrr-card{padding:28px;background:var(--primary);color:var(--white);border-radius:12px;display:flex;flex-direction:column;justify-content:center}
+  .nrr-card .big{font-family:var(--font-display);font-size:72px;font-weight:700;line-height:1;letter-spacing:-.03em}
+  .nrr-card .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-top:10px;opacity:.85}
+  .nrr-card .sub{font-size:13px;margin-top:14px;line-height:1.5;opacity:.9}
+
+  /* ---------- competition (data table) ---------- */
+  .comp-table{margin-top:32px;width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+  .comp-table th{padding:14px 16px;background:var(--ink);color:var(--white);font-family:var(--font-display);font-weight:600;text-align:left;font-size:13px;letter-spacing:.02em}
+  .comp-table th:first-child{border-top-left-radius:10px}
+  .comp-table th:last-child{border-top-right-radius:10px}
+  .comp-table td{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--white);color:var(--muted)}
+  .comp-table tr:last-child td{border-bottom:none}
+  .comp-table tr:last-child td:first-child{border-bottom-left-radius:10px}
+  .comp-table tr:last-child td:last-child{border-bottom-right-radius:10px}
+  .comp-table .us td{background:#F0EEFF;font-weight:600;color:var(--ink)}
+  .comp-table .chk{color:var(--success);font-weight:700}
+  .comp-table .nope{color:#BBB;font-weight:700}
+  .comp-table .coname{font-family:var(--font-display);font-weight:600;color:var(--ink)}
+
+  /* ---------- moat: 4-card + depth bars footer ---------- */
+  .moat-grid{margin-top:32px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .mcard{padding:24px;background:var(--paper);border:1px solid var(--border);border-radius:12px;min-height:200px;display:flex;flex-direction:column}
+  .mcard .ic{width:36px;height:36px;border-radius:8px;background:var(--primary);color:var(--white);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .mcard h3{font-family:var(--font-display);font-size:15px;color:var(--ink);font-weight:600;margin-bottom:10px}
+  .mcard p{font-size:12px;color:var(--muted);line-height:1.55}
+  .depth-footer{margin-top:20px;padding:20px 24px;background:var(--ink);color:var(--white);border-radius:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .depth-item .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#7D8FA3;margin-bottom:8px}
+  .depth-item .bar-bg{height:6px;background:#1A3556;border-radius:3px;overflow:hidden;margin-bottom:6px}
+  .depth-item .bar-fill{height:100%;background:var(--primary);border-radius:3px}
+  .depth-item .val{font-family:var(--font-mono);font-size:11px;color:var(--white)}
+
+  /* ---------- gtm: channel bars + rail ---------- */
+  .gtm-wrap{margin-top:32px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:start}
+  .channel-list{display:flex;flex-direction:column;gap:14px}
+  .channel{display:grid;grid-template-columns:140px 1fr 70px;gap:14px;align-items:center}
+  .channel .cname{font-family:var(--font-display);font-size:13px;color:var(--ink);font-weight:600}
+  .channel .cbar-bg{height:28px;background:var(--paper);border:1px solid var(--border);border-radius:6px;overflow:hidden;position:relative}
+  .channel .cbar-fill{height:100%;background:linear-gradient(90deg,var(--primary) 0%,var(--violet) 100%);border-radius:6px;display:flex;align-items:center;padding:0 12px;color:var(--white);font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden}
+  .channel .cpct{font-family:var(--font-mono);font-size:13px;color:var(--muted);text-align:right;font-weight:600}
+  .rail{padding:20px 24px;background:var(--paper);border:1px solid var(--border);border-radius:12px}
+  .rail h4{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+  .rail-steps{display:flex;flex-direction:column;gap:12px}
+  .rail-step{display:flex;align-items:flex-start;gap:12px;font-size:13px;color:var(--ink)}
+  .rail-step .dot{width:10px;height:10px;border-radius:50%;background:var(--primary);margin-top:5px;flex-shrink:0}
+  .rail-step .dot.open{background:var(--white);border:2px solid var(--border);width:8px;height:8px;margin-top:6px}
+
+  /* ---------- team ---------- */
+  .team-grid{margin-top:40px;display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+  .tcard{padding:28px;background:var(--paper);border:1px solid var(--border);border-radius:12px}
+  .tcard .av{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--violet));color:var(--white);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:24px;font-weight:700;margin-bottom:16px}
+  .tcard h3{font-family:var(--font-display);font-size:18px;color:var(--ink);font-weight:600;margin-bottom:4px}
+  .tcard .role{font-family:var(--font-mono);font-size:11px;color:var(--primary);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+  .tcard p{font-size:13px;color:var(--muted);line-height:1.55}
+  .advisor-strip{margin-top:24px;padding:18px 24px;background:var(--ink);color:var(--white);border-radius:12px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+  .advisor-strip .lbl{font-family:var(--font-mono);font-size:11px;color:#7D8FA3;letter-spacing:.1em;text-transform:uppercase}
+  .advisor-strip .name{font-family:var(--font-display);font-size:13px;font-weight:600}
+
+  /* ---------- ask ---------- */
+  .ask-wrap{margin-top:40px;display:grid;grid-template-columns:1fr 1.2fr;gap:48px;align-items:center}
+  .ask-amount{font-family:var(--font-display);font-size:72px;color:var(--primary);font-weight:700;letter-spacing:-.04em;line-height:1}
+  .ask-sub{font-family:var(--font-display);font-size:18px;color:var(--ink);font-weight:500;margin-top:14px;line-height:1.4}
+  .ask-meta{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:20px}
+  .use-buckets{display:flex;flex-direction:column;gap:14px}
+  .use-row{display:flex;align-items:center;gap:16px;padding:18px 20px;background:var(--paper);border:1px solid var(--border);border-radius:10px}
+  .use-row .pct{font-family:var(--font-display);font-size:28px;color:var(--primary);font-weight:700;min-width:70px}
+  .use-row .body h4{font-family:var(--font-display);font-size:15px;color:var(--ink);font-weight:600;margin-bottom:4px}
+  .use-row .body p{font-size:13px;color:var(--muted);line-height:1.4}
+  .contact-row{margin-top:24px;padding:20px 24px;background:var(--ink);color:var(--white);border-radius:12px;display:flex;justify-content:space-between;align-items:center}
+  .contact-row .who{font-family:var(--font-display);font-size:15px;font-weight:600}
+  .contact-row .ways{font-family:var(--font-mono);font-size:11px;color:#7D8FA3;letter-spacing:.06em}
+
+  /* ---------- corner brand mark on non-cover ---------- */
+  .corner-mark{position:absolute;bottom:24px;left:32px;font-family:var(--font-display);font-size:13px;color:var(--muted);font-weight:600;letter-spacing:-.01em;z-index:30}
+  .corner-mark .s{color:var(--primary)}
+
+  /* ===========================================
+     INLINE-EDIT MODULE
+     =========================================== */
+  .edit-hotzone{position:fixed;top:0;left:0;width:40px;height:40px;z-index:10000;cursor:pointer;background:transparent}
+  .edit-toggle{position:fixed;top:12px;left:12px;z-index:10001;padding:6px 12px;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--ink);background:var(--white);border:1px solid var(--border);border-radius:4px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s ease, background .15s ease, color .15s ease}
+  .edit-toggle.show,.edit-toggle.active{opacity:1;pointer-events:auto}
+  .edit-toggle.active{background:var(--primary);color:var(--white);border-color:var(--primary)}
+  body.edit-mode [contenteditable="true"]{outline:1px dashed var(--primary);outline-offset:2px;cursor:text}
+  body.edit-mode [contenteditable="true"]:focus{outline:2px solid var(--primary);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="edit-hotzone" aria-hidden="true"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)" aria-label="Toggle edit mode">Edit</button>
+
+<div class="deck-outer">
+<div class="deck" id="deck">
+<div class="progress-line" id="progress"></div>
+<div class="nav-counter" id="counter">01 / 14</div>
+
+<!-- ============ SLIDE 1: COVER ============ -->
+<section class="slide cover active" data-slide="1">
+  <div class="eyebrow">
+    <span class="eb-label">PITCH DECK TEMPLATE &middot; DEVELOPER TOOLS</span>
+  </div>
+
+  <svg class="cover-wordmark-svg" width="320" height="92" viewBox="0 0 320 92" xmlns="http://www.w3.org/2000/svg" aria-label="stripe">
+    <text x="0" y="74" font-family="Inter, system-ui, sans-serif" font-size="84" font-weight="700" fill="#635BFF" letter-spacing="-3">stripe</text>
+  </svg>
+  <div class="cover-one-liner">Payments infrastructure for the internet.</div>
+  <div class="cover-sub">Seven lines of code. One library. One flat price. Built for developers who would rather ship than wait six weeks for a merchant account.</div>
+
+  <div class="raise-row">
+    <div class="raise-item">
+      <div class="lbl">Stage</div>
+      <div class="val">Seed</div>
+    </div>
+    <div class="raise-item">
+      <div class="lbl">Raising</div>
+      <div class="val">$2M</div>
+    </div>
+    <div class="raise-item">
+      <div class="lbl">Founded</div>
+      <div class="val">2010 &middot; Palo Alto</div>
+    </div>
+    <div class="raise-item">
+      <div class="lbl">Contact</div>
+      <div class="val">patrick@stripe.com</div>
+    </div>
+  </div>
+
+  <div class="cover-bug">stripe</div>
+</section>
+
+<!-- ============ SLIDE 2: PROBLEM ============ -->
+<section class="slide" data-slide="2">
+  <div class="kicker">01 &middot; The Problem</div>
+  <h2>Accepting payments on the internet is developer hostile.</h2>
+  <p class="subhead">Three weeks, three vendors, and thirty screens of compliance forms to charge a single credit card. Every founder we have met rebuilds the same broken plumbing.</p>
+
+  <div class="problem-grid">
+    <div class="pcard">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <h3>Merchant accounts take weeks</h3>
+      <p>Founders wait 2 to 6 weeks for a merchant ID, a gateway contract, and a PCI questionnaire before they can accept their first dollar. Payments incumbents still ask for faxed tax forms.</p>
+    </div>
+    <div class="pcard">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="7" stroke="white" stroke-width="2"/></svg></div>
+      <h3>Pricing is a maze</h3>
+      <p>Interchange plus, tiered, blended, monthly minimums, PCI fees, chargeback fees, statement fees. Average effective rate for a small shop is 4.1%, not the 2.4% the sales rep quoted.</p>
+    </div>
+    <div class="pcard">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M5 5l10 10M15 5l-10 10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <h3>The API is 1990s</h3>
+      <p>SOAP envelopes, return URLs, signed XML payloads, no test mode, no webhooks. A developer writes 800 lines of glue code to do what should be one HTTP request.</p>
+    </div>
+  </div>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 3: WHY NOW ============ -->
+<section class="slide" data-slide="3">
+  <div class="kicker">02 &middot; Why Now</div>
+  <h2>The internet is eating commerce, and the plumbing has not caught up.</h2>
+  <p class="subhead">Three shifts in 2011 make a developer-first payments API inevitable.</p>
+
+  <div class="shifts">
+    <div class="shift">
+      <div class="from-to">Shift 01</div>
+      <div class="arrow"><span class="x">Brick &amp; mortar</span><span class="y">Internet-native</span></div>
+      <h3>E-commerce crosses $200B.</h3>
+      <p>US online retail hit $194B in 2011, growing 16% YoY while offline retail crawled at 3.8%. Every new business is a web business.</p>
+    </div>
+    <div class="shift">
+      <div class="from-to">Shift 02</div>
+      <div class="arrow"><span class="x">Enterprise contracts</span><span class="y">Self-serve APIs</span></div>
+      <h3>Developers are the new buyers.</h3>
+      <p>Twilio, GitHub, Heroku, and AWS proved developers will sign up with a credit card at 2 AM. No sales call, no RFP, no negotiated MSA.</p>
+    </div>
+    <div class="shift">
+      <div class="from-to">Shift 03</div>
+      <div class="arrow"><span class="x">Dedicated servers</span><span class="y">PaaS &amp; microservices</span></div>
+      <h3>The stack is unbundling.</h3>
+      <p>Rails 3, Node 0.6, and Heroku turned a weekend project into a production business. Payments is the last unbundled piece, and the most painful.</p>
+    </div>
+  </div>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 4: SOLUTION ============ -->
+<section class="slide" data-slide="4">
+  <div class="kicker">03 &middot; The Solution</div>
+  <h2>Accept a payment in seven lines of code.</h2>
+  <p class="subhead">One library, one test key, one flat price. The entire payment stack collapsed into a single HTTP request.</p>
+
+  <div class="sol-grid">
+    <div class="sol-steps">
+      <div class="sol-step">
+        <div class="n">01</div>
+        <div class="body">
+          <h3>Install the library</h3>
+          <p>gem install stripe &middot; npm install stripe &middot; pip install stripe. No merchant application. No PCI audit on day one.</p>
+        </div>
+      </div>
+      <div class="sol-step">
+        <div class="n">02</div>
+        <div class="body">
+          <h3>Call one method</h3>
+          <p>Stripe::Charge.create with amount, currency, and card token. We handle the rest, tokenization, PCI scope, fraud, retries, receipts.</p>
+        </div>
+      </div>
+      <div class="sol-step">
+        <div class="n">03</div>
+        <div class="body">
+          <h3>Get paid</h3>
+          <p>Funds settle to your bank in two days. Flat rate. No hidden fees. No surprises at statement time.</p>
+        </div>
+      </div>
+    </div>
+
+    <pre class="code-block"><span class="cm"># Accept a $20 charge</span>
+<span class="k">require</span> <span class="s">'stripe'</span>
+<span class="k">Stripe.api_key</span> = <span class="s">'sk_test_...'</span>
+
+<span class="k">Stripe::Charge.create</span>(
+  amount: <span class="nm">2000</span>,
+  currency: <span class="s">'usd'</span>,
+  source: <span class="s">'tok_visa'</span>
+)</pre>
+  </div>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 5: PRODUCT ============ -->
+<section class="slide" data-slide="5">
+  <div class="kicker">04 &middot; Product</div>
+  <h2>A full payments platform. API-first, dashboard-second.</h2>
+
+  <div class="prod-wrap">
+    <div class="prod-svg">
+      <svg width="100%" viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="700" height="380" fill="#FFFFFF" rx="8"/>
+        <rect x="0" y="0" width="700" height="48" fill="#0A2540"/>
+        <text x="24" y="30" fill="#FFFFFF" font-family="Inter" font-size="15" font-weight="600">stripe</text>
+        <text x="100" y="30" fill="#7D8FA3" font-family="Inter" font-size="13">Dashboard</text>
+        <text x="180" y="30" fill="#7D8FA3" font-family="Inter" font-size="13">Payments</text>
+        <text x="260" y="30" fill="#7D8FA3" font-family="Inter" font-size="13">Customers</text>
+        <text x="350" y="30" fill="#7D8FA3" font-family="Inter" font-size="13">Logs</text>
+
+        <rect x="24" y="72" width="210" height="92" fill="#F6F9FC" rx="8"/>
+        <text x="40" y="96" fill="#425466" font-family="Inter" font-size="11" letter-spacing="1.2">TODAY'S VOLUME</text>
+        <text x="40" y="130" fill="#0A2540" font-family="Inter" font-size="24" font-weight="700">$48,210</text>
+        <text x="40" y="152" fill="#00A36D" font-family="Inter" font-size="11">+ 12.4% vs yesterday</text>
+
+        <rect x="244" y="72" width="210" height="92" fill="#F6F9FC" rx="8"/>
+        <text x="260" y="96" fill="#425466" font-family="Inter" font-size="11" letter-spacing="1.2">CHARGES TODAY</text>
+        <text x="260" y="130" fill="#0A2540" font-family="Inter" font-size="24" font-weight="700">1,284</text>
+        <text x="260" y="152" fill="#00A36D" font-family="Inter" font-size="11">+ 8.1% vs yesterday</text>
+
+        <rect x="464" y="72" width="210" height="92" fill="#635BFF" rx="8"/>
+        <text x="480" y="96" fill="#FFFFFF" font-family="Inter" font-size="11" letter-spacing="1.2" opacity="0.85">MRR</text>
+        <text x="480" y="130" fill="#FFFFFF" font-family="Inter" font-size="24" font-weight="700">$184,500</text>
+        <text x="480" y="152" fill="#FFFFFF" font-family="Inter" font-size="11" opacity="0.85">+ 22% MoM</text>
+
+        <rect x="24" y="184" width="650" height="172" fill="#F6F9FC" rx="8"/>
+        <text x="40" y="208" fill="#0A2540" font-family="Inter" font-size="13" font-weight="600">Recent charges</text>
+        <line x1="40" y1="224" x2="660" y2="224" stroke="#E3E8EE"/>
+        <text x="40" y="250" fill="#0A2540" font-family="JetBrains Mono" font-size="11">ch_1A2b3C</text>
+        <text x="170" y="250" fill="#0A2540" font-family="Inter" font-size="13" font-weight="600">$29.00</text>
+        <rect x="250" y="238" width="74" height="18" rx="4" fill="#E6FFF0"/>
+        <text x="257" y="251" fill="#008A17" font-family="JetBrains Mono" font-size="10" font-weight="600">SUCCEEDED</text>
+        <text x="340" y="250" fill="#425466" font-family="Inter" font-size="13">Acme Subscriptions &middot; jane@acme.co</text>
+        <text x="40" y="280" fill="#0A2540" font-family="JetBrains Mono" font-size="11">ch_4D5e6F</text>
+        <text x="170" y="280" fill="#0A2540" font-family="Inter" font-size="13" font-weight="600">$99.00</text>
+        <rect x="250" y="268" width="74" height="18" rx="4" fill="#E6FFF0"/>
+        <text x="257" y="281" fill="#008A17" font-family="JetBrains Mono" font-size="10" font-weight="600">SUCCEEDED</text>
+        <text x="340" y="280" fill="#425466" font-family="Inter" font-size="13">Nova Labs &middot; ops@nova.dev</text>
+        <text x="40" y="310" fill="#0A2540" font-family="JetBrains Mono" font-size="11">ch_7G8h9I</text>
+        <text x="170" y="310" fill="#0A2540" font-family="Inter" font-size="13" font-weight="600">$14.95</text>
+        <rect x="250" y="298" width="74" height="18" rx="4" fill="#E6FFF0"/>
+        <text x="257" y="311" fill="#008A17" font-family="JetBrains Mono" font-size="10" font-weight="600">SUCCEEDED</text>
+        <text x="340" y="310" fill="#425466" font-family="Inter" font-size="13">Kite &amp; Co &middot; hi@kite.store</text>
+        <text x="40" y="340" fill="#0A2540" font-family="JetBrains Mono" font-size="11">ch_0J1k2L</text>
+        <text x="170" y="340" fill="#0A2540" font-family="Inter" font-size="13" font-weight="600">$1,200.00</text>
+        <rect x="250" y="328" width="74" height="18" rx="4" fill="#E6FFF0"/>
+        <text x="257" y="341" fill="#008A17" font-family="JetBrains Mono" font-size="10" font-weight="600">SUCCEEDED</text>
+        <text x="340" y="340" fill="#425466" font-family="Inter" font-size="13">Harbor Freight &middot; billing@harbor.io</text>
+      </svg>
+    </div>
+    <div class="prod-notes">
+      <div class="prod-note">
+        <div class="num">A.</div>
+        <p>Real-time volume and charge count, updated every 3 seconds via webhook stream.</p>
+      </div>
+      <div class="prod-note">
+        <div class="num">B.</div>
+        <p>MRR first-class citizen, not an add-on. Subscription lifecycle built into core.</p>
+      </div>
+      <div class="prod-note">
+        <div class="num">C.</div>
+        <p>Every charge clickable for full request and response log. Zero hidden state.</p>
+      </div>
+    </div>
+  </div>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 6: DEMO (static screenshot) ============ -->
+<section class="slide" data-slide="6">
+  <div class="kicker">05 &middot; Product Demo</div>
+  <h2>A live API call against the Stripe sandbox.</h2>
+
+  <div class="demo-wrap">
+    <div class="browser-frame">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">https://stripe.com/docs/api/charges/create</div>
+      </div>
+      <div class="demo-body">
+        <div class="demo-code-pane"><div class="tabs"><span class="tab active">cURL</span><span class="tab">Node</span><span class="tab">Python</span><span class="tab">Ruby</span></div><span style="color:#7D8FA3">$</span> curl https://api.stripe.com/v1/charges \
+  -u <span style="color:#00D924">sk_test_4eC39Hq</span>: \
+  -d amount=<span style="color:#FF8C69">2000</span> \
+  -d currency=<span style="color:#00D924">usd</span> \
+  -d source=<span style="color:#00D924">tok_visa</span> \
+  -d description=<span style="color:#00D924">"Charge for acme.co"</span>
+
+<span style="color:#7D8FA3"># 138ms later, succeeded.</span></div>
+        <div class="demo-response-pane"><div class="head"><h4>Response &middot; 138ms</h4><span class="badge">200 OK</span></div>{
+  "id": "ch_1A2b3C4d5E6f",
+  "object": "charge",
+  "amount": 2000,
+  "amount_captured": 2000,
+  "amount_refunded": 0,
+  "currency": "usd",
+  "description": "Charge for acme.co",
+  "paid": true,
+  "captured": true,
+  "status": "succeeded",
+  "created": 1693497602,
+  "livemode": false,
+  "receipt_url": "https://pay.stripe.com/receipts/...",
+  "balance_transaction": "txn_3M4n5O6p7Q",
+  "outcome": {
+    "network_status": "approved_by_network",
+    "risk_level": "normal",
+    "risk_score": 12,
+    "seller_message": "Payment complete.",
+    "type": "authorized"
+  },
+  "source": {
+    "object": "card",
+    "brand": "Visa",
+    "country": "US",
+    "exp_month": 12,
+    "exp_year": 2025,
+    "funding": "credit",
+    "last4": "4242",
+    "name": "Jane Doe"
+  }
+}</div>
+      </div>
+    </div>
+    <div class="demo-footnote"><a href="https://fluiddocs.ai" target="_blank" rel="noopener" style="display:inline-block;opacity:.7;text-decoration:none"><svg viewBox="0 0 260 38" height="20" role="img" aria-label="Powered by FluidDocs" style="display:inline-block;vertical-align:middle"><path d="M0 2 Q0 0 2 0 L16 0 Q17.5 0 17.5 1.5 Q17.5 3 16 3 L5 3 L5 12 L14 12 Q15.5 12 15.5 13.5 Q15.5 15 14 15 L5 15 L5 26 Q5 28 2.5 28 Q0 28 0 26 Z" fill="#9CA3AF"/><path d="M22 2 Q22 0 24.5 0 Q27 0 27 2 L27 24.5 L38 24.5 Q39.5 24.5 39.5 26 Q39.5 28 38 28 L24.5 28 Q22 28 22 25.5 Z" fill="#9CA3AF"/><path d="M44 2 Q44 0 46.5 0 Q49 0 49 2 L49 22 Q49 33 56.5 33 Q64 33 64 22 L64 2 Q64 0 66.5 0 Q69 0 69 2 L69 22.5 Q69 38 56.5 38 Q44 38 44 22.5 Z" fill="#9CA3AF"/><path d="M75 2 Q75 0 77.5 0 Q80 0 80 2 L80 26 Q80 28 77.5 28 Q75 28 75 26 Z" fill="#9CA3AF"/><path d="M86 2 Q86 0 88 0 L97 0 Q108 0 108 14 Q108 28 97 28 L88 28 Q86 28 86 26 Z M91 3.5 L91 24.5 L96.5 24.5 Q103 24.5 103 14 Q103 3.5 96.5 3.5 Z" fill="#9CA3AF"/><rect x="118" y="0" width="3" height="28" rx="1.5" fill="#F97316"/><text x="132" y="22" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-weight="500" font-size="22" letter-spacing="2" fill="#9CA3AF">docs</text></svg></a></div>
+  </div>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 7: MARKET ============ -->
+<section class="slide" data-slide="7">
+  <div class="kicker">06 &middot; Market</div>
+  <h2>A $1.2T market with a developer-shaped hole in it.</h2>
+  <p class="subhead">Bottom-up: every new internet business needs to charge a card. We price per transaction. Our TAM grows with e-commerce.</p>
+
+  <div class="market-wrap">
+    <div class="calc-stack">
+      <div class="calc-row">
+        <span class="op">x</span>
+        <span class="num">28M</span>
+        <span class="lbl">Small businesses in the US plus EU accepting cards online</span>
+      </div>
+      <div class="calc-row">
+        <span class="op">x</span>
+        <span class="num">$140K</span>
+        <span class="lbl">Median annual online transaction volume per business</span>
+      </div>
+      <div class="calc-row">
+        <span class="op">x</span>
+        <span class="num">2.9%</span>
+        <span class="lbl">Effective payments take-rate on card volume</span>
+      </div>
+      <div class="calc-row calc-total">
+        <span class="op">=</span>
+        <span class="num">$114B</span>
+        <span class="lbl">Processed payments TAM (US plus EU, 2011)</span>
+      </div>
+    </div>
+
+    <div class="market-note">
+      <h3>Why we will capture it.</h3>
+      <p>Incumbent payments is a sales-led, enterprise-contract business. Every business above needs a credit-card API, but only developers can evaluate them, and no existing processor is built for developers.</p>
+      <p style="margin-top:14px">Global e-commerce is growing 18% YoY. By 2016 this TAM doubles to $240B. We serve it with a single code path.</p>
+    </div>
+  </div>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 8: BUSINESS MODEL ============ -->
+<section class="slide" data-slide="8">
+  <div class="kicker">07 &middot; Business Model</div>
+  <h2>One number. No contracts. No hidden fees.</h2>
+
+  <div class="biz-grid">
+    <div class="biz-eq">
+      <span class="pct">2.9%</span> + <span class="flat">30&cent;</span><br>
+      <span style="font-size:28px;color:var(--muted);font-weight:400">per successful charge.</span>
+    </div>
+
+    <div class="biz-split">
+      <div class="biz-row"><span class="k">Interchange + network fees</span><span class="v">~1.8%</span></div>
+      <div class="biz-row"><span class="k">Risk &middot; fraud &middot; compliance</span><span class="v">~0.4%</span></div>
+      <div class="biz-row"><span class="k">Infrastructure &middot; ops</span><span class="v">~0.2%</span></div>
+      <div class="biz-row" style="background:#F0EEFF;border-color:var(--primary)"><span class="k" style="color:var(--primary);font-weight:600">Stripe gross margin</span><span class="v" style="color:var(--primary)">~0.5%</span></div>
+    </div>
+  </div>
+
+  <p class="subhead" style="margin-top:36px">No setup fees. No monthly fees. No cancellation fees. Margin improves 10 to 20 bps per year as volume grows and interchange negotiates down.</p>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 9: TRACTION ============ -->
+<section class="slide" data-slide="9">
+  <div class="kicker">08 &middot; Traction</div>
+  <h2>Processing volume up 42% month over month since private beta.</h2>
+
+  <div class="trac-wrap">
+    <div class="bars-block">
+      <h3>Monthly GMV &middot; private beta (Oct 2010 to Aug 2011)</h3>
+      <div class="bars">
+        <div class="bar" style="height:8%"><div class="bar-lbl">Oct</div></div>
+        <div class="bar" style="height:12%"><div class="bar-lbl">Nov</div></div>
+        <div class="bar" style="height:18%"><div class="bar-lbl">Dec</div></div>
+        <div class="bar" style="height:24%"><div class="bar-lbl">Jan</div></div>
+        <div class="bar" style="height:32%"><div class="bar-lbl">Feb</div></div>
+        <div class="bar" style="height:42%"><div class="bar-lbl">Mar</div></div>
+        <div class="bar" style="height:52%"><div class="bar-lbl">Apr</div></div>
+        <div class="bar" style="height:64%"><div class="bar-lbl">May</div></div>
+        <div class="bar" style="height:76%"><div class="bar-lbl">Jun</div></div>
+        <div class="bar" style="height:88%"><div class="bar-lbl">Jul</div></div>
+        <div class="bar" style="height:100%"><div class="bar-lbl">Aug</div></div>
+      </div>
+      <div class="logo-grid">
+        <div class="logo-cell">Lyft</div>
+        <div class="logo-cell">Shopify</div>
+        <div class="logo-cell">Heroku</div>
+        <div class="logo-cell">Reddit</div>
+        <div class="logo-cell">Kickstarter</div>
+        <div class="logo-cell">Foursquare</div>
+      </div>
+    </div>
+
+    <div class="nrr-card">
+      <div class="big">118%</div>
+      <div class="lbl">Net Revenue Retention</div>
+      <div class="sub">Customers are expanding volume 18% after month 3 as they migrate existing charge streams onto the platform.</div>
+    </div>
+  </div>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 10: COMPETITION ============ -->
+<section class="slide" data-slide="10">
+  <div class="kicker">09 &middot; Competition</div>
+  <h2>The incumbents are selling to merchants. We sell to developers.</h2>
+
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th style="width:180px">Provider</th>
+        <th>API-first</th>
+        <th>Flat pricing</th>
+        <th>Setup &lt; 10 min</th>
+        <th>Subscriptions built-in</th>
+        <th>Test mode</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="us">
+        <td class="coname">Stripe</td>
+        <td><span class="chk">YES</span></td>
+        <td><span class="chk">YES</span></td>
+        <td><span class="chk">YES</span></td>
+        <td><span class="chk">YES</span></td>
+        <td><span class="chk">YES</span></td>
+      </tr>
+      <tr>
+        <td class="coname">PayPal</td>
+        <td><span class="nope">no</span></td>
+        <td><span class="nope">no</span></td>
+        <td><span class="nope">no</span></td>
+        <td><span class="nope">no</span></td>
+        <td><span class="nope">no</span></td>
+      </tr>
+      <tr>
+        <td class="coname">Authorize.Net</td>
+        <td><span class="nope">no</span></td>
+        <td><span class="nope">no</span></td>
+        <td><span class="nope">no</span></td>
+        <td><span class="nope">no</span></td>
+        <td><span class="chk">YES</span></td>
+      </tr>
+      <tr>
+        <td class="coname">Braintree</td>
+        <td><span class="chk">YES</span></td>
+        <td><span class="nope">no</span></td>
+        <td><span class="nope">no</span></td>
+        <td><span class="nope">no</span></td>
+        <td><span class="chk">YES</span></td>
+      </tr>
+      <tr>
+        <td class="coname">WePay</td>
+        <td><span class="nope">no</span></td>
+        <td><span class="chk">YES</span></td>
+        <td><span class="chk">YES</span></td>
+        <td><span class="nope">no</span></td>
+        <td><span class="nope">no</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="subhead" style="margin-top:28px">Competitive moats that sustain: the API is hand-built by developers for developers, and the pricing strips out every lever incumbents use to grow margin at the customer's expense.</p>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 11: MOAT ============ -->
+<section class="slide" data-slide="11">
+  <div class="kicker">10 &middot; Moat</div>
+  <h2>What happens when a larger competitor copies us in 6 months?</h2>
+  <p class="subhead">They can clone the endpoint. They cannot clone the ecosystem, the data, or the developer mind-share.</p>
+
+  <div class="moat-grid">
+    <div class="mcard">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="white" stroke-width="2"/><path d="M10 6v4l3 2" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <h3>Developer love compounds</h3>
+      <p>Engineers pick the payments stack. Every dev who ships with us becomes the default choice at their next company. 7x organic referral rate.</p>
+    </div>
+    <div class="mcard">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 10l4 4 10-10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h3>Fraud data flywheel</h3>
+      <p>Every charge trains our model. We catch fraud at 2.3x the industry baseline today, and the gap widens with every incremental transaction.</p>
+    </div>
+    <div class="mcard">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="5" width="14" height="10" rx="2" stroke="white" stroke-width="2"/><path d="M3 9h14" stroke="white" stroke-width="2"/></svg></div>
+      <h3>Integration depth</h3>
+      <p>Once Stripe is the auth, billing, subscription, and reporting system of record, switching is a six-month engineering project, not a credentials swap.</p>
+    </div>
+    <div class="mcard">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3l6 3v5c0 4-3 6-6 6s-6-2-6-6V6l6-3z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg></div>
+      <h3>Regulatory surface</h3>
+      <p>PCI DSS Level 1, money-transmitter licenses in 45 states, bank partnerships in 3 countries. New entrants spend 2+ years and $10M+ to match the compliance floor.</p>
+    </div>
+  </div>
+
+  <div class="depth-footer">
+    <div class="depth-item">
+      <div class="lbl">API surface</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:92%"></div></div>
+      <div class="val">92 endpoints &middot; 40+ events</div>
+    </div>
+    <div class="depth-item">
+      <div class="lbl">SDKs shipped</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:78%"></div></div>
+      <div class="val">7 languages &middot; 21 plugins</div>
+    </div>
+    <div class="depth-item">
+      <div class="lbl">Fraud catch-rate</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:86%"></div></div>
+      <div class="val">2.3x industry baseline</div>
+    </div>
+    <div class="depth-item">
+      <div class="lbl">Regulatory coverage</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:95%"></div></div>
+      <div class="val">45 states &middot; 3 countries</div>
+    </div>
+  </div>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 12: GTM ============ -->
+<section class="slide" data-slide="12">
+  <div class="kicker">11 &middot; GTM</div>
+  <h2>Developer-led, documentation-first, word-of-mouth scale.</h2>
+  <p class="subhead">We do not have a sales team. We have a docs team, and every engineer who integrates becomes our distribution.</p>
+
+  <div class="gtm-wrap">
+    <div class="channel-list">
+      <div class="channel">
+        <span class="cname">Docs &middot; SEO</span>
+        <div class="cbar-bg"><div class="cbar-fill" style="width:78%">Every payments search term to our docs</div></div>
+        <span class="cpct">38%</span>
+      </div>
+      <div class="channel">
+        <span class="cname">Hacker News</span>
+        <div class="cbar-bg"><div class="cbar-fill" style="width:54%">Launch post &middot; technical deep-dives</div></div>
+        <span class="cpct">22%</span>
+      </div>
+      <div class="channel">
+        <span class="cname">Developer referral</span>
+        <div class="cbar-bg"><div class="cbar-fill" style="width:48%">Eng leaves for new startup, brings Stripe</div></div>
+        <span class="cpct">24%</span>
+      </div>
+      <div class="channel">
+        <span class="cname">Platform integrations</span>
+        <div class="cbar-bg"><div class="cbar-fill" style="width:32%">Shopify &middot; Heroku &middot; Spree</div></div>
+        <span class="cpct">16%</span>
+      </div>
+    </div>
+
+    <div class="rail">
+      <h4>Rollout rail &middot; 2011 to 2012</h4>
+      <div class="rail-steps">
+        <div class="rail-step"><span class="dot"></span><span>Sep 2011, Public US launch</span></div>
+        <div class="rail-step"><span class="dot"></span><span>Q4 2011, Subscriptions beta</span></div>
+        <div class="rail-step"><span class="dot open"></span><span>Q1 2012, Canada and UK</span></div>
+        <div class="rail-step"><span class="dot open"></span><span>Q2 2012, Mobile SDKs</span></div>
+        <div class="rail-step"><span class="dot open"></span><span>Q3 2012, EU expansion</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 13: TEAM ============ -->
+<section class="slide" data-slide="13">
+  <div class="kicker">12 &middot; Team</div>
+  <h2>Two brothers who have shipped before, and the operators who have done this already.</h2>
+
+  <div class="team-grid">
+    <div class="tcard">
+      <div class="av">PC</div>
+      <h3>Patrick Collison</h3>
+      <div class="role">Co-founder, CEO</div>
+      <p>Founded Auctomatic at 19 (sold to Live Current Media for $5M). MIT dropout. Won the Young Scientist of the Year award in Ireland at 16 for an AI-driven programming language.</p>
+    </div>
+    <div class="tcard">
+      <div class="av">JC</div>
+      <h3>John Collison</h3>
+      <div class="role">Co-founder, President</div>
+      <p>Co-built Auctomatic. Harvard dropout. Led product at Auctomatic post-acquisition. Writes most of the documentation, and believes docs are the product.</p>
+    </div>
+  </div>
+
+  <div class="advisor-strip">
+    <span class="lbl">Advisors &amp; early backers</span>
+    <span class="name">Sequoia Capital</span>
+    <span class="name">SV Angel</span>
+    <span class="name">Peter Thiel</span>
+    <span class="name">Max Levchin</span>
+    <span class="name">Elad Gil</span>
+    <span class="name">Aaron Levie</span>
+  </div>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ SLIDE 14: ASK ============ -->
+<section class="slide" data-slide="14">
+  <div class="kicker">13 &middot; The Ask</div>
+  <h2>Help us build payments infrastructure for the internet.</h2>
+
+  <div class="ask-wrap">
+    <div>
+      <div class="ask-amount">$2M</div>
+      <div class="ask-sub">Seed round to take the API from private beta to public launch and grow the team to 10.</div>
+      <div class="ask-meta">18 to 24 months runway &middot; priced round</div>
+    </div>
+
+    <div class="use-buckets">
+      <div class="use-row">
+        <span class="pct">55%</span>
+        <div class="body">
+          <h4>Engineering</h4>
+          <p>Ship subscriptions &middot; international expansion &middot; SDK coverage across 7 languages.</p>
+        </div>
+      </div>
+      <div class="use-row">
+        <span class="pct">25%</span>
+        <div class="body">
+          <h4>Ops &amp; compliance</h4>
+          <p>PCI DSS Level 1 certification &middot; money-transmitter licensing in the remaining 45 states.</p>
+        </div>
+      </div>
+      <div class="use-row">
+        <span class="pct">20%</span>
+        <div class="body">
+          <h4>Developer relations</h4>
+          <p>Docs team &middot; conference presence &middot; open-source tooling to reduce integration friction.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-row">
+    <span class="who">Patrick Collison &middot; Co-founder, CEO</span>
+    <span class="ways">patrick@stripe.com &nbsp;&middot;&nbsp; stripe.com</span>
+  </div>
+  <div class="corner-mark"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="10" cy="10" r="9" fill="#635BFF"/><path d="M9.5 6.2c-1.1 0-1.7.4-1.7 1.1 0 .8 1 1.1 2.2 1.5 1.6.5 3.4 1.1 3.4 3.2 0 2-1.6 3.1-4 3.1-1 0-2.2-.2-3.4-.6V12c1.1.5 2.4.8 3.4.8 1.1 0 1.9-.3 1.9-1.2 0-.9-1.1-1.3-2.4-1.7-1.6-.5-3.2-1.1-3.2-3 0-1.9 1.5-3 3.7-3 1 0 2 .1 2.9.4v2.4c-.9-.3-1.9-.5-2.8-.5z" fill="white"/></svg><span class="s">stripe</span></div>
+</section>
+
+<!-- ============ NAV ============ -->
+<div class="nav-arrows">
+  <button id="prev" aria-label="Previous slide"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button id="next" aria-label="Next slide"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+
+</div> <!-- /.deck -->
+</div> <!-- /.deck-outer -->
+
+<script>
+  // ---------- scale-to-fit ----------
+  const deck = document.getElementById('deck');
+  function setScale(){
+    const w = window.innerWidth, h = window.innerHeight;
+    const s = Math.min(w/1440, h/810);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  setScale();
+  window.addEventListener('resize', setScale);
+  window.addEventListener('orientationchange', setScale);
+
+  // ---------- nav ----------
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 1;
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function show(n){
+    if(n<1) n=1; if(n>total) n=total;
+    slides.forEach(s => s.classList.remove('active'));
+    const active = document.querySelector('.slide[data-slide="' + n + '"]');
+    if(active) active.classList.add('active');
+    current = n;
+    counter.textContent = pad(n) + ' / ' + pad(total);
+    progress.style.width = ((n/total)*100) + '%';
+  }
+  show(1);
+
+  document.getElementById('prev').addEventListener('click', () => show(current-1));
+  document.getElementById('next').addEventListener('click', () => show(current+1));
+  document.addEventListener('keydown', e => {
+    const editingText = e.target && e.target.getAttribute && e.target.getAttribute('contenteditable') === 'true';
+    if(editingText) return;
+    if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); show(current+1); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); show(current-1); }
+    else if(e.key === 'Home'){ e.preventDefault(); show(1); }
+    else if(e.key === 'End'){ e.preventDefault(); show(total); }
+  });
+
+  // touch swipe
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.changedTouches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx) > 60) dx < 0 ? show(current+1) : show(current-1);
+  }, { passive: true });
+</script>
+
+<script>
+  /* === INLINE-EDIT MODULE · press E to toggle edit mode, Ctrl/S downloads, localStorage autosaves === */
+  // ---------- inline-edit module ----------
+  (function(){
+    const STORAGE_KEY = 'deck-edits:' + location.pathname;
+    const SAVE_DEBOUNCE_MS = 500;
+    const HOVER_GRACE_MS = 400;
+
+    const editor = { isActive: false, saveTimer: null, hideTimer: null };
+
+    const EDITABLE_SELECTORS = [
+      '.slide h1','.slide h2','.slide h3','.slide h4',
+      '.slide p','.slide li','.slide blockquote',
+      '.slide .kicker','.slide .subhead','.slide .eb-label',
+      '.slide .cover-wordmark','.slide .cover-one-liner','.slide .cover-sub','.slide .cover-bug',
+      '.slide .lbl','.slide .val','.slide .num','.slide .op','.slide .big',
+      '.slide .pct','.slide .ways','.slide .who','.slide .name',
+      '.slide .cname','.slide .cpct','.slide .from-to','.slide .x','.slide .y',
+      '.slide .ask-amount','.slide .ask-sub','.slide .ask-meta',
+      '.slide .demo-footnote','.slide .coname','.slide .role','.slide .av',
+      '.slide .logo-cell','.slide .biz-eq','.corner-mark'
+    ];
+
+    // ---------- Restore prior edits ----------
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if(saved){
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(saved, 'text/html');
+        const restoredDeck = doc.querySelector('.deck');
+        const liveDeck = document.querySelector('.deck');
+        if(restoredDeck && liveDeck) liveDeck.innerHTML = restoredDeck.innerHTML;
+      }
+    } catch(e){ console.warn('Inline-edit restore failed:', e); }
+
+    const hotzone = document.querySelector('.edit-hotzone');
+    const toggle = document.getElementById('editToggle');
+
+    function showToggle(){
+      clearTimeout(editor.hideTimer);
+      toggle.classList.add('show');
+    }
+    function scheduleHideToggle(){
+      clearTimeout(editor.hideTimer);
+      editor.hideTimer = setTimeout(() => {
+        if(!editor.isActive) toggle.classList.remove('show');
+      }, HOVER_GRACE_MS);
+    }
+
+    hotzone.addEventListener('mouseenter', showToggle);
+    hotzone.addEventListener('mouseleave', scheduleHideToggle);
+    toggle.addEventListener('mouseenter', showToggle);
+    toggle.addEventListener('mouseleave', scheduleHideToggle);
+
+    hotzone.addEventListener('click', () => toggleEditMode());
+    toggle.addEventListener('click', () => toggleEditMode());
+
+    document.addEventListener('keydown', e => {
+      if(e.key !== 'e' && e.key !== 'E') return;
+      const inEditable = e.target && e.target.getAttribute && e.target.getAttribute('contenteditable') === 'true';
+      if(inEditable) return;
+      if(e.metaKey || e.ctrlKey || e.altKey) return;
+      e.preventDefault();
+      toggleEditMode();
+    });
+
+    document.addEventListener('keydown', e => {
+      if((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')){
+        e.preventDefault();
+        downloadHtml();
+      }
+    });
+
+    function toggleEditMode(){
+      editor.isActive = !editor.isActive;
+      document.body.classList.toggle('edit-mode', editor.isActive);
+      toggle.classList.toggle('active', editor.isActive);
+      toggle.classList.add('show');
+
+      const targets = document.querySelectorAll(EDITABLE_SELECTORS.join(','));
+      targets.forEach(el => {
+        if(editor.isActive){
+          el.setAttribute('contenteditable', 'true');
+          el.setAttribute('spellcheck', 'true');
+        } else {
+          el.removeAttribute('contenteditable');
+          el.removeAttribute('spellcheck');
+        }
+      });
+
+      if(!editor.isActive) scheduleHideToggle();
+    }
+
+    document.addEventListener('input', e => {
+      if(!e.target || !e.target.getAttribute) return;
+      if(e.target.getAttribute('contenteditable') !== 'true') return;
+      clearTimeout(editor.saveTimer);
+      editor.saveTimer = setTimeout(() => {
+        try {
+          const deck = document.querySelector('.deck');
+          const wrapper = document.createElement('div');
+          const clonedDeck = deck.cloneNode(true);
+          wrapper.appendChild(clonedDeck);
+          const html = '<!doctype html><html><body>' + wrapper.innerHTML + '</body></html>';
+          localStorage.setItem(STORAGE_KEY, html);
+        } catch(err){ console.warn('Inline-edit autosave failed:', err); }
+      }, SAVE_DEBOUNCE_MS);
+    });
+
+    function downloadHtml(){
+      const clone = document.documentElement.cloneNode(true);
+      clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+      clone.querySelectorAll('[spellcheck]').forEach(el => el.removeAttribute('spellcheck'));
+      const hotzoneEl = clone.querySelector('.edit-hotzone');
+      const toggleEl = clone.querySelector('.edit-toggle');
+      if(hotzoneEl) hotzoneEl.remove();
+      if(toggleEl) toggleEl.remove();
+      const bodyEl = clone.querySelector('body');
+      if(bodyEl) bodyEl.classList.remove('edit-mode');
+
+      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const title = (document.title || 'deck').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = title + '.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+  })();
+</script>
+</body>
+</html>

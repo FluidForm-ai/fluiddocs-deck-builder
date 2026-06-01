@@ -1,0 +1,42 @@
+# Skill build scratch
+.skill-temp/
+*.skill-temp.html
+
+# Local environment
+.env
+.env.local
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Node (PDF export only)
+node_modules/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Output dirs that should never be committed
+out/
+dist/
+build/
+
+# User-generated decks (in case anyone runs the skill in-repo)
+generated-decks/
+
+# OSS session artifacts (not part of public distribution)
+PORTING-RECIPE.md
+PROMPTS-FOR-NEXT-SESSION.md
+SESSION-A-STATUS.md
+REMAINING-WORK.md
+DEPLOYMENT-BRIEF.md
+HANDOVER-TO-CLAUDE-CODE.md
+
+# Internal QA artifacts (not part of public distribution)
+FINAL-PRE-LAUNCH-CHECKLIST.md
+test-outputs/

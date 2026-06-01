@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nightcap, Launch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Nightcap · Launch Deck
+   Style preset: Studio Bold (cobalt blue + warm cream + saffron)
+   Spine: deck-launch (12 slides, consumer product launch format)
+   Built with: FluidDocs Deck Builder OSS pack, deck-launch SKILL.md
+   See: https://github.com/FluidForm-ai/fluiddocs-deck-builder
+   ============================================================ */
+
+/* Typography scale (7 sizes): 11px, 14px, 18px, 22px, 34px, 60px, 112px */
+
+:root {
+  --brand-primary: #0B3D91;
+  --brand-accent:  #F2B705;
+  --brand-text:    #0B0B0B;
+  --brand-muted:   #4A4A4A;
+  --brand-bg:      #FBF7EE;
+  --brand-surface: #FFFFFF;
+  --brand-border:  #D9CDB4;
+  --brand-deep:    #061F4D;
+  --brand-soft:    #FCE9A0;
+  --brand-cream:   #F5EEDA;
+  --letterbox:     #0A1024;
+  --font-display:  'Playfair Display', 'Didot', 'Georgia', serif;
+  --font-body:     'Inter', system-ui, sans-serif;
+  --font-mono:     'JetBrains Mono', 'SF Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--letterbox);
+  color: var(--brand-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.deck-outer {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--letterbox);
+  overflow: hidden;
+}
+.deck {
+  position: relative;
+  width: 1440px; height: 810px;
+  background: var(--brand-bg);
+  transform-origin: center center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.slide {
+  position: absolute; inset: 0;
+  padding: 104px 96px 96px;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  background: var(--brand-bg);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  color: var(--brand-text);
+}
+.slide.active { display: flex; opacity: 1; }
+.s-cover, .s-closing { justify-content: center; padding: 96px 120px; }
+
+.progress-line {
+  position: absolute; top: 0; left: 0;
+  height: 3px;
+  background: var(--brand-primary);
+  width: 8.33%;
+  transition: width 300ms ease;
+  z-index: 100;
+}
+.nav-counter {
+  position: absolute; bottom: 24px; left: 32px;
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  z-index: 100;
+}
+.nav-arrows {
+  position: absolute; bottom: 20px; right: 32px;
+  display: flex; gap: 10px;
+  z-index: 100;
+}
+.nav-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1.5px solid var(--brand-border);
+  background: transparent;
+  color: var(--brand-text);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 180ms ease;
+}
+.nav-btn:hover { border-color: var(--brand-primary); background: var(--brand-primary); color: white; }
+.nav-btn svg { width: 16px; height: 16px; }
+
+.brand-mark {
+  position: absolute; top: 32px; left: 48px;
+  display: flex; align-items: center; gap: 12px;
+  z-index: 5;
+  color: var(--brand-text);
+  font-family: var(--font-display);
+  font-weight: 600; font-size: 22px;
+  letter-spacing: -0.01em;
+}
+.brand-mark .moon {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  position: relative;
+}
+.brand-mark .moon:after {
+  content: "";
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--brand-bg);
+}
+.slide-meta {
+  position: absolute; top: 32px; right: 48px;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--brand-muted);
+  letter-spacing: 0.12em; font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* Inline-edit module */
+.edit-hotzone {
+  position: fixed; top: 0; left: 0;
+  width: 40px; height: 40px;
+  z-index: 10000; cursor: pointer; background: transparent;
+}
+.edit-toggle {
+  position: fixed; top: 12px; left: 12px;
+  z-index: 10001;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--brand-text);
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease, background 0.15s ease, color 0.15s ease;
+  text-transform: uppercase;
+}
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
+body.edit-mode [contenteditable="true"] {
+  outline: 1px dashed var(--brand-primary);
+  outline-offset: 2px; cursor: text;
+}
+body.edit-mode [contenteditable="true"]:focus {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Shared type */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.18em;
+  color: var(--brand-primary);
+  text-transform: uppercase;
+  margin-bottom: 18px; font-weight: 500;
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--brand-text);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+h1 { font-size: 60px; }
+h2 { font-size: 34px; margin-bottom: 18px; max-width: 1100px; font-weight: 500; }
+h3 { font-size: 22px; }
+h4 { font-size: 18px; font-weight: 600; }
+p  { font-size: 14px; color: var(--brand-text); }
+.lead {
+  font-size: 18px;
+  color: var(--brand-muted);
+  line-height: 1.55;
+  max-width: 920px;
+}
+.head { margin-bottom: 18px; }
+
+/* ===== Slide 1, Cover ===== */
+.cover-wrap { max-width: 1180px; display: flex; flex-direction: column; gap: 32px; }
+.cover-eye {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--brand-primary);
+  text-transform: uppercase;
+}
+.cover-headline {
+  font-family: var(--font-display);
+  font-size: 112px;
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  color: var(--brand-text);
+}
+.cover-headline em { font-style: italic; color: var(--brand-primary); }
+.cover-sub {
+  font-size: 22px;
+  color: var(--brand-muted);
+  max-width: 820px;
+  line-height: 1.45;
+}
+.cover-strip {
+  display: flex; gap: 56px;
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--brand-muted);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  border-top: 1px solid var(--brand-border);
+  padding-top: 26px;
+}
+.cover-strip div span {
+  display: block;
+  color: var(--brand-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+/* Problem */
+.problem-wrap {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 56px;
+  margin-top: 18px;
+  align-items: center;
+}
+.problem-quote {
+  background: var(--brand-surface);
+  border-left: 4px solid var(--brand-primary);
+  padding: 28px 34px;
+  border-radius: 4px;
+}
+.problem-quote .q {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 34px;
+  color: var(--brand-text);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.problem-quote .src {
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--brand-muted);
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.problem-stats {
+  display: flex; flex-direction: column; gap: 18px;
+}
+.ps-fact {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 22px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--brand-border);
+}
+.ps-fact:last-child { border-bottom: none; }
+.ps-fact .num {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 60px;
+  color: var(--brand-primary);
+  line-height: 0.95;
+}
+.ps-fact .lbl { font-size: 14px; color: var(--brand-text); line-height: 1.5; }
+.ps-fact .lbl em {
+  font-family: var(--font-display);
+  color: var(--brand-primary);
+  font-style: italic;
+}
+
+/* Slide 3, Introducing */
+.intro-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  margin-top: 18px;
+  align-items: center;
+}
+.intro-claim {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  color: var(--brand-text);
+  margin-bottom: 22px;
+}
+.intro-claim em { font-style: italic; color: var(--brand-primary); }
+.intro-diff { display: flex; flex-direction: column; gap: 12px; }
+.intro-diff .row {
+  display: grid; grid-template-columns: 22px 1fr;
+  gap: 14px; padding: 8px 0;
+}
+.intro-diff .row .dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--brand-accent);
+  margin-top: 4px;
+}
+.intro-diff .row .txt { font-size: 14px; color: var(--brand-text); line-height: 1.55; }
+.intro-diff .row .txt strong { color: var(--brand-primary); font-weight: 600; }
+
+.phone-frame {
+  width: 320px;
+  height: 600px;
+  background: var(--brand-deep);
+  border-radius: 44px;
+  padding: 18px;
+  margin: 0 auto;
+  box-shadow: 0 20px 60px rgba(11, 16, 36, 0.25);
+}
+.phone-screen {
+  background: var(--brand-bg);
+  border-radius: 30px;
+  height: 100%;
+  padding: 32px 24px;
+  display: flex; flex-direction: column;
+  gap: 18px;
+  overflow: hidden;
+}
+.phone-screen .status {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--brand-muted);
+  letter-spacing: 0.08em;
+}
+.phone-screen .greet {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--brand-text);
+  margin-top: 12px;
+}
+.phone-screen .prompt {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-style: italic;
+  color: var(--brand-muted);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+.phone-screen .entry {
+  margin-top: auto;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--brand-text);
+  line-height: 1.5;
+}
+.phone-screen .entry .mood {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--brand-primary);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* Slide 4, How It Works */
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  margin-top: 22px;
+}
+.how-step {
+  background: var(--brand-surface);
+  border-radius: 10px;
+  padding: 28px 26px;
+  display: flex; flex-direction: column; gap: 14px;
+  border-top: 4px solid var(--brand-accent);
+}
+.how-step .num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 60px;
+  font-weight: 500;
+  color: var(--brand-primary);
+  line-height: 0.9;
+}
+.how-step h4 { font-family: var(--font-display); font-size: 22px; font-weight: 500; }
+.how-step p { font-size: 14px; color: var(--brand-muted); line-height: 1.55; }
+.how-step .time {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-primary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Slide 5, Demo */
+.s-demo { padding: 88px 80px 76px; }
+.demo-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 18px;
+}
+.demo-head h3 { font-family: var(--font-display); font-size: 22px; font-weight: 500; max-width: 760px; }
+.demo-head .demo-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.demo-stage {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 56px;
+  align-items: center;
+  margin-top: 6px;
+  background: var(--brand-cream);
+  border-radius: 12px;
+  padding: 28px 40px 28px 40px;
+}
+.demo-phone {
+  width: 320px;
+  height: 600px;
+  background: var(--brand-deep);
+  border-radius: 44px;
+  padding: 18px;
+  box-shadow: 0 20px 60px rgba(11, 16, 36, 0.25);
+}
+.demo-phone .screen {
+  background: var(--brand-bg);
+  border-radius: 30px;
+  height: 100%;
+  padding: 28px 22px;
+  display: flex; flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+}
+.demo-phone .nb {
+  font-family: var(--font-mono); font-size: 11px; color: var(--brand-muted); letter-spacing: 0.08em;
+  display: flex; justify-content: space-between;
+}
+.demo-phone .date {
+  font-family: var(--font-display); font-style: italic; font-size: 22px; color: var(--brand-primary);
+  margin-top: 6px;
+}
+.demo-phone .greet {
+  font-family: var(--font-display); font-size: 22px; font-weight: 500; color: var(--brand-text);
+}
+.demo-phone .ask {
+  font-family: var(--font-display); font-size: 18px; font-style: italic; color: var(--brand-muted); line-height: 1.4;
+}
+.demo-phone .moodrow {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-top: 4px;
+}
+.demo-phone .pill {
+  font-family: var(--font-mono); font-size: 11px;
+  padding: 6px 10px; border-radius: 12px;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  color: var(--brand-muted);
+  letter-spacing: 0.04em;
+}
+.demo-phone .pill.on {
+  background: var(--brand-soft);
+  color: var(--brand-deep);
+  border-color: var(--brand-accent);
+}
+.demo-phone .entry {
+  margin-top: auto;
+  background: var(--brand-surface);
+  border-left: 3px solid var(--brand-primary);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--brand-text);
+  line-height: 1.5;
+}
+.demo-phone .footrow {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-muted);
+  letter-spacing: 0.06em;
+}
+
+.demo-notes { display: flex; flex-direction: column; gap: 18px; }
+.dn-stat {
+  background: var(--brand-surface);
+  border-radius: 10px;
+  padding: 22px 26px;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 22px;
+  align-items: center;
+}
+.dn-stat .v {
+  font-family: var(--font-display);
+  font-size: 60px;
+  font-weight: 500;
+  color: var(--brand-primary);
+  line-height: 0.95;
+  font-style: italic;
+}
+.dn-stat .t { font-family: var(--font-display); font-size: 18px; font-weight: 500; color: var(--brand-text); margin-bottom: 6px; }
+.dn-stat .l { font-size: 14px; color: var(--brand-muted); line-height: 1.5; }
+.demo-footnote {
+  margin-top: 16px;
+  text-align: right;
+}
+.demo-footnote a {
+  display: inline-block;
+  opacity: 0.7;
+  text-decoration: none;
+}
+
+/* Slide 6, Who It's For */
+.who-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 22px;
+  margin-top: 22px;
+}
+.persona {
+  background: var(--brand-surface);
+  border-radius: 10px;
+  padding: 28px 26px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.persona.primary {
+  background: var(--brand-deep);
+  color: var(--brand-bg);
+}
+.persona .lbl {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--brand-accent);
+  text-transform: uppercase;
+}
+.persona.primary .lbl { color: var(--brand-soft); }
+.persona h4 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--brand-text);
+}
+.persona.primary h4 { color: var(--brand-bg); }
+.persona p { font-size: 14px; color: var(--brand-muted); line-height: 1.55; }
+.persona.primary p { color: rgba(251, 247, 238, 0.78); }
+.persona .stat {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--brand-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+}
+.persona.primary .stat { color: var(--brand-soft); border-top-color: rgba(245, 238, 218, 0.18); }
+
+/* Slide 7, Availability & Pricing */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-top: 22px;
+}
+.tier {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 10px;
+  padding: 28px 26px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.tier.featured {
+  background: var(--brand-deep);
+  border-color: var(--brand-primary);
+  color: var(--brand-bg);
+}
+.tier .name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--brand-text);
+}
+.tier.featured .name { color: var(--brand-bg); }
+.tier .price {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 60px;
+  font-weight: 500;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+.tier.featured .price { color: var(--brand-soft); }
+.tier .per { font-family: var(--font-mono); font-size: 11px; color: var(--brand-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.tier.featured .per { color: rgba(245, 238, 218, 0.75); }
+.tier ul { list-style: none; padding-top: 14px; border-top: 1px solid var(--brand-border); }
+.tier.featured ul { border-top-color: rgba(245, 238, 218, 0.2); }
+.tier ul li {
+  font-size: 14px; color: var(--brand-text);
+  padding: 6px 0 6px 20px;
+  position: relative;
+  line-height: 1.5;
+}
+.tier ul li:before {
+  content: ""; position: absolute; left: 0; top: 12px;
+  width: 8px; height: 8px;
+  background: var(--brand-accent);
+  border-radius: 50%;
+}
+.tier.featured ul li { color: rgba(251, 247, 238, 0.92); }
+.avail-ribbon {
+  margin-top: 14px;
+  background: var(--brand-soft);
+  border-radius: 6px;
+  padding: 14px 22px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--brand-deep);
+  text-transform: uppercase;
+  text-align: center;
+}
+.avail-ribbon strong { font-family: var(--font-display); font-style: italic; font-size: 22px; font-weight: 500; text-transform: none; letter-spacing: -0.01em; }
+
+/* Slide 8, Early Customers */
+.testimonials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 22px; }
+.testimonial {
+  background: var(--brand-surface);
+  border-radius: 10px;
+  padding: 26px 24px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.testimonial .stars {
+  color: var(--brand-accent);
+  font-family: var(--font-mono);
+  letter-spacing: 0.2em;
+  font-size: 14px;
+}
+.testimonial .q {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--brand-text);
+}
+.testimonial .who {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--brand-border);
+}
+.testimonial .who .n { font-size: 14px; font-weight: 600; color: var(--brand-text); }
+.testimonial .who .r { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--brand-muted); text-transform: uppercase; margin-top: 4px; }
+.testimonial .metric {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--brand-primary);
+  margin-top: 4px;
+}
+
+/* Slide 9, Roadmap */
+.roadmap {
+  background: var(--brand-surface);
+  border-radius: 12px;
+  padding: 32px 36px;
+  margin-top: 22px;
+}
+.rm-track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  position: relative;
+}
+.rm-track:before {
+  content: "";
+  position: absolute;
+  top: 28px; left: 28px; right: 28px;
+  height: 2px;
+  background: var(--brand-accent);
+  opacity: 0.55;
+}
+.rm-q {
+  background: var(--brand-bg);
+  border-radius: 8px;
+  padding: 56px 22px 22px;
+  position: relative;
+}
+.rm-q:before {
+  content: "";
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  width: 14px; height: 14px;
+  margin-left: -7px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  border: 2px solid var(--brand-bg);
+}
+.rm-q.shipped:before { background: var(--brand-accent); }
+.rm-q .qlabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-primary);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 14px;
+}
+.rm-q.shipped .qlabel { color: var(--brand-deep); }
+.rm-q h4 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--brand-text);
+  text-align: center;
+  margin-bottom: 8px;
+}
+.rm-q p { font-size: 14px; color: var(--brand-muted); text-align: center; line-height: 1.5; }
+.rm-source {
+  margin-top: 22px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Slide 10, Why Now */
+.whynow-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  margin-top: 22px;
+  align-items: center;
+}
+.whynow-figure { text-align: left; }
+.wn-num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 112px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--brand-primary);
+}
+.wn-num .unit { font-size: 34px; color: var(--brand-deep); font-style: normal; margin-left: 8px; vertical-align: top; }
+.wn-cap { font-size: 18px; color: var(--brand-text); margin-top: 18px; line-height: 1.4; font-weight: 600; max-width: 480px; }
+.wn-source { font-family: var(--font-mono); font-size: 11px; color: var(--brand-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 12px; }
+.wn-context { display: flex; flex-direction: column; gap: 14px; }
+.wn-row {
+  display: grid; grid-template-columns: 100px 1fr;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--brand-border);
+}
+.wn-row:last-child { border-bottom: none; }
+.wn-row .yr {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--brand-primary);
+}
+.wn-row .ev { font-size: 14px; color: var(--brand-text); line-height: 1.5; }
+.wn-row .ev strong { font-weight: 600; }
+
+/* Slide 11, Team */
+.team-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 22px; }
+.team-card {
+  background: var(--brand-surface);
+  border-radius: 10px;
+  padding: 28px 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  color: var(--brand-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 500;
+}
+.team-card .n {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--brand-text);
+}
+.team-card .r {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-primary);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.team-card .bio { font-size: 14px; color: var(--brand-muted); line-height: 1.55; }
+.team-card .creds {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-deep);
+  letter-spacing: 0.06em;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border);
+}
+
+/* Slide 12, Try It */
+.s-closing { align-items: center; text-align: center; }
+.try-wrap { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; align-items: center; }
+.try-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--brand-primary);
+  text-transform: uppercase;
+}
+.try-title {
+  font-family: var(--font-display);
+  font-size: 60px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: var(--brand-text);
+}
+.try-title em { font-style: italic; color: var(--brand-primary); }
+.try-sub { font-size: 22px; color: var(--brand-muted); max-width: 640px; line-height: 1.45; }
+.try-row {
+  display: grid; grid-template-columns: 200px 1fr;
+  gap: 36px;
+  align-items: center;
+  background: var(--brand-surface);
+  border-radius: 14px;
+  padding: 28px 36px;
+  margin-top: 12px;
+  width: 100%;
+  text-align: left;
+}
+.qr-box {
+  width: 180px; height: 180px;
+  background: var(--brand-deep);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 14px;
+}
+.qr-box svg { width: 100%; height: 100%; }
+.try-detail .url {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--brand-primary);
+  letter-spacing: 0.04em;
+}
+.try-detail .desc { font-size: 14px; color: var(--brand-muted); line-height: 1.55; margin-top: 12px; max-width: 500px; }
+.try-cta {
+  display: flex; gap: 14px; margin-top: 18px;
+}
+.try-cta .btn {
+  padding: 14px 28px;
+  border-radius: 8px;
+  background: var(--brand-primary);
+  color: var(--brand-bg);
+  font-size: 14px; font-weight: 600;
+  text-decoration: none;
+  font-family: var(--font-body);
+  letter-spacing: 0.02em;
+}
+.try-cta .btn.secondary {
+  background: transparent;
+  color: var(--brand-primary);
+  border: 1px solid var(--brand-primary);
+}
+.try-social {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<div class="edit-hotzone" aria-hidden="true"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)" aria-label="Toggle edit mode">Edit</button>
+
+<div class="deck-outer">
+  <div class="deck">
+
+    <!-- ===== Slide 1, Cover ===== -->
+    <section class="slide s-cover active">
+      <div class="cover-wrap">
+        <div class="cover-eye">Introducing Nightcap, available May 30</div>
+        <div class="cover-headline">A quiet, daily check-in <em>before</em> the lights go out.</div>
+        <div class="cover-sub">An iOS app that asks one good question every evening, holds the answer somewhere private, and reads it back to you when the year is over.</div>
+        <div class="cover-strip">
+          <div>Launch<span>May 30, 2026</span></div>
+          <div>Platform<span>iOS 17+</span></div>
+          <div>Pricing<span>Free, with Nightcap Plus at $3.99 / mo</span></div>
+          <div>From<span>The Loomroom Studio, Brooklyn</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 2, Problem ===== -->
+    <section class="slide s-problem">
+      <div class="brand-mark"><span class="moon"></span> Nightcap</div>
+      <div class="slide-meta">02 of 12 · The Problem</div>
+      <div class="head">
+        <div class="eyebrow">The journal that never gets opened</div>
+        <h2>People want to reflect on their day. They almost never do.</h2>
+      </div>
+      <div class="problem-wrap">
+        <div>
+          <div class="problem-quote">
+            <div class="q">"I bought another journal this year. It is empty. I keep thinking I am the kind of person who would write in it, but I am not at 11pm with a blank page."</div>
+            <div class="src">Mia, beta tester · age 31 · interview, March 2026</div>
+          </div>
+          <p class="lead" style="margin-top: 18px;">The reflection apps already on phones are guilt machines. They send streak notifications, ask 12-question prompts, and turn a 90-second habit into homework. The shelf of unopened paper journals is the same problem, in physical form.</p>
+        </div>
+        <div class="problem-stats">
+          <div class="ps-fact">
+            <div class="num">68%</div>
+            <div class="lbl">of adults who buy a journal abandon it inside <em>3 weeks</em>. The most common stated reason is "I did not know what to write."</div>
+          </div>
+          <div class="ps-fact">
+            <div class="num">14d</div>
+            <div class="lbl">Median time-to-uninstall for the top 5 reflection apps on iOS, per Sensor Tower 2025.</div>
+          </div>
+          <div class="ps-fact">
+            <div class="num">3%</div>
+            <div class="lbl">of journaling-app users actually look back at their entries within the first 90 days. The reflection layer is missing.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 3, Introducing Nightcap ===== -->
+    <section class="slide s-intro">
+      <div class="brand-mark"><span class="moon"></span> Nightcap</div>
+      <div class="slide-meta">03 of 12 · Introducing Nightcap</div>
+      <div class="head">
+        <div class="eyebrow">The product</div>
+        <h2>One question. One screen. Ninety seconds.</h2>
+      </div>
+      <div class="intro-wrap">
+        <div>
+          <div class="intro-claim">Nightcap is the journaling app that asks <em>one good question</em> each evening, written by a human, tuned to your week.</div>
+          <div class="intro-diff">
+            <div class="row"><span class="dot"></span><div class="txt"><strong>One prompt, never twelve.</strong> Curated by the editorial team that built The School of Life's Conversation Cards.</div></div>
+            <div class="row"><span class="dot"></span><div class="txt"><strong>Closed by default.</strong> Entries are end-to-end encrypted. The app cannot read your answers, even on the server. No streaks. No social.</div></div>
+            <div class="row"><span class="dot"></span><div class="txt"><strong>A year-end read.</strong> On December 31, Nightcap stitches your year into a private 12-minute audio piece. Hearing your year back is the loop the category has been missing.</div></div>
+            <div class="row"><span class="dot"></span><div class="txt"><strong>Offline-first.</strong> Works on a plane. Works at the cabin. The phone is the database.</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <div class="status"><span>9:41</span><span>Sun, Mar 17</span></div>
+              <div class="greet">Good evening, Mia.</div>
+              <div class="prompt">"What did you say yes to this week that surprised you?"</div>
+              <div class="entry">
+                <div class="mood">Honest, no spell check</div>
+                A dinner I almost canceled. I am glad I went. I forgot how much I like Marcus's stories about his uncle's farm in Pennsylvania.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 4, How It Works ===== -->
+    <section class="slide s-how">
+      <div class="brand-mark"><span class="moon"></span> Nightcap</div>
+      <div class="slide-meta">04 of 12 · How It Works</div>
+      <div class="head">
+        <div class="eyebrow">Four moves, four nights</div>
+        <h2>Open the app, answer one question, close the app, repeat.</h2>
+      </div>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="num">1</div>
+          <h4>The reminder lands.</h4>
+          <p>A single notification, between 9pm and 10:30pm local. No badge count. No "you broke your streak."</p>
+          <div class="time">Once a night</div>
+        </div>
+        <div class="how-step">
+          <div class="num">2</div>
+          <h4>One question appears.</h4>
+          <p>Written by Nightcap's editorial team, tuned to the day of the week and the season. New prompts every Sunday.</p>
+          <div class="time">Curated, not generated</div>
+        </div>
+        <div class="how-step">
+          <div class="num">3</div>
+          <h4>You write 30 seconds.</h4>
+          <p>Or 3 minutes. Or you press skip. The app does not pressure. The cursor sits, the keyboard waits.</p>
+          <div class="time">90 seconds median</div>
+        </div>
+        <div class="how-step">
+          <div class="num">4</div>
+          <h4>It is gone, but kept.</h4>
+          <p>The screen closes. Your answer is encrypted on the device. On December 31, it returns as an audio story only you can hear.</p>
+          <div class="time">Read back, year end</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 5, Demo (static screenshot) ===== -->
+    <section class="slide s-demo">
+      <div class="brand-mark"><span class="moon"></span> Nightcap</div>
+      <div class="slide-meta">05 of 12 · A look inside</div>
+      <div class="demo-head">
+        <div>
+          <div class="eyebrow">The Sunday-night flow, in 12 seconds</div>
+          <h3>Mia, on a Sunday in March, answering the question that earned the highest finish rate in beta.</h3>
+        </div>
+        <div class="demo-meta">Static · iOS 17, Pixel 6.7"</div>
+      </div>
+      <div class="demo-stage">
+        <div class="demo-phone">
+          <div class="screen">
+            <div class="nb"><span>9:41</span><span>Sun, Mar 17</span></div>
+            <div class="date">Eighty-six days in.</div>
+            <div class="greet">Good evening, Mia.</div>
+            <div class="ask">"What did you say yes to this week that surprised you?"</div>
+            <div class="moodrow">
+              <span class="pill on">Honest</span>
+              <span class="pill">Brief</span>
+              <span class="pill">Skip tonight</span>
+            </div>
+            <div class="entry">
+              A dinner I almost canceled. I am glad I went. I forgot how much I like Marcus's stories about his uncle's farm in Pennsylvania. Reminded me Sundays do not have to be quiet.
+            </div>
+            <div class="footrow"><span>Locked when you close</span><span>4 of 7 this week</span></div>
+          </div>
+        </div>
+        <div class="demo-notes">
+          <div class="dn-stat">
+            <div class="v">68%</div>
+            <div>
+              <div class="t">Day-30 retention.</div>
+              <div class="l">Across 412 closed-beta users since November 2025. The category benchmark is 14%.</div>
+            </div>
+          </div>
+          <div class="dn-stat">
+            <div class="v">94s</div>
+            <div>
+              <div class="t">Median time per entry.</div>
+              <div class="l">Long enough to be honest, short enough not to feel like homework.</div>
+            </div>
+          </div>
+          <div class="dn-stat">
+            <div class="v">4.9</div>
+            <div>
+              <div class="t">TestFlight rating.</div>
+              <div class="l">From 412 reviewers. The most common word in the reviews is "calm."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-footnote">
+        <a href="https://fluiddocs.ai" target="_blank" rel="noopener">
+          <svg viewBox="0 0 260 38" height="20" role="img" aria-label="Powered by FluidDocs">
+            <path d="M0 2 Q0 0 2 0 L16 0 Q17.5 0 17.5 1.5 Q17.5 3 16 3 L5 3 L5 12 L14 12 Q15.5 12 15.5 13.5 Q15.5 15 14 15 L5 15 L5 26 Q5 28 2.5 28 Q0 28 0 26 Z" fill="#4A4A4A"/>
+            <path d="M22 2 Q22 0 24.5 0 Q27 0 27 2 L27 24.5 L38 24.5 Q39.5 24.5 39.5 26 Q39.5 28 38 28 L24.5 28 Q22 28 22 25.5 Z" fill="#4A4A4A"/>
+            <path d="M44 2 Q44 0 46.5 0 Q49 0 49 2 L49 22 Q49 33 56.5 33 Q64 33 64 22 L64 2 Q64 0 66.5 0 Q69 0 69 2 L69 22.5 Q69 38 56.5 38 Q44 38 44 22.5 Z" fill="#4A4A4A"/>
+            <path d="M75 2 Q75 0 77.5 0 Q80 0 80 2 L80 26 Q80 28 77.5 28 Q75 28 75 26 Z" fill="#4A4A4A"/>
+            <path d="M86 2 Q86 0 88 0 L97 0 Q108 0 108 14 Q108 28 97 28 L88 28 Q86 28 86 26 Z M91 3.5 L91 24.5 L96.5 24.5 Q103 24.5 103 14 Q103 3.5 96.5 3.5 Z" fill="#4A4A4A"/>
+            <rect x="118" y="0" width="3" height="28" rx="1.5" fill="#0B3D91"/>
+            <text x="132" y="22" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-weight="500" font-size="22" letter-spacing="2" fill="#4A4A4A">docs</text>
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== Slide 6, Who It's For ===== -->
+    <section class="slide s-who">
+      <div class="brand-mark"><span class="moon"></span> Nightcap</div>
+      <div class="slide-meta">06 of 12 · Who It Is For</div>
+      <div class="head">
+        <div class="eyebrow">Three groups, one habit</div>
+        <h2>Built for the people the journaling-app category is failing.</h2>
+      </div>
+      <div class="who-grid">
+        <div class="persona primary">
+          <div class="lbl">Primary · the recovering journaler</div>
+          <h4>Adults 28 to 45 with three empty notebooks.</h4>
+          <p>They have tried Day One. They have tried bullet journals. They want a habit that fits in 90 seconds before the lights go out. They will pay $4 a month for a tool that respects them.</p>
+          <div class="stat">~32M in US + UK + Canada · ~$1.5B addressable</div>
+        </div>
+        <div class="persona">
+          <div class="lbl">Secondary, therapy adjunct</div>
+          <h4>People in weekly therapy.</h4>
+          <p>Their therapist asks "what came up this week?" and they have no notes. Nightcap is the prep doc.</p>
+          <div class="stat">~9M weekly therapy users, US alone</div>
+        </div>
+        <div class="persona">
+          <div class="lbl">Secondary, the parents of teens</div>
+          <h4>Parents recovering Sunday-night quiet.</h4>
+          <p>One uninterrupted minute is luxury. Nightcap is the one app on the phone that does not interrupt back.</p>
+          <div class="stat">38% of beta sign-ups self-identified as parents</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 7, Availability & Pricing ===== -->
+    <section class="slide s-pricing">
+      <div class="brand-mark"><span class="moon"></span> Nightcap</div>
+      <div class="slide-meta">07 of 12 · Availability and Pricing</div>
+      <div class="head">
+        <div class="eyebrow">Free to try, generous on purpose</div>
+        <h2>Available on the App Store May 30. Free forever, with Plus for the year-end read.</h2>
+      </div>
+      <div class="pricing-grid">
+        <div class="tier">
+          <div class="name">Nightcap</div>
+          <div class="price">Free</div>
+          <div class="per">Forever, no card required</div>
+          <ul>
+            <li>One nightly prompt, written by the editorial team</li>
+            <li>Local-only encrypted journal, no cloud upload</li>
+            <li>Last 90 entries searchable</li>
+            <li>iCloud backup, optional, end-to-end encrypted</li>
+          </ul>
+        </div>
+        <div class="tier featured">
+          <div class="name">Nightcap Plus</div>
+          <div class="price">$3.99</div>
+          <div class="per">Monthly · or $34 / year</div>
+          <ul>
+            <li>The year-end audio read, December 31</li>
+            <li>Unlimited search across every entry, forever</li>
+            <li>Themed prompt packs (Grief, Caregiving, First Year of Parenthood)</li>
+            <li>Apple Watch quick-capture</li>
+            <li>Two voice options for the year-end read</li>
+          </ul>
+        </div>
+        <div class="tier">
+          <div class="name">Nightcap for Couples</div>
+          <div class="price">$5.99</div>
+          <div class="per">Monthly · two seats</div>
+          <ul>
+            <li>Two private journals on one plan</li>
+            <li>Optional shared-prompt nights, two answers in one envelope</li>
+            <li>Includes everything in Plus, for both seats</li>
+            <li>Designed with couples therapist Dr. Lena Park</li>
+          </ul>
+        </div>
+      </div>
+      <div class="avail-ribbon">Launch week offer · <strong>50% off the first year of Plus</strong> · code NIGHTCAP50 · ends June 13</div>
+    </section>
+
+    <!-- ===== Slide 8, Early Customers ===== -->
+    <section class="slide s-social">
+      <div class="brand-mark"><span class="moon"></span> Nightcap</div>
+      <div class="slide-meta">08 of 12 · Early Voices</div>
+      <div class="head">
+        <div class="eyebrow">From the closed beta, with permission</div>
+        <h2>What 412 testers said after 60 nights.</h2>
+      </div>
+      <div class="testimonials">
+        <div class="testimonial">
+          <div class="stars">★ ★ ★ ★ ★</div>
+          <div class="q">"It does not buzz at me. It does not show me anyone else's life. I open it, I write a line, I close it. I have used it 47 nights in a row."</div>
+          <div class="metric">47 nights, no streak shown</div>
+          <div class="who">
+            <div class="n">Sara Vance</div>
+            <div class="r">Beta tester, San Diego</div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <div class="stars">★ ★ ★ ★ ★</div>
+          <div class="q">"I have a stack of journals in my closet I bought and never used. This is the first thing that has actually made the habit happen."</div>
+          <div class="metric">62 entries, 90 days</div>
+          <div class="who">
+            <div class="n">Theo Aoki</div>
+            <div class="r">Beta tester, Toronto</div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <div class="stars">★ ★ ★ ★ ★</div>
+          <div class="q">"My therapist asked me to start journaling six years ago. I started 11 different times. Nightcap is the only one I kept."</div>
+          <div class="metric">11 prior attempts, one that stuck</div>
+          <div class="who">
+            <div class="n">Priya Nair</div>
+            <div class="r">Beta tester, Brooklyn</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 9, Roadmap ===== -->
+    <section class="slide s-roadmap">
+      <div class="brand-mark"><span class="moon"></span> Nightcap</div>
+      <div class="slide-meta">09 of 12 · Roadmap</div>
+      <div class="head">
+        <div class="eyebrow">The year after launch</div>
+        <h2>Four committed releases. Each one ships on a known date.</h2>
+      </div>
+      <div class="roadmap">
+        <div class="rm-track">
+          <div class="rm-q shipped">
+            <div class="qlabel">Q2 · Shipped</div>
+            <h4>iOS launch</h4>
+            <p>One prompt a night, local journal, App Store launch May 30.</p>
+          </div>
+          <div class="rm-q">
+            <div class="qlabel">Q3 · September</div>
+            <h4>Themed packs</h4>
+            <p>Grief, Caregiving, and First Year of Parenthood, written with three named editors.</p>
+          </div>
+          <div class="rm-q">
+            <div class="qlabel">Q4 · December</div>
+            <h4>Year-end read</h4>
+            <p>The 12-minute audio piece for every Plus subscriber, generated on-device.</p>
+          </div>
+          <div class="rm-q">
+            <div class="qlabel">Q1 2027 · February</div>
+            <h4>Couples shared night</h4>
+            <p>One shared prompt, two private answers, one shared envelope opened together.</p>
+          </div>
+        </div>
+        <div class="rm-source">Voted by 412 beta testers · February 2026 survey · 71% favored a year-end read first</div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px;">
+        <div style="background: var(--brand-cream); border-radius: 8px; padding: 14px 20px;">
+          <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--brand-muted); text-transform: uppercase; margin-bottom: 4px;">What we will not ship</div>
+          <div style="font-size: 14px; color: var(--brand-text); line-height: 1.5;">No social feed. No "share to a friend" surface. No AI-generated prompts. The category is full of those, and they pull the product in the wrong direction.</div>
+        </div>
+        <div style="background: var(--brand-cream); border-radius: 8px; padding: 14px 20px;">
+          <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--brand-muted); text-transform: uppercase; margin-bottom: 4px;">What we are protecting</div>
+          <div style="font-size: 14px; color: var(--brand-text); line-height: 1.5;">90-second flow. Local-first storage. One prompt a night, written by a person. These three constraints anchor every roadmap call.</div>
+        </div>
+        <div style="background: var(--brand-cream); border-radius: 8px; padding: 14px 20px;">
+          <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--brand-muted); text-transform: uppercase; margin-bottom: 4px;">Where customer requests go</div>
+          <div style="font-size: 14px; color: var(--brand-text); line-height: 1.5;">A monthly council of 8 paying users reviews the most requested features. Two of the four releases above came directly from that group.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 10, Why Now ===== -->
+    <section class="slide s-whynow">
+      <div class="brand-mark"><span class="moon"></span> Nightcap</div>
+      <div class="slide-meta">10 of 12 · Why Now</div>
+      <div class="head">
+        <div class="eyebrow">The category has finally cracked open</div>
+        <h2>Phone fatigue is real, and the calm-app category is doubling every 18 months.</h2>
+      </div>
+      <div class="whynow-wrap">
+        <div class="whynow-figure">
+          <div class="wn-num">3.2x<span class="unit">growth</span></div>
+          <div class="wn-cap">Year-over-year revenue growth across the top 12 "calm tech" apps on the App Store, 2024 to 2025.</div>
+          <div class="wn-source">Source: Appfigures · Q4 2025 category report</div>
+        </div>
+        <div class="wn-context">
+          <div class="wn-row">
+            <div class="yr">2023</div>
+            <div class="ev">Apple released <strong>Screen Time + Focus Modes</strong>, the first signal the platform was siding with the user against the feed.</div>
+          </div>
+          <div class="wn-row">
+            <div class="yr">2024</div>
+            <div class="ev">Headspace passed <strong>100M lifetime users</strong>. The audience that pays for calm is now larger than the audience that pays for music.</div>
+          </div>
+          <div class="wn-row">
+            <div class="yr">2025</div>
+            <div class="ev">Apple Intelligence shipped on-device, which means <strong>private journaling on a phone is finally credible</strong> without sending data to a server.</div>
+          </div>
+          <div class="wn-row">
+            <div class="yr">2026</div>
+            <div class="ev">The journaling-app category is still served by guilt-loop and AI-prompt apps. <strong>The calm, private, curated lane is empty.</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 11, Team ===== -->
+    <section class="slide s-team">
+      <div class="brand-mark"><span class="moon"></span> Nightcap</div>
+      <div class="slide-meta">11 of 12 · The Team</div>
+      <div class="head">
+        <div class="eyebrow">Three people, two studios, one prompt-writer</div>
+        <h2>The team that has been quietly shipping calm software for a decade.</h2>
+      </div>
+      <div class="team-row">
+        <div class="team-card">
+          <div class="avatar">LO</div>
+          <div class="n">Lin Okafor</div>
+          <div class="r">Founder &amp; CEO</div>
+          <p class="bio">Ten years of consumer-app craft. Built the first version of Headspace's quote-of-the-day at age 24. Has shipped two indie apps to over a million downloads each.</p>
+          <div class="creds">ex-Headspace, ex-Calm, RISD '14</div>
+        </div>
+        <div class="team-card">
+          <div class="avatar">RC</div>
+          <div class="n">Rae Castillo</div>
+          <div class="r">Cofounder &amp; iOS Lead</div>
+          <p class="bio">Wrote the on-device encryption layer used inside two Apple Design Award winners. The kind of iOS engineer who would rather ship 800 KB than 8 MB.</p>
+          <div class="creds">ex-Apple Health, Stanford CS</div>
+        </div>
+        <div class="team-card">
+          <div class="avatar">DJ</div>
+          <div class="n">Dr. Jules Tan</div>
+          <div class="r">Editorial Director</div>
+          <p class="bio">Wrote the 412 prompts in the beta. Author of two books on conversation and attention. Former editor at School of Life.</p>
+          <div class="creds">Author, Conversations We Are Missing</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 12, Try It ===== -->
+    <section class="slide s-closing">
+      <div class="brand-mark"><span class="moon"></span> Nightcap</div>
+      <div class="slide-meta">12 of 12 · Try It</div>
+      <div class="try-wrap">
+        <div class="try-eyebrow">Available May 30 · iOS 17 and later</div>
+        <h2 class="try-title">Tonight starts <em>nightcap.app</em>.</h2>
+        <div class="try-sub">Download free. Write one line tonight. See what eighty-six nights tell you.</div>
+        <div class="try-row">
+          <div class="qr-box">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0" y="0" width="100" height="100" fill="#F5EEDA"/>
+              <g fill="#0B3D91">
+                <rect x="6" y="6" width="22" height="22"/><rect x="10" y="10" width="14" height="14" fill="#0A1024"/><rect x="14" y="14" width="6" height="6" fill="#F5EEDA"/>
+                <rect x="72" y="6" width="22" height="22"/><rect x="76" y="10" width="14" height="14" fill="#0A1024"/><rect x="80" y="14" width="6" height="6" fill="#F5EEDA"/>
+                <rect x="6" y="72" width="22" height="22"/><rect x="10" y="76" width="14" height="14" fill="#0A1024"/><rect x="14" y="80" width="6" height="6" fill="#F5EEDA"/>
+                <rect x="34" y="6" width="4" height="4"/><rect x="42" y="6" width="4" height="4"/><rect x="50" y="6" width="4" height="4"/><rect x="58" y="6" width="4" height="4"/>
+                <rect x="34" y="14" width="4" height="4"/><rect x="46" y="14" width="4" height="4"/><rect x="58" y="14" width="4" height="4"/>
+                <rect x="34" y="22" width="4" height="4"/><rect x="42" y="22" width="4" height="4"/><rect x="50" y="22" width="4" height="4"/>
+                <rect x="6" y="34" width="4" height="4"/><rect x="14" y="34" width="4" height="4"/><rect x="22" y="34" width="4" height="4"/><rect x="34" y="34" width="4" height="4"/><rect x="46" y="34" width="4" height="4"/><rect x="58" y="34" width="4" height="4"/><rect x="70" y="34" width="4" height="4"/><rect x="82" y="34" width="4" height="4"/><rect x="90" y="34" width="4" height="4"/>
+                <rect x="10" y="42" width="4" height="4"/><rect x="22" y="42" width="4" height="4"/><rect x="38" y="42" width="4" height="4"/><rect x="50" y="42" width="4" height="4"/><rect x="62" y="42" width="4" height="4"/><rect x="74" y="42" width="4" height="4"/><rect x="86" y="42" width="4" height="4"/>
+                <rect x="6" y="50" width="4" height="4"/><rect x="18" y="50" width="4" height="4"/><rect x="30" y="50" width="4" height="4"/><rect x="42" y="50" width="4" height="4"/><rect x="54" y="50" width="4" height="4"/><rect x="66" y="50" width="4" height="4"/><rect x="78" y="50" width="4" height="4"/><rect x="90" y="50" width="4" height="4"/>
+                <rect x="14" y="58" width="4" height="4"/><rect x="26" y="58" width="4" height="4"/><rect x="38" y="58" width="4" height="4"/><rect x="50" y="58" width="4" height="4"/><rect x="62" y="58" width="4" height="4"/><rect x="74" y="58" width="4" height="4"/><rect x="86" y="58" width="4" height="4"/>
+                <rect x="6" y="66" width="4" height="4"/><rect x="18" y="66" width="4" height="4"/><rect x="34" y="66" width="4" height="4"/><rect x="46" y="66" width="4" height="4"/><rect x="58" y="66" width="4" height="4"/><rect x="70" y="66" width="4" height="4"/><rect x="82" y="66" width="4" height="4"/><rect x="90" y="66" width="4" height="4"/>
+                <rect x="34" y="78" width="4" height="4"/><rect x="46" y="78" width="4" height="4"/><rect x="58" y="78" width="4" height="4"/><rect x="70" y="78" width="4" height="4"/><rect x="82" y="78" width="4" height="4"/>
+                <rect x="34" y="86" width="4" height="4"/><rect x="50" y="86" width="4" height="4"/><rect x="62" y="86" width="4" height="4"/><rect x="74" y="86" width="4" height="4"/><rect x="86" y="86" width="4" height="4"/>
+                <rect x="34" y="90" width="4" height="4"/><rect x="42" y="90" width="4" height="4"/><rect x="54" y="90" width="4" height="4"/><rect x="66" y="90" width="4" height="4"/><rect x="78" y="90" width="4" height="4"/>
+              </g>
+            </svg>
+          </div>
+          <div class="try-detail">
+            <div class="url">nightcap.app</div>
+            <div class="desc">Scan the code with your phone to land on the App Store page. The first prompt arrives tonight at the time you usually plug your phone in.</div>
+            <div class="try-cta">
+              <a class="btn" href="https://nightcap.app">Download on iOS</a>
+              <a class="btn secondary" href="https://nightcap.app/press">Press kit</a>
+            </div>
+          </div>
+        </div>
+        <div class="try-social">Follow @nightcapapp on Instagram · hello@nightcap.app for press</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px; width: 100%; text-align: left;">
+          <div style="background: var(--brand-surface); border-radius: 8px; padding: 16px 20px;">
+            <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--brand-muted); text-transform: uppercase; margin-bottom: 6px;">For reviewers</div>
+            <div style="font-size: 14px; color: var(--brand-text); line-height: 1.5;">90-day press TestFlight, full Plus access, no review obligation. Email <strong style="color: var(--brand-primary);">press@nightcap.app</strong>.</div>
+          </div>
+          <div style="background: var(--brand-surface); border-radius: 8px; padding: 16px 20px;">
+            <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--brand-muted); text-transform: uppercase; margin-bottom: 6px;">For creators</div>
+            <div style="font-size: 14px; color: var(--brand-text); line-height: 1.5;">Affiliate program live May 30, 35% on year-one Plus revenue. Apply at <strong style="color: var(--brand-primary);">nightcap.app/creators</strong>.</div>
+          </div>
+          <div style="background: var(--brand-surface); border-radius: 8px; padding: 16px 20px;">
+            <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--brand-muted); text-transform: uppercase; margin-bottom: 6px;">For therapists</div>
+            <div style="font-size: 14px; color: var(--brand-text); line-height: 1.5;">Free clinician account, used to recommend Nightcap to clients. <strong style="color: var(--brand-primary);">nightcap.app/clinicians</strong>.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="progress-line"></div>
+    <div class="nav-counter"><span class="cur">01</span> / <span class="total">12</span></div>
+    <div class="nav-arrows">
+      <button class="nav-btn prev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="nav-btn next" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const deck = document.querySelector('.deck');
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const progress = document.querySelector('.progress-line');
+  const counter = document.querySelector('.nav-counter .cur');
+  const totalEl = document.querySelector('.nav-counter .total');
+  const prevBtn = document.querySelector('.nav-btn.prev');
+  const nextBtn = document.querySelector('.nav-btn.next');
+
+  totalEl.textContent = String(total).padStart(2, '0');
+
+  function setScale() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const scale = Math.min(w / 1440, h / 810);
+    deck.style.transform = 'scale(' + scale + ')';
+  }
+  setScale();
+  window.addEventListener('resize', setScale);
+  window.addEventListener('orientationchange', setScale);
+
+  function go(to) {
+    if (to < 0 || to >= total) return;
+    slides[current].classList.remove('active');
+    current = to;
+    slides[current].classList.add('active');
+    progress.style.width = (((current + 1) / total) * 100) + '%';
+    counter.textContent = String(current + 1).padStart(2, '0');
+  }
+  const next = () => go(current + 1);
+  const prev = () => go(current - 1);
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', (e) => {
+    const editingText = e.target && e.target.getAttribute &&
+                        e.target.getAttribute('contenteditable') === 'true';
+    if (editingText) return;
+    if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', (e) => { tx = e.changedTouches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 60) dx < 0 ? next() : prev();
+  }, { passive: true });
+})();
+</script>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'deck-edits:' + location.pathname;
+  const SAVE_DEBOUNCE_MS = 500;
+  const HOVER_GRACE_MS = 400;
+
+  const editor = { isActive: false, saveTimer: null, hideTimer: null };
+
+  const EDITABLE_SELECTORS = [
+    '.slide h1', '.slide h2', '.slide h3', '.slide h4',
+    '.slide p', '.slide li', '.slide blockquote',
+    '.slide .eyebrow', '.slide .lead',
+    '.slide .cover-headline', '.slide .cover-sub', '.slide .cover-eye',
+    '.slide .problem-quote .q', '.slide .problem-quote .src',
+    '.slide .ps-fact .num', '.slide .ps-fact .lbl',
+    '.slide .intro-claim', '.slide .intro-diff .txt',
+    '.slide .how-step h4', '.slide .how-step p', '.slide .how-step .time',
+    '.slide .dn-stat .v', '.slide .dn-stat .t', '.slide .dn-stat .l',
+    '.slide .persona h4', '.slide .persona p', '.slide .persona .stat',
+    '.slide .tier .name', '.slide .tier .price', '.slide .tier .per',
+    '.slide .testimonial .q', '.slide .testimonial .n', '.slide .testimonial .r', '.slide .testimonial .metric',
+    '.slide .rm-q h4', '.slide .rm-q p', '.slide .rm-q .qlabel',
+    '.slide .wn-num', '.slide .wn-cap', '.slide .wn-row .ev',
+    '.slide .team-card .n', '.slide .team-card .r', '.slide .team-card .bio', '.slide .team-card .creds',
+    '.slide .try-title', '.slide .try-sub', '.slide .try-detail .url', '.slide .try-detail .desc', '.slide .try-social',
+    '.slide .avail-ribbon',
+    '.brand-mark', '.slide-meta'
+  ];
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(saved, 'text/html');
+      const restoredDeck = doc.querySelector('.deck');
+      const liveDeck = document.querySelector('.deck');
+      if (restoredDeck && liveDeck) liveDeck.innerHTML = restoredDeck.innerHTML;
+    }
+  } catch (e) {
+    console.warn('Inline-edit restore failed:', e);
+  }
+
+  const hotzone = document.querySelector('.edit-hotzone');
+  const toggle = document.getElementById('editToggle');
+
+  function showToggle() { clearTimeout(editor.hideTimer); toggle.classList.add('show'); }
+  function scheduleHideToggle() {
+    clearTimeout(editor.hideTimer);
+    editor.hideTimer = setTimeout(() => {
+      if (!editor.isActive) toggle.classList.remove('show');
+    }, HOVER_GRACE_MS);
+  }
+
+  hotzone.addEventListener('mouseenter', showToggle);
+  hotzone.addEventListener('mouseleave', scheduleHideToggle);
+  toggle.addEventListener('mouseenter', showToggle);
+  toggle.addEventListener('mouseleave', scheduleHideToggle);
+
+  hotzone.addEventListener('click', () => toggleEditMode());
+  toggle.addEventListener('click', () => toggleEditMode());
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'e' && e.key !== 'E') return;
+    const inEditable = e.target && e.target.getAttribute &&
+                       e.target.getAttribute('contenteditable') === 'true';
+    if (inEditable) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    e.preventDefault();
+    toggleEditMode();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      downloadHtml();
+    }
+  });
+
+  function toggleEditMode() {
+    editor.isActive = !editor.isActive;
+    document.body.classList.toggle('edit-mode', editor.isActive);
+    toggle.classList.toggle('active', editor.isActive);
+    toggle.classList.add('show');
+
+    const targets = document.querySelectorAll(EDITABLE_SELECTORS.join(','));
+    targets.forEach(el => {
+      if (editor.isActive) {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'true');
+      } else {
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('spellcheck');
+      }
+    });
+
+    if (!editor.isActive) scheduleHideToggle();
+  }
+
+  document.addEventListener('input', (e) => {
+    if (!e.target || !e.target.getAttribute) return;
+    if (e.target.getAttribute('contenteditable') !== 'true') return;
+    clearTimeout(editor.saveTimer);
+    editor.saveTimer = setTimeout(() => {
+      try {
+        const deck = document.querySelector('.deck');
+        const wrapper = document.createElement('div');
+        const clonedDeck = deck.cloneNode(true);
+        wrapper.appendChild(clonedDeck);
+        const html = '<!doctype html><html><body>' + wrapper.innerHTML + '</body></html>';
+        localStorage.setItem(STORAGE_KEY, html);
+      } catch (err) {
+        console.warn('Inline-edit autosave failed:', err);
+      }
+    }, SAVE_DEBOUNCE_MS);
+  });
+
+  function downloadHtml() {
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+    clone.querySelectorAll('[spellcheck]').forEach(el => el.removeAttribute('spellcheck'));
+    const hotzoneEl = clone.querySelector('.edit-hotzone');
+    const toggleEl = clone.querySelector('.edit-toggle');
+    if (hotzoneEl) hotzoneEl.remove();
+    if (toggleEl) toggleEl.remove();
+    clone.querySelector('body').classList.remove('edit-mode');
+
+    const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const title = (document.title || 'deck').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = title + '.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+})();
+</script>
+</body>
+</html>

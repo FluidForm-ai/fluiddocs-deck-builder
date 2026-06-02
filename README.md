@@ -132,15 +132,20 @@ Then invoke any skill:
 
 Works with Codex, Kimi Code, OpenCode, Gemini CLI, and any other agent that follows the SKILL.md convention.
 
+Claude Code reads personal skills from `~/.claude/skills/<name>/`, so copy the skill folders directly into that directory:
+
 ```bash
-git clone https://github.com/FluidForm-ai/fluiddocs-deck-builder.git ~/.claude/skills/fluiddocs-deck-builder
+git clone https://github.com/FluidForm-ai/fluiddocs-deck-builder.git /tmp/fluiddocs-deck-builder
+cp -r /tmp/fluiddocs-deck-builder/skills/* ~/.claude/skills/
 ```
+
+For other agents, clone the repo and point your agent at its `skills/` directory per that tool's own SKILL.md convention.
 
 ---
 
 ## Generate a new deck from scratch
 
-After install, in Claude Code, invoke `/deck-builder` and describe what you want.
+After install, invoke the deck-builder skill and describe what you want. With the plugin install the command is `/fluiddocs-deck-builder:deck-builder`. With the manual install it is `/deck-builder`.
 
 Sample prompts that work out of the box:
 

@@ -1,8 +1,10 @@
 # FluidDocs Deck Builder
 
-**Drop in your old PDF or PPTX. Get back a polished, interactive HTML deck.**
+**Describe a deck and get one built. Or drop in an old PDF or PPTX to rebuild it. Either way: a polished, interactive HTML deck.**
 
-An open-source deck builder for coding agents. Five type-correct deck spines, four brand-mirror pitch templates, PDF and PPTX import, inline editing, and a multi-reviewer quality pipeline. Single-file HTML output. Zero dependencies in the deck itself.
+An open-source deck builder for coding agents. Five type-correct deck spines (pitch, sales, launch, keynote, all-hands) build from a one-line brief, and `deck-import` rebuilds an existing PDF or PPTX. Four brand-mirror pitch templates, inline editing, and a multi-reviewer quality pipeline. Single-file HTML output, zero dependencies in the deck itself.
+
+"Interactive" means each deck is one self-contained HTML file you navigate with arrow keys and edit in place: press `E`, click any element, type your change, then `Ctrl`/`Cmd`+`S` to download your edited copy. No server, no build step, no account.
 
 Maintained by [FluidDocs](https://fluiddocs.ai). MIT licensed.
 

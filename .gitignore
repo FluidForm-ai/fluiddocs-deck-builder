@@ -40,3 +40,6 @@ HANDOVER-TO-CLAUDE-CODE.md
 # Internal QA artifacts (not part of public distribution)
 FINAL-PRE-LAUNCH-CHECKLIST.md
 test-outputs/
+
+# Internal dev log (kept local / private, not in the public repo)
+LEARNINGS.md

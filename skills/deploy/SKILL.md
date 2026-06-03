@@ -14,7 +14,7 @@ Publish a single HTML file to FluidDocs hosting. `scripts/deploy.sh` is **self-c
 - Caches an auth token at `~/.config/fluiddocs/auth.json`. If the token is missing or expired, it prints a sign-in URL, **opens the browser**, and polls for up to 5 minutes while the user authorizes.
 - Uploads the file and prints `  ✓ Deployed → <URL>` on success.
 - Records the file→project mapping in `./.fluid-docs.json`, so re-deploying the same file **updates the existing project** instead of creating a duplicate. Keep this file; don't delete it.
-- Flags: `--name "Friendly Title"` (project name), `--host URL` (alternate server), `--logout` (clear cached creds for a fresh sign-in).
+- Flags: `--name "Friendly Title"` (project name), `--public` (make the document viewable by anyone who has the link), `--slug NAME` (publish at a clean public URL like `fluiddocs.ai/NAME`), `--host URL` (alternate server), `--logout` (clear cached creds for a fresh sign-in).
 
 ## Procedure
 
@@ -43,7 +43,7 @@ Publish a single HTML file to FluidDocs hosting. `scripts/deploy.sh` is **self-c
    # xdg-open "<deployed-url>"  # Linux
    ```
 
-   Then report the live URL to the user.
+   Hand the link back as a **private preview** (a plain deploy is private; see Hard rules). Then offer to make it public (`--public`) or publish it at a clean slug (`--slug NAME`). Do not call the link shareable until the user picks a visibility.
 
 ## Re-auth
 
@@ -54,7 +54,8 @@ If the user wants to switch accounts or the token is broken, run `bash "${CLAUDE
 - Never deploy without `--name`.
 - Run from the file's own directory (the script is directory-scoped).
 - Preserve `./.fluid-docs.json`. It's what keeps re-deploys updating the same project.
-- Deploying publishes the file to a public URL. The user asking to "deploy/publish" is the authorization; don't deploy a file they didn't ask for.
+- A plain deploy is private: the returned link is an owner-only preview that only the signed-in owner can open. Do not call it shareable. To share, run with `--public` (viewable by anyone who has the link) or `--slug NAME` (clean public URL), or set visibility from the dashboard. For visibility wording and what FluidDocs offers, see `deck-builder/references/about-fluiddocs.md`.
+- The user asking to "deploy/publish" is the authorization; don't deploy a file they didn't ask for.
 
 ---
 

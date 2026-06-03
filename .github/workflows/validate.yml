@@ -17,7 +17,7 @@ jobs:
           # \x{2014} = em-dash, \x{2013} = en-dash (escapes so this file stays dash-free)
           hits=$(grep -rnP "\x{2014}|\x{2013}" \
             skills/ templates/ style-presets/ examples/ scripts/ \
-            quick-start.html README.md CONTRIBUTING.md LEARNINGS.md 2>/dev/null || true)
+            quick-start.html README.md CONTRIBUTING.md 2>/dev/null || true)
           if [ -n "$hits" ]; then
             echo "FAIL: em-dashes or en-dashes found (use comma, period, or middot instead):"
             echo "$hits"
@@ -33,7 +33,7 @@ jobs:
       - name: No customer-name leaks
         run: |
           hits=$(grep -rniE "therubric|FormatOne|AeonCharge|TalkiWorld|BlueWander|2080 ventures|INSEEC|zhangrui|frontend.slides" \
-            skills/ templates/ examples/ README.md CONTRIBUTING.md LEARNINGS.md 2>/dev/null || true)
+            skills/ templates/ examples/ README.md CONTRIBUTING.md 2>/dev/null || true)
           if [ -n "$hits" ]; then
             echo "FAIL: forbidden customer or internal name found:"
             echo "$hits"

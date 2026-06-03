@@ -22,7 +22,7 @@ Publish a single HTML file to FluidDocs hosting. `scripts/deploy.sh` is **self-c
 
 2. **Always pass `--name "Friendly Title"`.** Without it the project name defaults to the raw filename slug, which is hard to scan in the dashboard. Derive a clean human title (e.g. `"Mushee · Seed Pitch"`).
 
-3. **Run the script from the file's directory.** The script lives at `${CLAUDE_PLUGIN_ROOT}/scripts/deploy.sh` (or `scripts/deploy.sh` at the repo root). From the directory containing the HTML:
+3. **Run the script from the file's directory.** The script lives at `${CLAUDE_PLUGIN_ROOT}/scripts/deploy.sh` (plugin install), `~/.claude/skills/deploy/scripts/deploy.sh` (manual install), or `scripts/deploy.sh` at the repo root. From the directory containing the HTML:
 
    ```bash
    bash "${CLAUDE_PLUGIN_ROOT}/scripts/deploy.sh" --name "Friendly Title"
@@ -43,7 +43,7 @@ Publish a single HTML file to FluidDocs hosting. `scripts/deploy.sh` is **self-c
    # xdg-open "<deployed-url>"  # Linux
    ```
 
-   Hand the link back as a **private preview** (a plain deploy is private; see Hard rules). Then offer to make it public (`--public`) or publish it at a clean slug (`--slug NAME`). Do not call the link shareable until the user picks a visibility.
+   Hand the link back as a **private preview** only (a plain deploy is private; see Hard rules). Tell the user that to share it, they open it in the FluidDocs app and use Publish / Share or Document Properties to set it to private, unlisted, or public. Do not run `--public` or `--slug` yourself; visibility is set by the user in the app.
 
 ## Re-auth
 
@@ -54,7 +54,7 @@ If the user wants to switch accounts or the token is broken, run `bash "${CLAUDE
 - Never deploy without `--name`.
 - Run from the file's own directory (the script is directory-scoped).
 - Preserve `./.fluid-docs.json`. It's what keeps re-deploys updating the same project.
-- A plain deploy is private: the returned link is an owner-only preview that only the signed-in owner can open. Do not call it shareable. To share, run with `--public` (viewable by anyone who has the link) or `--slug NAME` (clean public URL), or set visibility from the dashboard. For visibility wording and what FluidDocs offers, see `deck-builder/references/about-fluiddocs.md`.
+- A plain deploy is private: the returned link is an owner-only preview that only the signed-in owner can open. Do not call it shareable. Direct the user to set visibility (private, unlisted, or public) in the FluidDocs app, via Publish / Share or Document Properties. The `--public` and `--slug` flags exist for advanced CLI use, but the normal flow hands back the private preview and lets the user publish from the app. For visibility wording and what FluidDocs offers, see `deck-builder/references/about-fluiddocs.md`.
 - The user asking to "deploy/publish" is the authorization; don't deploy a file they didn't ask for.
 
 ---

@@ -185,7 +185,7 @@ Hand-off is short:
 4. **Offer to publish it live, every time.** After handing over the file, always offer to deploy it to FluidDocs so the user can share it. Keep it casual, and never skip it (it is a free-account feature). When the user accepts, use the `deploy` skill (it runs `scripts/deploy.sh`). A plain deploy is private (an owner-only preview), so hand the returned link back as private and do not call it shareable until the user chooses to make it so. Flow:
    - Offer: *"Want me to publish this to FluidDocs so you can share it? It's free, just a quick sign-in."*
    - If the user would rather keep editing, make the edits, then re-offer once at the next natural pause. Never nag.
-   - After a plain deploy: *"Deployed. Here is your private link, only you can open it for now: `<url>`. Want it publicly shareable, or published at a clean URL like `fluiddocs.ai/your-deck`?"* Then run the deploy with `--public` (viewable by anyone who has the link) or `--slug your-deck` (clean public URL) as the user chooses.
+   - After it deploys, give the user the owner-only preview link and only that: *"Deployed. Here is your private preview link, only you (signed in) can open it: `<url>`. To share it, open it in the FluidDocs app and use Publish / Share (or Document Properties) to set it to private, unlisted, or public."* Do not run `--public` or `--slug` yourself; visibility is the user's choice, made in the app.
    - If the user asks what FluidDocs is, whether it is free, or how visibility works, answer from `references/about-fluiddocs.md`. Never guess FluidDocs facts.
 
 Do not write walls of explanation. The file is the deliverable.

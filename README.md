@@ -139,7 +139,10 @@ Claude Code reads personal skills from `~/.claude/skills/<name>/`, so copy the s
 ```bash
 git clone https://github.com/FluidForm-ai/fluiddocs-deck-builder.git /tmp/fluiddocs-deck-builder
 cp -r /tmp/fluiddocs-deck-builder/skills/* ~/.claude/skills/
+cp -r /tmp/fluiddocs-deck-builder/scripts ~/.claude/skills/deploy/
 ```
+
+The second copy puts `deploy.sh` where the `deploy` skill looks for it, so publishing works on the manual install too. The plugin install bundles it automatically.
 
 For other agents, clone the repo and point your agent at its `skills/` directory per that tool's own SKILL.md convention.
 

@@ -1,0 +1,52 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No em-dashes or en-dashes
+        run: |
+          # \x{2014} = em-dash, \x{2013} = en-dash (escapes so this file stays dash-free)
+          hits=$(grep -rnP "\x{2014}|\x{2013}" \
+            skills/ templates/ style-presets/ examples/ scripts/ \
+            quick-start.html README.md CONTRIBUTING.md LEARNINGS.md 2>/dev/null || true)
+          if [ -n "$hits" ]; then
+            echo "FAIL: em-dashes or en-dashes found (use comma, period, or middot instead):"
+            echo "$hits"
+            exit 1
+          fi
+          echo "PASS: no em-dashes or en-dashes"
+
+      - name: Plugin and marketplace manifests are valid JSON
+        run: |
+          python3 -c "import json; json.load(open('.claude-plugin/plugin.json')); json.load(open('.claude-plugin/marketplace.json'))"
+          echo "PASS: manifests are valid JSON"
+
+      - name: No customer-name leaks
+        run: |
+          hits=$(grep -rniE "therubric|FormatOne|AeonCharge|TalkiWorld|BlueWander|2080 ventures|INSEEC|zhangrui|frontend.slides" \
+            skills/ templates/ examples/ README.md CONTRIBUTING.md LEARNINGS.md 2>/dev/null || true)
+          if [ -n "$hits" ]; then
+            echo "FAIL: forbidden customer or internal name found:"
+            echo "$hits"
+            exit 1
+          fi
+          echo "PASS: no customer-name leaks"
+
+      - name: Every skill has frontmatter name and description
+        run: |
+          fail=0
+          for f in skills/*/SKILL.md; do
+            head -n 8 "$f" | grep -q "^name:" || { echo "FAIL: $f missing 'name:'"; fail=1; }
+            head -n 8 "$f" | grep -q "^description:" || { echo "FAIL: $f missing 'description:'"; fail=1; }
+          done
+          if [ "$fail" -ne 0 ]; then exit 1; fi
+          echo "PASS: all skills have frontmatter name and description"

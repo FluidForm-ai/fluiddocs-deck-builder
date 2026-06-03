@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Getting started
+    url: https://github.com/FluidForm-ai/fluiddocs-deck-builder#readme
+    about: Read the README for install and usage before filing an issue.
+  - name: Browse templates and style presets
+    url: https://github.com/FluidForm-ai/fluiddocs-deck-builder/tree/main/templates
+    about: See the 8 templates and the style presets first.
+  - name: Questions and ideas
+    url: https://github.com/FluidForm-ai/fluiddocs-deck-builder/discussions
+    about: For open-ended questions or ideas, start a discussion instead of an issue.

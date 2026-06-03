@@ -5,6 +5,8 @@ description: Builds 11-slide sales decks for B2B pitch-to-close flows. Trigger p
 
 # Deck Sales · a type pack for the `deck-builder` core
 
+**Build silently.** Do not narrate the skill architecture (the "type pack" and "core" split) or announce which files you are reading. Skip preambles like "I'll start by reading...". Gather what you need, then build the deck.
+
 This skill builds **B2B sales decks for prospect conversations: discovery, problem framing, solution fit, proof, pricing, and close**. It is a thin type pack that inherits the full pipeline from the `deck-builder` core skill. Read `deck-builder/SKILL.md` first for the 5-phase pipeline, 3-reviewer gate, fixed-canvas shell, brand-tokens methodology, and learnings log. This file only declares what's **sales-specific**.
 
 ---

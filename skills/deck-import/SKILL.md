@@ -5,7 +5,7 @@ description: Convert any PDF or PPTX deck into a self-contained interactive HTML
 
 # Deck Import (PDF or PPTX, HTML Deck, generic across 5 deck types)
 
-**Build silently.** Do not narrate the skill architecture (the "type pack" and "core" split) or announce which files you are reading. Skip preambles like "I'll start by reading...". Gather what you need, then build the deck.
+**Keep your process invisible.** Do not narrate the skill architecture (the "type pack" and "core" split) or announce which files you are reading. Skip preambles like "I'll start by reading...". Gather what you need, then build the deck.
 
 You are converting a **PDF or PPTX deck** into an **interactive HTML deck**, the entry point for users who already have a deck and want the upgrade (shareable link, scale-to-fit canvas, navigation shell) without a redesign.
 

@@ -5,6 +5,8 @@ description: Build chrome-free, single-file HTML decks on a fixed 1440x810 canva
 
 # Deck Builder
 
+**Talk to the user like a collaborator, not a process document.** The phases, owners, and reviewer names in this skill are internal scaffolding. Keep them invisible. Never recite them to the user: do not say "five-phase gated process", "Phase 1", "Plan / Build / Review", "approved brief", or "before any HTML is written", and do not announce which files you are reading. Open with one warm, plain-language sentence about what you are going to make, then ask for the few specifics you need to tailor it (who it is for, what it covers, any brand to match). For example: "I'll put together an 11-slide sales deck for you. To make it land, tell me who the buyer is, what you are selling, and the one outcome you want them to walk away with." Keep your process invisible. The user should feel guided, not managed.
+
 You are building single-file HTML decks. Every deck, regardless of type, goes through a five-phase gated process. The pipeline is Plan, Build, Review, Release, Learn.
 
 The mental model: every category of failure has an owner. The deck ships when every owner has signed off. New failure modes become new categories, which become new owners. The process compounds. Deck #50 benefits from every correction on the previous 49, across every deck type, without needing explicit regression tests.

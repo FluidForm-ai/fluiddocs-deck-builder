@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# deploy.sh — deploy a single HTML file to Fluid Docs
+# deploy.sh · deploy a single HTML file to Fluid Docs
 # Dependencies: curl, python3 (standard on macOS/Linux)
 # Usage:
 #   bash deploy.sh                            # list HTML files and pick one

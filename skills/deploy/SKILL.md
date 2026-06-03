@@ -5,7 +5,7 @@ description: Deploy / publish a single HTML file (deck, page, doc) to FluidDocs 
 
 # Deploy
 
-Publish a single HTML file to FluidDocs hosting. `scripts/deploy.sh` is **self-contained** — it handles auth, upload, and project-mapping on its own. Your job is to run it correctly and open the result. Do **not** re-implement, inspect, or second-guess the script. Just run it.
+Publish a single HTML file to FluidDocs hosting. `scripts/deploy.sh` is **self-contained**. It handles auth, upload, and project-mapping on its own. Your job is to run it correctly and open the result. Do **not** re-implement, inspect, or second-guess the script. Just run it.
 
 ## What the script does (so you don't have to analyze it)
 
@@ -18,9 +18,9 @@ Publish a single HTML file to FluidDocs hosting. `scripts/deploy.sh` is **self-c
 
 ## Procedure
 
-1. **Pick the target file.** If the user names one, use it. Otherwise use the obvious HTML file in context (e.g. the deck you just built). If genuinely ambiguous, ask which file — one short question, then proceed.
+1. **Pick the target file.** If the user names one, use it. Otherwise use the obvious HTML file in context (e.g. the deck you just built). If genuinely ambiguous, ask which file, one short question, then proceed.
 
-2. **Always pass `--name "Friendly Title"`.** Without it the project name defaults to the raw filename slug, which is hard to scan in the dashboard. Derive a clean human title (e.g. `"Mushee — Seed Pitch"`).
+2. **Always pass `--name "Friendly Title"`.** Without it the project name defaults to the raw filename slug, which is hard to scan in the dashboard. Derive a clean human title (e.g. `"Mushee · Seed Pitch"`).
 
 3. **Run the script from the file's directory.** The script lives at `${CLAUDE_PLUGIN_ROOT}/scripts/deploy.sh` (or `scripts/deploy.sh` at the repo root). From the directory containing the HTML:
 
@@ -28,7 +28,7 @@ Publish a single HTML file to FluidDocs hosting. `scripts/deploy.sh` is **self-c
    bash "${CLAUDE_PLUGIN_ROOT}/scripts/deploy.sh" --name "Friendly Title"
    ```
 
-   Run it with network access enabled and a generous timeout (up to 600000 ms) — the auth poll can take a few minutes while the user signs in. The script opens the user's browser itself when auth is needed; tell the user to complete the sign-in there.
+   Run it with network access enabled and a generous timeout (up to 600000 ms). The auth poll can take a few minutes while the user signs in. The script opens the user's browser itself when auth is needed; tell the user to complete the sign-in there.
 
 4. **If the run can't do interactive sign-in** (sandboxed shell with no network, or the browser can't be driven), hand the command to the user to run in-session with the `!` prefix instead, so auth happens in their own browser:
 
@@ -36,7 +36,7 @@ Publish a single HTML file to FluidDocs hosting. `scripts/deploy.sh` is **self-c
    ! cd <deck-dir> && bash "<path>/scripts/deploy.sh" --name "Friendly Title"
    ```
 
-5. **On success, open the live URL in the browser.** The script prints but does not open the deployed URL — you do. Capture the URL after `✓ Deployed →` and open it:
+5. **On success, open the live URL in the browser.** The script prints but does not open the deployed URL. You do. Capture the URL after `✓ Deployed →` and open it:
 
    ```bash
    open "<deployed-url>"        # macOS
@@ -53,7 +53,7 @@ If the user wants to switch accounts or the token is broken, run `bash "${CLAUDE
 
 - Never deploy without `--name`.
 - Run from the file's own directory (the script is directory-scoped).
-- Preserve `./.fluid-docs.json` — it's what keeps re-deploys updating the same project.
+- Preserve `./.fluid-docs.json`. It's what keeps re-deploys updating the same project.
 - Deploying publishes the file to a public URL. The user asking to "deploy/publish" is the authorization; don't deploy a file they didn't ask for.
 
 ---

@@ -166,6 +166,8 @@ do_auth() {
 
 DO_LOGOUT=false
 FRIENDLY_NAME=""
+DO_PUBLIC=false
+PUBLISH_SLUG=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -177,15 +179,18 @@ while [[ $# -gt 0 ]]; do
       echo "  Project mapping is stored in ./.fluid-docs.json."
       echo ""
       echo "  Options:"
-      echo "    --host URL   Server base URL (default: https://fluiddocs.ai)"
-      echo "                 Can also be set via FLUIDDOCS_URL env var."
-      echo "    --name NAME  Friendly project name (default: filename without extension)"
-      echo "    --logout     Clear cached credentials"
-      echo "    --help       Show this message"
+      echo "    --host URL    Server base URL (default: https://fluiddocs.ai)"
+      echo "                  Can also be set via FLUIDDOCS_URL env var."
+      echo "    --name NAME   Friendly project name (default: filename without extension)"
+      echo "    --public      Set document visibility to public after deploy"
+      echo "    --slug SLUG   Publish the document under the given slug after deploy"
+      echo "    --logout      Clear cached credentials"
+      echo "    --help        Show this message"
       echo ""
       echo "  Examples:"
       echo "    bash deploy.sh --host http://localhost:8080"
       echo "    bash deploy.sh --name \"My Project\""
+      echo "    bash deploy.sh --public --slug my-doc"
       exit 0
       ;;
     --logout)
@@ -215,6 +220,22 @@ while [[ $# -gt 0 ]]; do
       ;;
     --name=*)
       FRIENDLY_NAME="${1#--name=}"
+      shift
+      ;;
+    --public)
+      DO_PUBLIC=true
+      shift
+      ;;
+    --slug)
+      if [[ -z "${2:-}" ]]; then
+        echo "Error: --slug requires a value" >&2
+        exit 1
+      fi
+      PUBLISH_SLUG="$2"
+      shift 2
+      ;;
+    --slug=*)
+      PUBLISH_SLUG="${1#--slug=}"
       shift
       ;;
     *)
@@ -317,9 +338,48 @@ fi
 # Save state
 json_upsert_state "$SELECTED_FILE" "$PROJECT_ID" "$DEPLOY_URL" > /dev/null
 
-echo ""
-echo "  ✓ Deployed → ${DEPLOY_URL}"
-echo ""
+FINAL_URL="$DEPLOY_URL"
 
-# Open the live page in the browser
-open_browser "$DEPLOY_URL"
+# Set visibility to public if requested
+if $DO_PUBLIC; then
+  VIS_RESP=$(curl -s -X POST \
+    "${BASE_URL}/api/v1/docs/projects/${PROJECT_ID}/set-visibility" \
+    -H "Authorization: Bearer ${TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{"visibility":"public"}')
+  VIS_ERROR=$(echo "$VIS_RESP" | json_get "error")
+  if [ -n "$VIS_ERROR" ]; then
+    echo ""
+    echo "  ✗ Could not set visibility to public: ${VIS_ERROR}" >&2
+  else
+    echo ""
+    echo "  ✓ Visibility → public"
+  fi
+fi
+
+# Publish under a slug if requested
+if [ -n "$PUBLISH_SLUG" ]; then
+  PUB_RESP=$(curl -s -X POST \
+    "${BASE_URL}/api/v1/docs/projects/${PROJECT_ID}/publish" \
+    -H "Authorization: Bearer ${TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "{\"slug\":\"${PUBLISH_SLUG}\"}")
+  PUB_ERROR=$(echo "$PUB_RESP" | json_get "error")
+  PUB_URL=$(echo "$PUB_RESP" | json_get "url")
+  if [ -n "$PUB_ERROR" ]; then
+    echo ""
+    echo "  ✗ Publish failed: ${PUB_ERROR}" >&2
+    echo "  (The file was deployed. Fix the slug and re-run to publish.)" >&2
+    echo ""
+    exit 1
+  fi
+  if [ -n "$PUB_URL" ]; then
+    FINAL_URL="$PUB_URL"
+    json_upsert_state "$SELECTED_FILE" "$PROJECT_ID" "$PUB_URL" > /dev/null
+  fi
+  echo "  ✓ Published → ${FINAL_URL}"
+fi
+
+echo ""
+echo "  ✓ Deployed → ${FINAL_URL}"
+echo ""

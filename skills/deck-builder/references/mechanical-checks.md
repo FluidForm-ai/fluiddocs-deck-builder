@@ -118,11 +118,16 @@ console.log('OK');
 
 Fail if any `<path>` with >=2 subpaths lacks `fill-rule="evenodd"`. Rule introduced after the Airbnb-Deck bélo shipped as a solid blob, three nested subpaths (inner heart, middle loop, outer shell) rendered as a filled mass with no thin-line cutouts under the default nonzero fill rule.
 
-### 7. File size in range
+### 7. File size (hard ceiling, advisory floor)
+
+File size is an output, not a target. Never add content, markup, or whitespace to move the byte count. Substance is enforced by the content-density targets in the type pack's content-spine and by section 8 (section count), not by bytes. A complete, concise deck that lands under the old 60K mark still passes.
 
 ```bash
 size=$(wc -c < "$DECK")
-if [ "$size" -lt 60000 ] || [ "$size" -gt 180000 ]; then echo "FAIL size=$size (expected 60000 to 180000)"; exit 1; fi
+# Hard ceiling only: over 180K means runaway markup or an oversized inline asset.
+if [ "$size" -gt 180000 ]; then echo "FAIL size=$size (over 180000 ceiling)"; exit 1; fi
+# Advisory floor: a very small file is a hint to recheck content-density, not a fail. Do NOT pad.
+if [ "$size" -lt 40000 ]; then echo "WARN size=$size (small: recheck spine content-density targets; do NOT pad bytes)"; fi
 ```
 
 ### 8. Section count matches brief

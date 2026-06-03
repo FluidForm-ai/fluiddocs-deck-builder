@@ -142,7 +142,7 @@ The spine must end with:
 
 These three rules are absolute across every deck type. The Layout Reviewer (mechanical-checks sections 11b, 11c) enforces them as automatic hard fails. Spines written without them get caught at the brief-approval gate.
 
-1. **No hidden-content filler.** Zero `display: none`, `visibility: hidden`, `opacity: 0`, or `height: 0` declarations outside the two base `.slide` rules (`{ display: none }` toggle or `{ opacity: 0 }` transition). If the deck is short of the 60K file-size floor, add **real visible content** across slides, do NOT add hidden blocks to pad bytes. This is an automatic HARD FAIL.
+1. **No hidden-content filler.** Zero `display: none`, `visibility: hidden`, `opacity: 0`, or `height: 0` declarations outside the two base `.slide` rules (`{ display: none }` toggle or `{ opacity: 0 }` transition). Never pad bytes to change the file size; file size is an output, not a target. If a slide is genuinely thin, add **real, useful content** to meet the content-density targets, do NOT add hidden blocks or filler to inflate bytes. This is an automatic HARD FAIL.
 
 2. **No inline `justify-content: center` on `<section class="slide">`.** Centering an 810px flex column causes content-taller-than-canvas to overflow symmetrically above the top padding, hiding behind the absolute-positioned brand-mark. If a slide needs centered content (cover, thanks, closing), use a dedicated CSS class (`.s-cover`, `.s-closing`), never inline.
 

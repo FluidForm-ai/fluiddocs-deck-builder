@@ -107,7 +107,7 @@ These are fully mechanical. Run every one. Fix anything that fails before Phase 
 - No forbidden-classname leaks (grep against the brief's declared list).
 - Every `document.getElementById(x)` or `querySelector(x)` target resolves to a DOM element that exists.
 - Every CDN `<img>` has an `onerror` handler.
-- File size 60 to 180 KB.
+- File size under the 180 KB ceiling. Size is an output, never padded to reach a floor; the content-density targets drive substance.
 - `<section class="slide">` count matches the brief's declared target.
 - All `font-size` values match the declared typographic scale.
 - Inline-edit module is present on every deck output (see `references/shell-pattern.md`).

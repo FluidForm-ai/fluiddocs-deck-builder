@@ -320,3 +320,6 @@ json_upsert_state "$SELECTED_FILE" "$PROJECT_ID" "$DEPLOY_URL" > /dev/null
 echo ""
 echo "  ✓ Deployed → ${DEPLOY_URL}"
 echo ""
+
+# Open the live page in the browser
+open_browser "$DEPLOY_URL"

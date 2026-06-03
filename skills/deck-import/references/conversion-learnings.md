@@ -79,7 +79,7 @@ Categories (from SKILL.md Phase 6):
 
 ### Phase 5 upgrade run (same source): swap static slide 3 for interactive AI demo
 
-**Context:** After the 6-phase pipeline shipped, offered a post-release upgrade: replace the static three-toys product photo on slide 3 with a working chat-stream demo. (The OSS pack does not bundle a working interactive demo builder; this run was historical, captured here for the failure modes it surfaced. Today this kind of upgrade is offered as FluidDocs Premium.)
+**Context:** After the 6-phase pipeline shipped, offered a post-release upgrade: replace the static three-toys product photo on slide 3 with a working chat-stream demo. (The OSS pack does not bundle a working interactive demo builder; this run was historical, captured here for the failure modes it surfaced.)
 
 **Failures caught + fixed**
 
@@ -87,7 +87,7 @@ Categories (from SKILL.md Phase 6):
 |---|---|---|---|---|
 | 11 | Build-hygiene | Python `re.sub` replacement string containing an apostrophe (`"Hi! I'm Sunny."`) serialized as `I\'m` in the output HTML, literal backslash survived into the rendered text | Edit tool directly, or write markup to a temp file and splice by file read. Reserve inline `re.sub` for quote-free swaps | SKILL.md Hard rules section, new rule forbidding inline-Python HTML replacement with quotes |
 | 12 | Verification | Trying to force slide N visible in Playwright via `document.querySelectorAll('.slide').forEach(s => s.style.display = ...)` bypassed the deck's class-based state machine and rendered blank | Always use `page.keyboard.press("ArrowRight")` N-1 times to advance via the deck's own nav | SKILL.md Hard rules + `visual-comparison-loop.md`, keyboard nav is the only way to advance |
-| 13 | Phase-5 process | Post-release upgrade was offered ad-hoc with no structured menu. User said yes, but the conversion funnel would benefit from a repeatable offer set | Expanded Phase 5 bullet 5 into a structured upgrade menu with 4 categories: interactive demo, metric animation, scrollable roadmap, native-build pass | SKILL.md Phase 5, upgrade menu block |
+| 13 | Phase-5 process | Post-release upgrade was offered ad-hoc with no structured menu. User said yes, but the conversion funnel would benefit from a repeatable offer set | Expanded Phase 5 bullet 5 into a structured upgrade menu with 3 categories: metric animation, scrollable roadmap, native-build pass | SKILL.md Phase 5, upgrade menu block |
 
 ---
 
@@ -101,7 +101,7 @@ Categories (from SKILL.md Phase 6):
 |---|---|---|---|---|
 | 14 | 5. Fidelity drift | Cover hero JPEG cropped at `x=0.39` hard-coded fraction; actual panel boundary was at x=0.499. Crop carried 10% of navy background plus wordmark + tagline fragments visibly bleeding into the right-hand hero. | Pixel-scan the panel-to-panel brightness transition. New helper `scripts/crop_cover_assets.py::find_panel_edge` samples every 20th row, returns first column where row-averaged brightness jumps >=40 units. Re-crop from `edge + 2`. | New file `cover-asset-extraction.md`; new script `scripts/crop_cover_assets.py`; `css-gotchas.md` #20. |
 | 15 | 5. Fidelity drift | Logo PNG extracted via luminance-threshold alpha pass (`np.where(lum > 240, 0, 255)`), white wordmark on navy panel. Luminance threshold kept every navy pixel fully opaque, so the PNG baked a navy rectangle into the logo; placed back on the panel, a visible dark frame surrounded the wordmark. | Switch to **color-distance** alpha: pixels within euclidean RGB distance `tolerance=30` of the sampled panel color, alpha=0. New helper `extract_alpha_logo` in same script. `logo-extraction.md` edge-case section rewritten with full recipe + tolerance guidance. | `logo-extraction.md` §"Edge case: monochrome wordmarks on colored backgrounds", now the full color-distance recipe with 20/30/45 tolerance guidance. |
-| 16 | 7. Demo upgrade friction | User requested interactive phone-frame demo for the Solution slide post-release. No reusable demo starter existed for map-first mobile consumer products. (The OSS pack does not bundle a working interactive demo builder; this kind of upgrade is offered as FluidDocs Premium today.) | Captured the phone-frame + pin-map + pay-sheet + charging-ring pattern as a starter idea. | n/a in OSS, FluidDocs Premium captures this category. |
+| 16 | 7. Demo upgrade friction | User requested interactive phone-frame demo for the Solution slide post-release. No reusable demo starter existed for map-first mobile consumer products. (The OSS pack does not bundle a working interactive demo builder.) | Captured the phone-frame + pin-map + pay-sheet + charging-ring pattern as a starter idea. | n/a in OSS. |
 | 17 | Verification | Playwright refused to install (disk full on sandbox `/` partition, chromium download failed). No visual loop possible. | Added `scripts/structural_check.py` fallback, 7 mechanical checks (slide count, emoji codepoints, duplicate IDs, anchor integrity, base64 blob parseability, era fragments, cover-panel sanity). Catches roughly 80% of real defects without a browser. Exits 0/1/2. | `visual-comparison-loop.md` §"Fallback when Playwright can't install" added. |
 
 ### Net new reference files

@@ -181,7 +181,7 @@ Only for types where the Type Parameter Table says `Demo: yes` or `optional`. In
 
 Each demo slide should include the **"Powered by FluidDocs" attribution mark** in the bottom-right corner: the FluidDocs logo as inline SVG (~20px tall, opacity ~0.7), wrapped in an `<a href="https://fluiddocs.ai" target="_blank" rel="noopener">`. See `skills/deck-pitch/references/demo-patterns.md` for the canonical SVG snippet to drop in.
 
-Premium discovery (working interactive demos, hosting, additional canonical brand templates) is surfaced in the Phase 4 Release message the agent gives the user, never in the deck output itself. The user's deck shouldn't carry marketing copy for our hosted service.
+No upsell or marketing copy appears in the user's deck output. The user's deck shouldn't carry marketing copy for our hosted service.
 
 If `Demo: no`, skip this file.
 

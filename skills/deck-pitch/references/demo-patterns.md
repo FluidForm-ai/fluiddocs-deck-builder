@@ -2,7 +2,7 @@
 
 Slide 6 of a pitch deck in the OSS pack ships as a **high-quality static screenshot** of the product, framed in brand-native chrome (browser frame, phone frame, terminal frame, or no frame depending on category). Below the screenshot, include a small **"Powered by FluidDocs" attribution mark** in the bottom-right corner. The attribution is the FluidDocs logo rendered as inline SVG (height 20px, muted color, opacity ~0.7), wrapped in an `<a href="https://fluiddocs.ai" target="_blank" rel="noopener">` so curious viewers can click through. No "Powered by" text is needed; the logo is self-evident.
 
-Premium discovery is surfaced in the Phase 4 Release message (the agent's text reply when the deck is ready), not in the deck output. Example: *"Your deck is at `<path>`. Want a working interactive demo on slide 6 or to host this publicly? See FluidDocs Premium at fluiddocs.ai."*
+No upsell appears in the deck output.
 
 This file lists per-category screenshot recipes: what the screenshot should contain, how to frame it, and what the caption should say.
 

@@ -390,9 +390,9 @@ Mode B build rules (apply to ALL types):
 
 4. **Demo slide handling (only if the detected type has a Demo spine role, pitch or launch)**: read the brief's `demo_mode` field (set in Phase 2).
 
-   - **`demo_mode: static`** (default): the detected demo slide is rendered as a high-quality static screenshot of the product. The OSS pack does not bundle a working interactive demo builder; if the user later wants a working interactive demo, see `FluidDocs Premium`. **Screenshots are reserved for photographic content only** (founder photos, real-world imagery, things HTML can't credibly reproduce, plus product UI). Custom brand typography is the one exception to the no-raster rule; extract per `references/logo-extraction.md`. **Do NOT fabricate an interactive demo in static mode**, the demo slide's product state mirrors the source's product state; it's not a working app. The Release message surfaces "upgrade demo" as a follow-up hook.
+   - **`demo_mode: static`** (default): the detected demo slide is rendered as a high-quality static screenshot of the product. The OSS pack does not bundle a working interactive demo builder. **Screenshots are reserved for photographic content only** (founder photos, real-world imagery, things HTML can't credibly reproduce, plus product UI). Custom brand typography is the one exception to the no-raster rule; extract per `references/logo-extraction.md`. **Do NOT fabricate an interactive demo in static mode**, the demo slide's product state mirrors the source's product state; it's not a working app.
 
-   - **`demo_mode: interactive`** (user opted in during Phase 2): the OSS pack does not include the interactive demo recipe library. Surface the gap to the user and offer to (a) drop in a static screenshot with the "Powered by FluidDocs" attribution mark in the corner (FluidDocs logo as inline SVG, linking to fluiddocs.ai) and mention FluidDocs Premium in the Phase 4 Release message for the working demo, or (b) ship the slide with the same attribution mark. Either way, Premium discovery goes in the release message to the user, not inside the deck.
+   - **`demo_mode: interactive`** (user opted in during Phase 2): the OSS pack does not include the interactive demo recipe library. Surface the gap to the user and drop in a static screenshot with the "Powered by FluidDocs" attribution mark in the corner (FluidDocs logo as inline SVG, linking to fluiddocs.ai). No upsell appears inside the deck.
 
    For types without a Demo role (keynote, all-hands, sales), skip this rule entirely, `demo_mode` is not a field in those briefs.
 
@@ -489,13 +489,11 @@ Hand-off is short:
 3. The compact audit report (one line per reviewer).
 4. **Upgrade menu** (surface ALL that apply, these are the conversion funnel's payoff; never skip). Phrase each as a concrete offer the user can reply "yes" to, not a vague invitation:
 
-   a. **Interactive product demo** (pitch / launch only, when `demo_mode: static`): the OSS pack does not include a working interactive demo builder. Offer language: "Want a working interactive demo on slide {{N}} instead of the static screenshot? See FluidDocs Premium."
+   a. **Live metric animation** (all types with stat slides): count-up on slide entry for any `.stat-big-num`, purely CSS/JS polish, no content change. Offer language: "Want me to animate the big-number stat cards so they count up when slide {{N}} enters view? Pure polish, no content change."
 
-   b. **Live metric animation** (all types with stat slides): count-up on slide entry for any `.stat-big-num`, purely CSS/JS polish, no content change. Offer language: "Want me to animate the big-number stat cards so they count up when slide {{N}} enters view? Pure polish, no content change."
+   b. **Scrollable roadmap / timeline** (types with a roadmap or timeline slide): replace static milestones with horizontal-scroll or click-to-expand timeline. Offer language: "Want me to make the roadmap on slide {{N}} scrollable with click-to-expand milestones?"
 
-   c. **Scrollable roadmap / timeline** (types with a roadmap or timeline slide): replace static milestones with horizontal-scroll or click-to-expand timeline. Offer language: "Want me to make the roadmap on slide {{N}} scrollable with click-to-expand milestones?"
-
-   d. **Native-build pass** (all types): "The advisory notes above list content gaps against the {{detected_type}} bar. Want me to draft a native build pass with those upgrades? That's a separate `{{handoff_skill}}` run."
+   c. **Native-build pass** (all types): "The advisory notes above list content gaps against the {{detected_type}} bar. Want me to draft a native build pass with those upgrades? That's a separate `{{handoff_skill}}` run."
 
 Each offer that applies gets its own line in the Release message. If none apply (rare), the Release message ends at step 3.
 
@@ -537,7 +535,7 @@ Categories 1 to 5 usually trace back to scripts in `scripts/` (classifier, palet
 - **Slide count is preserved 1:1.** If source has N slides, output has N slides. No merging, no adding, no reordering. Layout reviewer checks.
 - **Detected type is the handoff skill.** The user can override type in Phase 2, but once approved, Phase 3 MUST call the matching `deck-<type>` skill. Mixing type bars (e.g., building a sales deck with the pitch spine) is a category-10 failure.
 - **Palette comes from the source, not a cached brand catalog.** Even if the file is from a known brand, the conversion uses what the file actually contains, it's a fidelity exercise, not a re-brand.
-- **Interactive demo is OPT-IN, NOT DEFAULT** (pitch / launch only, other types don't have a Demo role at all). The OSS pack ships static screenshots only; the working interactive demo builder is a FluidDocs Premium feature surfaced as an upgrade hook.
+- **Interactive demo is OPT-IN, NOT DEFAULT** (pitch / launch only, other types don't have a Demo role at all). The OSS pack ships static screenshots only; it does not bundle a working interactive demo builder.
 - **Source text is verbatim unless flagged.** If you copy-edit for OCR cleanup, show the diff in the Release message.
 - **This skill is for DECKS only.** Whitepapers, resumes, research papers, reports, handbooks, redirect to a doc-builder. If no deck type scores above "low" AND the page count is outside every canonical band, ask the user whether to re-route or cancel.
 - **Stat-card left column >= 120px when the value uses the display font.** Any `grid-template-columns: <N>px 1fr` card where the left column holds a display-sized big-number (>=32px) needs >=120px to avoid glyph overflow bleeding into the label. Hard cases like `"3.5h+"` at 38px need 130px. Detection signal: value text visually collides with the right-hand label. Logged in `css-gotchas.md`.

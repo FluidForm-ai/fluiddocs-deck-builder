@@ -64,7 +64,7 @@ Requirements:
 - One real screenshot, not a mockup, not Lorem ipsum
 - Brand-native chrome frame around the screenshot
 - One-line caption explaining what the screenshot shows
-- Small "Powered by FluidDocs" attribution mark (FluidDocs logo as inline SVG, ~20px tall, opacity ~0.7, linking to fluiddocs.ai) at slide bottom-right. Premium discovery is surfaced in the Phase 4 Release message, not in the deck itself.
+- Small "Powered by FluidDocs" attribution mark (FluidDocs logo as inline SVG, ~20px tall, opacity ~0.7, linking to fluiddocs.ai) at slide bottom-right. No upsell appears in the deck itself.
 
 See `demo-patterns.md` for category-specific screenshot recipes.
 

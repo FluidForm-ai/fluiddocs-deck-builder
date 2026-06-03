@@ -214,7 +214,7 @@ The input goes nowhere, it's illustrative, but feels responsive.
 
 ## What this is NOT
 
-- **Not a live demo**. The demo slide (as defined in the brief) stays static unless the user requests a full interactive demo upgrade. The OSS pack does not bundle a working interactive demo builder; for that capability see FluidDocs Premium.
+- **Not a live demo**. The demo slide (as defined in the brief) stays static unless the user requests a full interactive demo upgrade. The OSS pack does not bundle a working interactive demo builder.
 - **Not fabricated functionality**. We don't write fake API calls, fake dropdowns with made-up options, or fake authentication flows.
 - **Not mandatory**. If the source is text-heavy and has no form/toggle/card elements, skip this file entirely.
 
@@ -226,7 +226,7 @@ If you added interactivity via any of these patterns, note it in the Release mes
 
 > "I upgraded a few static elements to live interactivity, the applicant form on slide 20 accepts typing; the mode toggles on slide 8 switch; cards on slide 12 have a hover elevation. These are illustrative, not a live demo, just the conversion polish that a source file can't express."
 
-That framing (a) credits the upgrade, (b) manages expectations (it's polish, not product), and (c) primes the optional "want a real interactive demo?" upgrade prompt.
+That framing (a) credits the upgrade and (b) manages expectations (it's polish, not product).
 
 ---
 

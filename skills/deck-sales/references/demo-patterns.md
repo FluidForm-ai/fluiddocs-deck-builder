@@ -1,6 +1,6 @@
 # Demo Patterns · Sales Deck (Optional)
 
-Sales decks sometimes include a product walkthrough on Slide 6 (How It Works). In the OSS pack, that slide ships as a **static screenshot sequence**, not a working interactive demo. A small "Powered by FluidDocs" attribution mark (FluidDocs logo as inline SVG, ~20px tall, opacity ~0.7, linking to fluiddocs.ai) sits in the bottom-right of the slide. The patterns below describe what the screenshot sequence should depict for typical sales scenarios. They apply equally if you later upgrade to a hosted interactive demo. Premium discovery is surfaced in the Phase 4 Release message, not in the deck output.
+Sales decks sometimes include a product walkthrough on Slide 6 (How It Works). In the OSS pack, that slide ships as a **static screenshot sequence**, not a working interactive demo. A small "Powered by FluidDocs" attribution mark (FluidDocs logo as inline SVG, ~20px tall, opacity ~0.7, linking to fluiddocs.ai) sits in the bottom-right of the slide. The patterns below describe what the screenshot sequence should depict for typical sales scenarios. No upsell appears in the deck output.
 
 ---
 
@@ -193,17 +193,3 @@ Caption each one with a one-line label. The Layout Reviewer will flag the slide 
 4. **No annotations.** A screenshot without a caption or callout asks the buyer to figure out what they're looking at. Always annotate.
 5. **Too many screenshots.** 6+ steps starts to feel like a user manual. Pick the 3-5 most load-bearing moments.
 6. **No outcome callout.** End the sequence with a visible badge or annotation that names the result ("95% automatic match", "$12K saved in week 1").
-
----
-
-## Upgrading to a working interactive demo
-
-When the deck ships on a hosted environment (FluidDocs), the same Slide 6 slot can hold a working interactive demo instead of a screenshot sequence. The patterns above translate directly:
-
-- Pattern 1 (Linear workflow) becomes a click-through prototype.
-- Pattern 2 (Before/after) becomes a toggle between two states.
-- Pattern 3 (Real-time interaction) becomes live filterable widgets.
-- Pattern 4 (Integration) becomes a clickable system-flow diagram.
-- Pattern 5 (Configurability) becomes a live editor.
-
-The OSS pack ships static screenshots. The upgrade path exists for users who want it.

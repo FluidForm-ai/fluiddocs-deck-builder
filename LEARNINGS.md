@@ -80,6 +80,15 @@ What changed: Pattern 6 attribution shift. In the internal stack, every slide ca
 
 ---
 
+## Future premium features (planned, not in the OSS pack)
+
+These were removed from the OSS pack's user-facing copy because they are not built here. They are recorded as planned premium features so the intent is not lost. They are never advertised to deck users; discovery of paid features happens in the FluidDocs dashboard.
+
+- **Working interactive demo.** The demo slot (pitch slide 6, launch slide 5) ships as a static screenshot in OSS. A real working interactive demo embedded in the slide is a planned hosted feature.
+- **The other 8 canonical brand templates.** OSS ships 4 pitch brands (Airbnb, Stripe, Anthropic, Sequoia Classic). The other 8 (Uber, Dropbox, OpenAI, Perplexity, ElevenLabs, Databricks, Canva, LinkedIn) are a planned premium addition.
+
+---
+
 ## How to add an entry
 
 When you ship a deck and a reviewer catches a regression, or a user reports an issue post-delivery, add a section here. Format:

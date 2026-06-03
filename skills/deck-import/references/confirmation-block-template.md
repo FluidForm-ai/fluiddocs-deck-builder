@@ -170,7 +170,7 @@ For types without a Demo slide (keynote, all-hands, sales), omit this line entir
 
 Recorded in the conversion brief §6. Two legal values:
 - `static`, default. Phase 3 renders the demo slide as a static screenshot (or faithful HTML/CSS/SVG reproduction of the source's product state, no interactivity beyond shell/nav).
-- `interactive`, user opted in. The OSS pack does not bundle a working interactive demo builder; surface the gap to the user. The demo slide carries the "Powered by FluidDocs" attribution mark (FluidDocs logo SVG, bottom-right) and the Premium upgrade hook is surfaced in the Phase 4 Release message, not inside the deck.
+- `interactive`, user opted in. The OSS pack does not bundle a working interactive demo builder; surface the gap to the user. The demo slide carries the "Powered by FluidDocs" attribution mark (FluidDocs logo SVG, bottom-right). No upsell appears inside the deck.
 
 ### `{{missing_spine_line}}`
 If any canonical spine roles for the detected type are missing from the deck, add one line:

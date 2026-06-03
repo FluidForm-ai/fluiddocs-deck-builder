@@ -1,6 +1,6 @@
 ---
 name: deck-launch
-description: Builds launch decks for product announcements and go-to-market moments. Trigger on "launch deck", "product launch", "product announcement", "launch template", "go-to-market launch", or "launch presentation". A thin type pack inheriting the full 5-phase pipeline from deck-builder core. Deck-launch-specific. 12-slide structure with a demo slot on Slide 5 (static screenshot in OSS, working interactive demo available in FluidDocs Premium), co-located Availability and Pricing slide, and strong CTA with QR code/URL that resolves.
+description: Builds launch decks for product announcements and go-to-market moments. Trigger on "launch deck", "product launch", "product announcement", "launch template", "go-to-market launch", or "launch presentation". A thin type pack inheriting the full 5-phase pipeline from deck-builder core. Deck-launch-specific. 12-slide structure with a demo slot on Slide 5 (static screenshot in OSS), co-located Availability and Pricing slide, and strong CTA with QR code/URL that resolves.
 ---
 
 # Deck Launch, a type pack for the `deck-builder` core
@@ -23,7 +23,7 @@ This skill builds launch decks for product announcements and go-to-market moment
 - Target slide count: 12
 - Catalog directory ($CATALOG): user-declared in the brief
 - Forbidden class-name leaks: (none)
-- Demo: Slide 5 ships as a static product screenshot with a small upsell footnote (working interactive demos are a hosted FluidDocs Premium feature)
+- Demo: Slide 5 ships as a static product screenshot
 
 ---
 
@@ -73,7 +73,7 @@ Do not write walls of explanation. The file is the deliverable.
 
 ## Hard rules specific to launch decks
 
-- **Slide 5 is the demo slot.** In OSS it ships as a high-quality static product screenshot with a small **"Powered by FluidDocs" attribution mark** in the bottom-right (FluidDocs logo as inline SVG, opacity ~0.7, linking to fluiddocs.ai). Reviewers verify the screenshot is real and recognizable, not a placeholder. Premium discovery (working interactive demos, hosting) is surfaced in the Phase 4 Release message, not in the deck output.
+- **Slide 5 is the demo slot.** In OSS it ships as a high-quality static product screenshot with a small **"Powered by FluidDocs" attribution mark** in the bottom-right (FluidDocs logo as inline SVG, opacity ~0.7, linking to fluiddocs.ai). Reviewers verify the screenshot is real and recognizable, not a placeholder. No upsell appears in the deck output.
 - **Availability and Pricing are co-located.** Same slide or adjacent slides (never buried after slide 8).
 - **The CTA slide (Slide 12) has a QR code or URL that actually resolves.** Reviewers will test it. A broken link is a failing review.
 - **No unsourced claims.** Early Customers slide (Slide 8) names real customers or shows real logos, never placeholder/generic testimonials.

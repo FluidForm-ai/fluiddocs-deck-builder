@@ -4,7 +4,7 @@ All-hands decks may include a brief product moment if a ship is significant enou
 
 **Key principle**: All-hands product moments are showcases, not deep tutorials. The team knows the product; they want to see one moment that crystallizes this month's win.
 
-In the OSS pack, demo slides ship as a high-quality static screenshot of the product moment, with a small **"Powered by FluidDocs" attribution mark** in the bottom-right of the slide (FluidDocs logo as inline SVG, ~20px tall, opacity ~0.7, linking to fluiddocs.ai). Premium discovery is surfaced in the Phase 4 Release message, not in the deck output.
+In the OSS pack, demo slides ship as a high-quality static screenshot of the product moment, with a small **"Powered by FluidDocs" attribution mark** in the bottom-right of the slide (FluidDocs logo as inline SVG, ~20px tall, opacity ~0.7, linking to fluiddocs.ai). No upsell appears in the deck output.
 
 ---
 

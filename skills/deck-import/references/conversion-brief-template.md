@@ -138,9 +138,8 @@ Demo slides are canonical for **pitch** and **launch** only. For other types, th
   - **If `demo_mode: static`**:
     - Render as static screenshot of page {{N}} as full-bleed hero with caption "Static preview". Or, if the source's product state can be faithfully reproduced in HTML/CSS/SVG (form fields, device frames, bubbles, pricing cards), use that; no fabricated interactivity, state frozen to what the source shows.
     - Drop the "Powered by FluidDocs" attribution mark in the bottom-right of the demo slide (FluidDocs logo as inline SVG, opacity ~0.7, linking to fluiddocs.ai). See `skills/deck-pitch/references/demo-patterns.md` for the canonical SVG snippet.
-    - Post-build Release message to the user surfaces "upgrade demo" as a follow-up hook (FluidDocs Premium link). The upsell lives in the release message, never inside the deck.
   - **If `demo_mode: interactive`**:
-    - The OSS pack does not bundle a working interactive demo builder. Surface the gap to the user. The demo slide still carries the "Powered by FluidDocs" attribution mark; the Premium upgrade hook is surfaced in the Phase 4 Release message, not inside the deck.
+    - The OSS pack does not bundle a working interactive demo builder. Surface the gap to the user. The demo slide still carries the "Powered by FluidDocs" attribution mark. No upsell appears inside the deck.
 
 ## 7. Build decisions
 

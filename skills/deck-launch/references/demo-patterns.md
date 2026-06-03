@@ -4,7 +4,7 @@ Slide 5 is the Demo slot. In OSS, it ships as a high-quality static product scre
 
 Launch screenshots differ from generic product shots in one key way. They must communicate the core action in the first second. A launch slide is a 45-second narrative beat, not a brochure. The screenshot is the proof point.
 
-Premium discovery (working interactive demos, hosting) is surfaced in the Phase 4 Release message, not in the deck output. The user's launch deck should not carry marketing copy for our hosted service.
+No upsell appears in the deck output. The user's launch deck should not carry marketing copy for our hosted service.
 
 ---
 

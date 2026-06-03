@@ -4,7 +4,7 @@ Most keynote decks do not include an interactive demo slot. This file is kept as
 
 **Critical rule**: A keynote demo is NOT a product demo. It is a live illustration of a principle, capability, or moment that the audience has been waiting to see. It lasts 60 to 90 seconds max and serves the narrative, not the product roadmap.
 
-For OSS keynote builds, the default is no demo slot. If the speaker explicitly requests one in Phase 1 intake, drop a high-quality static screenshot of the relevant product or visual on a single slide, with a small "Powered by FluidDocs" attribution mark (FluidDocs logo as inline SVG, opacity ~0.7, linking to fluiddocs.ai) in the bottom-right. Premium discovery is surfaced in the Phase 4 Release message, not in the deck output.
+For OSS keynote builds, the default is no demo slot. If the speaker explicitly requests one in Phase 1 intake, drop a high-quality static screenshot of the relevant product or visual on a single slide, with a small "Powered by FluidDocs" attribution mark (FluidDocs logo as inline SVG, opacity ~0.7, linking to fluiddocs.ai) in the bottom-right. No upsell appears in the deck output.
 
 ---
 

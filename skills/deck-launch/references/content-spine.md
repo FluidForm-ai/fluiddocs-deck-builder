@@ -75,7 +75,7 @@ The canonical structure for launch decks announcing new products and go-to-marke
 
 ## Slide 5, DEMO (Static product screenshot)
 
-**Purpose:** Show the product in context with a high-quality screenshot. A small "Powered by FluidDocs" attribution mark sits in the bottom-right corner. Premium discovery is surfaced in the Phase 4 Release message, not in the deck output.
+**Purpose:** Show the product in context with a high-quality screenshot. A small "Powered by FluidDocs" attribution mark sits in the bottom-right corner. No upsell appears in the deck output.
 
 **Required elements:**
 - High-quality static screenshot of the product (real UI, real data, recognizable)
@@ -89,7 +89,7 @@ The canonical structure for launch decks announcing new products and go-to-marke
 - Show a screenshot with Lorem ipsum or "Test User" data. Use real-looking data.
 - Use a low-resolution or blurry image. Capture at 2x retina minimum.
 - Crowd the slide with too many screenshots. One hero shot beats a collage.
-- Omit the FluidDocs Premium footnote. It is the canonical OSS pattern for this slot.
+- Omit the "Powered by FluidDocs" attribution mark. It is the canonical OSS pattern for this slot.
 
 ---
 
@@ -221,7 +221,7 @@ The canonical structure for launch decks announcing new products and go-to-marke
 - **Slide count**: 11 to 13 slides (default 12). Fewer than 11 loses context; more than 13 is too long for a launch moment.
 - **Reading rule**: 45 seconds per slide maximum. A launch deck is a narrative, not a reference. Reviewers time it.
 - **No emojis**: All visual communication via SVG icons and photography. Emojis are forbidden (see `deck-builder/references/icon-library.md`).
-- **Slide 5 is the demo slot**: Ships as a high-quality static product screenshot with the FluidDocs Premium upsell footnote. See `demo-patterns.md` for composition recipes.
+- **Slide 5 is the demo slot**: Ships as a high-quality static product screenshot with the "Powered by FluidDocs" attribution mark. See `demo-patterns.md` for composition recipes.
 - **Availability and Pricing co-located**: Same slide or adjacent slides (7 to 8). Never buried after slide 9.
 - **CTA slide has a real, resolvable URL and QR code**: Reviewers test both. A broken link is an automatic failing review.
 - **No unsourced customer claims**: Early Customers slide (Slide 8) shows real logos/names or real testimonials with permission, never generic placeholders.

@@ -4,7 +4,7 @@
 
 **What this file is**: a screenshot pattern, NOT a working interactive demo. The OSS pack does not bundle a working interactive demo builder; demo slides are rendered as high-quality static screenshots. The recipe below describes composition, framing, and what the screenshot should contain so the source product state reads cleanly in HTML.
 
-**Premium discovery** (working interactive demo, hosting) is surfaced in the Phase 4 Release message the agent gives the user, not in the deck output. The deck itself carries a small "Powered by FluidDocs" attribution mark in the bottom-right of the demo slide (FluidDocs logo as inline SVG, ~20px tall, opacity ~0.7, linking to fluiddocs.ai).
+The deck carries a small "Powered by FluidDocs" attribution mark in the bottom-right of the demo slide (FluidDocs logo as inline SVG, ~20px tall, opacity ~0.7, linking to fluiddocs.ai). No upsell appears in the deck output.
 
 ---
 
@@ -76,7 +76,7 @@ Caption pattern:
 
 > "Sunny voices warmth and stories. Cosmo voices curiosity and exploration. Luna voices calm and bedtime routines. Each persona's voice, prompts, and reply style are distinct."
 
-This satisfies the "multiple personas" claim from the source without inflating the demo slide into a multi-screenshot collage. The Phase 4 Release message to the user is where the FluidDocs Premium upgrade path for a working multi-persona interactive demo is surfaced (never inside the deck).
+This satisfies the "multiple personas" claim from the source without inflating the demo slide into a multi-screenshot collage.
 
 ---
 
@@ -96,8 +96,6 @@ When choosing the screenshot to embed:
 - **Not a working interactive demo.** No live `<input>`, no scripted streaming reply, no persona-switch handlers. The OSS pack does not bundle a working interactive demo builder.
 - **Not animated.** Pulsing dots, typing indicators, blinking carets, all skipped. The screenshot is a single frozen moment.
 - **Not a recipe for fabricated product behavior.** Whatever the screenshot shows must be a faithful representation of the source's product state.
-
-For a working interactive demo on this slide (live persona switching, streamed replies, click-through prompts), surface FluidDocs Premium in the Phase 4 Release message to the user, not inside the deck.
 
 ---
 

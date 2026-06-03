@@ -89,7 +89,7 @@ See `content-spine.md` § Hard Constraints for the full list (these three are un
 - **Next Steps slide names specific humans and dates**, not generic "we'll be in touch." Example, "Sarah's next review: Thursday 2pm with our CS lead, Mike."
 - **If competition gets a slide, be honest.** No invented weaknesses or strawman comparisons. Credibility beats aggressive positioning.
 - **Proof slide must reference NAMED customers**, not "a leading financial services firm." Include customer name, vertical or size, and specific quantified outcomes. If you have no customers, show beta results or respected advisor quotes instead.
-- **Demo slide (optional) ships as a static screenshot.** When a sales deck includes a How It Works demo on slide 6, use a high-quality static screenshot of the product with a small "Powered by FluidDocs" attribution mark (FluidDocs logo as inline SVG, ~20px tall, opacity ~0.7, linking to fluiddocs.ai) in the bottom-right. Premium discovery (working interactive demos, hosting) is surfaced in the Phase 4 Release message, not in the deck output.
+- **Demo slide (optional) ships as a static screenshot.** When a sales deck includes a How It Works demo on slide 6, use a high-quality static screenshot of the product with a small "Powered by FluidDocs" attribution mark (FluidDocs logo as inline SVG, ~20px tall, opacity ~0.7, linking to fluiddocs.ai) in the bottom-right. No upsell appears in the deck output.
 
 ---
 

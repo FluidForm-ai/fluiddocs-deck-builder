@@ -170,6 +170,49 @@ The skill walks the brief through intake, builds, runs three reviewers (Brand, C
 
 ---
 
+## Deploy your deck
+
+Once you have a generated `.html` file, `scripts/deploy.sh` uploads it to [fluiddocs.ai](https://fluiddocs.ai) and returns a public, shareable URL. Auth happens once in your browser; the token is cached at `~/.config/fluiddocs/auth.json` and reused on subsequent deploys.
+
+**Always pass `--name "Your Friendly Name"`.** Without it, the project shows up in your FluidDocs dashboard as the raw filename slug (e.g. `mushee-seed-pitch`), which is hard to scan later. With it, you get a real title (e.g. `Mushee · Seed Pitch`).
+
+```bash
+# From the directory containing your deck HTML
+cd path/to/your/deck
+bash /path/to/fluiddocs-deck-builder/scripts/deploy.sh --name "Mushee · Seed Pitch"
+```
+
+The script:
+
+- Finds all `.html` files in the current directory (top-level only) and prompts you to pick one if there's more than one
+- Opens your browser to sign in to FluidDocs the first time (5-minute window)
+- Uploads the file under the friendly name you passed via `--name`, prints the deploy URL, and writes a `.fluid-docs.json` state file mapping the local filename to its project ID so subsequent deploys overwrite the same project instead of creating a new one
+- Opens the deployed URL in your default browser at the end so you can verify the live deck immediately (pass `--no-open` to suppress)
+
+Useful flags:
+
+```bash
+bash scripts/deploy.sh --name "My Deck"               # friendly project name (always use this)
+bash scripts/deploy.sh --no-open                      # skip opening the deploy URL after upload
+bash scripts/deploy.sh --host http://localhost:8080   # deploy to a local FluidDocs server
+bash scripts/deploy.sh --logout                       # clear cached credentials
+bash scripts/deploy.sh --help                         # full usage
+```
+
+The browser opens twice in the typical flow: once for the first-time sign-in URL, and once for the deployed deck URL at the end. Both are handled by the same cross-platform helper (`open` on macOS, `xdg-open` on Linux, `explorer.exe` on Windows). If your environment can't auto-open, the URL is printed to stdout so you can paste it yourself.
+
+You can also set the server via env var: `FLUIDDOCS_URL=https://fluiddocs.ai bash scripts/deploy.sh --name "My Deck"`.
+
+For a one-off deploy of a deck that lives alongside others (e.g. `examples/built-decks/`), stage it in a clean directory first so the script has exactly one HTML to pick:
+
+```bash
+mkdir -p /tmp/my-deploy
+cp examples/built-decks/my-deck.html /tmp/my-deploy/
+cd /tmp/my-deploy && bash /path/to/scripts/deploy.sh --name "My Deck"
+```
+
+---
+
 ## What's in the pack
 
 Five type-correct deck builders, each with the right slide count and content spine for the job:

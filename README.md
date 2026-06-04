@@ -2,6 +2,8 @@
 
 **Describe a deck and get one built. Or drop in an old PDF or PPTX to rebuild it. Either way: a polished, interactive HTML deck.**
 
+![A one-line brief building an Airbnb-style pitch deck in a coding agent](docs/gifs/pitch-airbnb.gif)
+
 An open-source deck builder for coding agents. Five type-correct deck spines (pitch, sales, launch, keynote, all-hands) build from a one-line brief, and `deck-import` rebuilds an existing PDF or PPTX. Four brand-mirror pitch templates, inline editing, and a multi-reviewer quality pipeline. Single-file HTML output, zero dependencies in the deck itself.
 
 "Interactive" means each deck is one self-contained HTML file you navigate with arrow keys and edit in place: press `E`, click any element, type your change, then `Ctrl`/`Cmd`+`S` to download your edited copy. No server, no build step, no account.
@@ -257,12 +259,17 @@ Three reviewers (Brand, Copy, Layout) sign off on every deck before release. Whe
 
 ## Demo GIFs
 
-> TODO. Recording in progress. Placeholders below mark where each GIF will live.
+**Import a static PDF, get a navigable, editable HTML deck.** Before, then after.
 
-- `docs/gifs/pitch-airbnb.gif` · build the Airbnb-template pitch deck end to end (Phase 1 intake, 3-preview style pick, full build, inline edit).
-- `docs/gifs/pdf-import.gif` · drop a PDF, watch it become an interactive HTML deck with screenshots preserved.
-- `docs/gifs/pptx-import.gif` · same flow for a PPTX, with the editable text path intact.
-- `docs/gifs/inline-edit.gif` · `E` key toggles edit mode, click any text, type, Ctrl+S to save.
+![A static PDF deck rebuilt as a navigable, editable HTML deck](docs/gifs/pdf-import.gif)
+
+**Same for PPTX.**
+
+![A static PPTX deck rebuilt as a navigable, editable HTML deck](docs/gifs/pptx-import.gif)
+
+**Edit any deck inline.** Press `E`, click any element, type, then `Ctrl`/`Cmd`+`S` to download your copy.
+
+![Editing a deck inline by pressing E, clicking, and typing](docs/gifs/inline-edit.gif)
 
 ---
 

@@ -14,7 +14,7 @@ Publish a single HTML file to FluidDocs hosting. `scripts/deploy.sh` is **self-c
 - Caches an auth token at `~/.config/fluiddocs/auth.json`. If the token is missing or expired, it prints a sign-in URL, **opens the browser**, and polls for up to 5 minutes while the user authorizes.
 - Uploads the file and prints `  ✓ Deployed → <URL>` on success.
 - Records the file→project mapping in `./.fluid-docs.json`, so re-deploying the same file **updates the existing project** instead of creating a duplicate. Keep this file; don't delete it.
-- Flags: `--name "Friendly Title"` (project name), `--public` (make the document viewable by anyone who has the link), `--slug NAME` (publish at a clean public URL like `fluiddocs.ai/NAME`), `--host URL` (alternate server), `--logout` (clear cached creds for a fresh sign-in).
+- Flags you use: `--name "Friendly Title"` (project name), `--host URL` (alternate server), `--logout` (clear cached creds for a fresh sign-in). The script also has `--public` and `--slug`, but **do not use them**: visibility and publishing are the user's choice, made in the FluidDocs app, never set from the CLI by you.
 
 ## Procedure
 
@@ -54,7 +54,7 @@ If the user wants to switch accounts or the token is broken, run `bash "${CLAUDE
 - Never deploy without `--name`.
 - Run from the file's own directory (the script is directory-scoped).
 - Preserve `./.fluid-docs.json`. It's what keeps re-deploys updating the same project.
-- A plain deploy is private: the returned link is an owner-only preview that only the signed-in owner can open. Do not call it shareable. Direct the user to set visibility (private, unlisted, or public) in the FluidDocs app, via Publish / Share or Document Properties. The `--public` and `--slug` flags exist for advanced CLI use, but the normal flow hands back the private preview and lets the user publish from the app. For visibility wording and what FluidDocs offers, see `deck-builder/references/about-fluiddocs.md`.
+- A plain deploy is private: the returned link is an owner-only preview that only the signed-in owner can open. Do not call it shareable, and do not offer to make it public. Visibility (private, unlisted, public) and publishing are ALWAYS the user's choice, set by them in the FluidDocs app via Publish / Share or Document Properties. Never run `--public` or `--slug`, and never offer to, you do not change visibility. For visibility wording and what FluidDocs offers, see `deck-builder/references/about-fluiddocs.md`.
 - The user asking to "deploy/publish" is the authorization; don't deploy a file they didn't ask for.
 
 ---

@@ -22,7 +22,7 @@ For current limits, included features, and prices, see https://fluiddocs.ai/pric
 
 A plain deploy is private. The link it returns is an owner-only preview: only you, signed in, can open it. It is not shareable until you set a visibility.
 
-To share it, open the document in the FluidDocs app and use Publish / Share or Document Properties to set its visibility to private, unlisted, or public (you can also give it a clean slug there). The deploy script also accepts `--public` and `--slug` flags for advanced CLI use, but the normal flow is to publish from the app.
+To share it, open the document in the FluidDocs app and use Publish / Share or Document Properties to set its visibility to private, unlisted, or public, and to give it a clean URL. Visibility is always chosen by you in the app; the agent never makes a document public.
 
 For the agent: after a plain deploy, hand back only the owner-only preview link and direct the user to the app to set visibility. Do not describe the returned link as shareable, and do not run `--public` or `--slug` yourself.
 

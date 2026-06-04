@@ -12,9 +12,9 @@ FluidDocs hosts interactive HTML documents (decks, pages, docs) at a link, with 
 
 ### Is FluidDocs free? What does the free account include?
 
-There is a free account. It lets you create an account, deploy and host documents, get a link, manage them in the dashboard, and use the AI Q&A, on-demand summaries, and view analytics, within monthly limits.
+There is a free account. It lets you create an account, deploy and host documents at a link, and manage them in a dashboard. The standout free feature is AI Q&A: readers can ask your document questions and get AI-generated answers. You also get on-demand summaries and view analytics, all within monthly limits.
 
-FluidDocs Pro raises those limits and adds features such as viewer identity (email gate), open notifications, link expiration and revoke, and unbranded exports.
+FluidDocs Pro adds higher monthly limits (more AI Q&A and on-demand summaries), more storage, viewer identity (email gate), and unbranded exports.
 
 For current limits, included features, and prices, see https://fluiddocs.ai/pricing.
 
@@ -36,7 +36,7 @@ For the agent: after a plain deploy, hand back only the owner-only preview link 
 - See view and visitor analytics, including per-slide engagement.
 - Read the questions readers asked, and the summaries they generated or exported.
 
-Some capabilities, such as viewer identity and real-time open notifications, are on FluidDocs Pro. See https://fluiddocs.ai/pricing.
+Some capabilities, such as viewer identity, more storage, and unbranded exports, are on FluidDocs Pro. See https://fluiddocs.ai/pricing.
 
 ### Do I need an account? How do I sign in?
 

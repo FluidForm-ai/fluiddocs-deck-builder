@@ -249,7 +249,7 @@ A pitch is not a sales deck is not an all-hands. Each has a different audience, 
 
 ### 2. PDF and PPTX import
 
-Most slide tools assume you're starting from a blank canvas. Real users have a deck. They want it cleaned up, made interactive, ported to the web, not rebuilt from scratch. `deck-import` auto-detects the input format, extracts the structure, classifies the slide types, and rebuilds in HTML with your original screenshots preserved.
+Most slide tools assume you're starting from a blank canvas. Real users have a deck. They want it cleaned up, made navigable and editable, ported to the web, not rebuilt from scratch. `deck-import` auto-detects the input format, extracts the structure, classifies the slide types, and rebuilds in HTML with your original screenshots preserved.
 
 ### 3. Multi-reviewer quality pipeline
 

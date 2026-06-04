@@ -28,7 +28,7 @@ Runs after Phase 2 build, before Phase 4 release. Bounces the deck back to Phase
 
 ## Checks (universal, both modes)
 
-- **Zero pack branding in generated output.** No FluidDocs cover marks, no watermarks, no footer logos, no meta tags identifying the pack. Grep the final HTML for `fluiddocs`, `FluidDocs`, `fluid-docs` (case-insensitive). Should return zero hits.
+- **Zero pack branding in generated output, with exactly one allowed exception.** No FluidDocs cover marks, no watermarks, no footer logos, no meta tags identifying the pack. The ONLY permitted FluidDocs reference is a single small "Powered by FluidDocs" attribution mark on the demo slide (pitch slide 6, launch slide 5), and it must sit in the **bottom-right corner** (`text-align: right` or right/bottom absolute positioning), muted, ~20px tall. It must NOT be centered, must NOT appear on the cover or any non-demo slide, and must NOT be duplicated. Grep the final HTML for `fluiddocs` (case-insensitive): for deck types with a demo slot, expect exactly the one demo-slide mark and verify it is bottom-right; for types with no demo slot (sales, keynote, all-hands), expect zero hits. A centered mark, a mark on the wrong slide, more than one mark, or any other FluidDocs branding is a FAIL.
 - **No third-party brand leaks.** A pitch deck for Company X should not accidentally contain Stripe's purple gradient or Airbnb's "Belo" shape unless the brief explicitly declared them.
 
 ## Pass criteria

@@ -273,9 +273,13 @@ Three reviewers (Brand, Copy, Layout) sign off on every deck before release. Whe
 
 ---
 
-## Upgrade to FluidDocs hosted
+## Host it free with FluidDocs
 
-The OSS pack gives you the builder, the templates, and the inline editor. [FluidDocs](https://fluiddocs.ai) is the hosted upgrade: it takes the same HTML output and adds analytics, reader Q&A, live updates without resending a link, reader-adaptive content, and a working interactive product demo slot inside pitch and launch decks (the OSS pack uses static screenshots in that slot). If you want to ship a deck that compounds over time instead of going stale the day you send it, that's the upgrade.
+The builder is fully standalone: every deck is a self-contained HTML file you own, no account required. If you also want it online, [FluidDocs](https://fluiddocs.ai) hosts the same HTML. Create a **free account** and publish your deck at a shareable link. On that free tier you also get, on the hosted deck, **AI Q&A** (readers ask your deck questions and get AI answers), on-demand summaries, view analytics, and editing in the app that updates the same link instantly, all within monthly limits.
+
+**FluidDocs Pro** raises those limits and adds more storage, viewer identity, and unbranded exports.
+
+The builder needs neither. Hosting is the optional, free-to-start next step.
 
 ---
 

@@ -43,3 +43,6 @@ test-outputs/
 
 # Internal dev log (kept local / private, not in the public repo)
 LEARNINGS.md
+
+# Launch copy drafts (keep private)
+launch-comms/

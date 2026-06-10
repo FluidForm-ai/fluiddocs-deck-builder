@@ -17,7 +17,7 @@ Maintained by [FluidDocs](https://fluiddocs.ai). MIT licensed.
 
 ## Try it in 30 seconds, no install
 
-Open [`quick-start.html`](./quick-start.html) in your browser. A live Stripe pitch deck loads in an embedded preview. Press `E` inside the deck to enter edit mode. Edit any heading. Press `Ctrl`/`Cmd`+`S` to download your version.
+**[Try it live, no install →](https://share.fluiddocs.ai/db-quickstart)** A live Stripe pitch deck loads in your browser. Press `E` inside the deck to enter edit mode. Edit any heading. Press `Ctrl`/`Cmd`+`S` to download your version. (Or open [`quick-start.html`](./quick-start.html) from a local clone.)
 
 That is the whole loop. No signup, no CLI, no server. The HTML file you download is yours to ship, host, or fork.
 
@@ -29,9 +29,9 @@ That is the whole loop. No signup, no CLI, no server. The HTML file you download
 
 Eight templates ready to fork. Four brand-mirror pitch decks (Airbnb, Stripe, Anthropic, Sequoia Classic) and four type defaults (sales, launch, keynote, all-hands).
 
-Open [`templates/index.html`](./templates/index.html) for the full gallery with filters by type.
+Browse the **[live template gallery →](https://share.fluiddocs.ai/db-templates)**, filterable by type. (Local: [`templates/index.html`](./templates/index.html).)
 
-Six style presets cover the case where you do not have a brand to mirror. Open [`style-presets/index.html`](./style-presets/index.html) to pick one.
+Six style presets cover the case where you do not have a brand to mirror. Browse the **[live style presets →](https://share.fluiddocs.ai/db-presets)**. (Local: [`style-presets/index.html`](./style-presets/index.html).)
 
 ---
 
